@@ -6,19 +6,23 @@
             <div class="col-3 col-lg-3 d-md-flex">
                 <div class="input-group ms-5">
                     <span class="input-group-text">
-                        <span class="fas fa-search"></span>
+                        <i class="material-icons">search</i>
                     </span>
                     <input wire:model="search" type="text" class="form-control" placeholder="Search role...">
                 </div>
             </div>
             <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
                 <div class="dropdown px-2">
-                    <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Mass action
+                    <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Mass action <i class="material-icons">expand_more</i>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="fas fa-download me-2"></i> Export</button></li>
-                        <li><button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="fas fa-trash me-2"></i> Delete</button></li>
+                        <li>
+                            <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
+                        </li>
+                        <li>
+                            <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
+                        </li>
                     </ul>
                 </div>
 
@@ -64,11 +68,11 @@
                         <th>{{ $role->permisions }}</th>
                         <th>
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $role->id }}, 'update')" class="mx-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">
-                                    <i class="fas fa-role-edit" aria-hidden="true"></i>
+                            <a wire:click="selectItem({{ $role->id }}, 'update')" class="mx-2 pointer">
+                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
-                                <a wire:click="selectItem({{ $role->id }}, 'delete')" class="mx-2" data-bs-toggle="tooltip" data-bs-original-title="Delete">
-                                    <i class="cursor-pointer fas fa-trash" aria-hidden="true"></i>
+                                <a wire:click="selectItem({{ $role->id }}, 'delete')" class="mx-2 pointer">
+                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>
                             </span>
                         </th>

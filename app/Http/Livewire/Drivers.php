@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Livewire\ExampleLaravel;
+namespace App\Http\Livewire;
 
-use App\Models\User;
 use Livewire\Component;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-// use Illuminate\Support\Facades\DB;
+// /Users/carloshernandez/Sites/nabella_app/app/Http/Livewire/ExampleLaravel/UserProfile.php
 
-class UserProfile extends Component
+class Drivers extends Component
 {
-
-    public $name, $email, $phone, $location, $role, $password, $modelId = '';
-    public $item, $action, $search, $countUsers, $title_modal = '';
+    public $name, $email, $phone, $location, $password, $modelId = '';
+    public $role = 'client';
+    public $item, $action, $search, $title_modal, $countDrivers = '';
 
     protected $rules=[
         'name' => 'required|min:3',
@@ -22,24 +22,24 @@ class UserProfile extends Component
         'getModelId',
         'forcedCloseModal',
     ];
-
+    
     public function selectItem($item, $action)
     {
         $this->item = $item;
 
         if($action == 'delete'){
-            $this->title_modal = 'Eliminar Usuario';
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteUser']);
+            $this->title_modal = 'Eliminar Conductor';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriver']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteUserMasive']);
-            $this->countUsers = count($this->selected);
+            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriverMasive']);
+            $this->countDrivers = count($this->selected);
         }else if($action == 'create'){
-            $this->title_modal = 'Crear Usuario';
-            $this->dispatchBrowserEvent('openModal', ['name' => 'createUser']);
+            $this->title_modal = 'Crear Conductor';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('clearForm');
         }else{
-            $this->title_modal = 'Editar Usuario';
-            $this->dispatchBrowserEvent('openModal', ['name' => 'createUser']);
+            $this->title_modal = 'Editar Conductor';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('getModelId', $this->item);
 
         }
@@ -87,7 +87,7 @@ class UserProfile extends Component
         
         $user->save();
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'createUser']);
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'createDriver']);
         $this->clearForm();
     }
 
@@ -106,19 +106,16 @@ class UserProfile extends Component
         $user = User::findOrFail($this->item);
         $user->delete();
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteUser']);
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteDriver']);
         $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Usuario eliminado!']);
 
     }
-
-public function render()
+    
+    public function render()
     {
-        // sleep(1);
-        return view('livewire.user.index', 
-            [
-                'users' => User::search('name', $this->search)->where('role', '<>', 'client')->get()
+        return view('livewire.drivers.index', [
+            'drivers' => User::search('name', $this->search)->where('role', '=', 'client')->get()
             ]
-        );
+    );
     }
-
 }

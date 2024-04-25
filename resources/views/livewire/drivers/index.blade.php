@@ -8,7 +8,7 @@
                     <span class="input-group-text">
                         <i class="material-icons">search</i>
                     </span>
-                    <input wire:model="search" type="text" class="form-control" placeholder="Search user...">
+                    <input wire:model="search" type="text" class="form-control" placeholder="Search driver...">
                 </div>
             </div>
             <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
@@ -27,15 +27,15 @@
                 </div>
 
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <span class="fas fa-plus"></span> Add User
+                    <span class="fas fa-plus"></span> Add Driver
                 </button>
             </div>
         </div>
     </div>
     <div class="card shadow border-0 table-wrapper table-responsive">
-        @if ($users->count())
+        @if ($drivers->count())
         <div wire:loading.class.delay="opacity-5">
-            <table class="table user-table align-items-center">
+            <table class="table driver-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -52,7 +52,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($drivers as $driver)
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
@@ -63,19 +63,19 @@
                         </th>
                         <th>
                             <div class="d-block">
-                                <span class="fw-bold">{{ $user->name }}</span>
-                                <div class="small text-gray">{{ $user->email }}</div>
+                                <span class="fw-bold">{{ $driver->name }}</span>
+                                <div class="small text-gray">{{ $driver->email }}</div>
                             </div>
                         </th>
-                        <th>{{ $user->role }}</th>
-                        <th>{{ $user->location }}</th>
+                        <th>{{ $driver->role }}</th>
+                        <th>{{ $driver->location }}</th>
                         <th>
-                            @if( $user->role != 'admin' )
+                            @if( $driver->role != 'admin' )
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $user->id }}, 'update')" class="mx-2 pointer">
+                                <a wire:click="selectItem({{ $driver->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
-                                <a wire:click="selectItem({{ $user->id }}, 'delete')" class="mx-2 pointer">
+                                <a wire:click="selectItem({{ $driver->id }}, 'delete')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>
                             </span>
@@ -93,7 +93,7 @@
         @endif
     </div>
     <!-- Modal Add-->
-    <div wire:ignore.self class="modal fade" id="createUser" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="createDriver" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -140,15 +140,6 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label for="roleTipo" class="form-label">Rol <span class="text-danger"> *</span></label>
-                                        <select wire:model="role" class="form-select" id="roleTipo">
-                                            <option value="" disabled selected>Elegir</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="client">Cliente</option>
-                                            <option value="domiciliary">Domiciliario</option>
-                                        </select>
-                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -162,7 +153,7 @@
         </div>
     </div>
     <!-- Modal Delete-->
-    <div wire:ignore.self class="modal fade" id="deleteUser" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteDriver" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -179,7 +170,7 @@
         </div>
     </div>
     <!-- Modal Delete Masive-->
-    <div wire:ignore.self class="modal fade" id="deleteUserMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteDriverMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">

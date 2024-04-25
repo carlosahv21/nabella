@@ -12,6 +12,7 @@ use App\Http\Livewire\ExampleLaravel\UserProfile;
 use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\Roles;
+use App\Http\Livewire\Drivers;
 use App\Http\Livewire\RTL;
 use App\Http\Livewire\StaticSignIn;
 use App\Http\Livewire\StaticSignUp;
@@ -44,6 +45,7 @@ Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
 Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-profile');
 Route::get('role', Roles::class)->middleware('auth')->name('role');
+Route::get('driver', Drivers::class)->middleware('auth')->name('driver');
 
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
@@ -53,8 +55,4 @@ Route::get('billing', Billing::class)->name('billing');
 Route::get('profile', Profile::class)->name('profile');
 Route::get('tables', Tables::class)->name('tables');
 Route::get('notifications', Notifications::class)->name("notifications");
-Route::get('virtual-reality', VirtualReality::class)->name('virtual-reality');
-Route::get('static-sign-in', StaticSignIn::class)->name('static-sign-in');
-Route::get('static-sign-up', StaticSignUp::class)->name('static-sign-up');
-Route::get('rtl', RTL::class)->name('rtl');
 });
