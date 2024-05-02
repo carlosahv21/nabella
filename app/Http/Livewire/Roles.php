@@ -23,30 +23,30 @@ class Roles extends Component
         $this->item = $item;
 
         if($action == 'delete'){
-            $this->title_modal = 'Eliminar Role';
+            $this->title_modal = 'Delete Role';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteRole']);
         }else if($action == 'masiveDelete'){
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteRoleMasive']);
             $this->countRoles = count($this->selected);
         }else if($action == 'create'){
-            $this->title_modal = 'Crear Role';
+            $this->title_modal = 'Create Role';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createRole']);
             $this->emit('clearForm');
+        }else if($action == 'permitions'){
+            $this->title_modal = 'Manage Permissions';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'rolePermitions']);
         }else{
-            $this->title_modal = 'Editar Role';
+            $this->title_modal = 'Edit Role';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createRole']);
             $this->emit('getModelId', $this->item);
 
         }
     }
 
-
     private function clearForm()
     {
         $this->modelId = null;
         $this->name = null;
-        $this->permisions = null;
-
     }
 
     public function getModelId($modelId)
@@ -56,7 +56,6 @@ class Roles extends Component
 
         $model = Role::find($this->modelId);
         $this->name = $model->name;
-        $this->permisions = $model->permisions;
     }
 
     public function save()
@@ -69,7 +68,6 @@ class Roles extends Component
         }
         
         $role->name = $this->name;
-        $role->permisions = $this->permisions;  
         
         $role->save();
 

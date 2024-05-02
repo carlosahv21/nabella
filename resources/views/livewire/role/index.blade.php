@@ -27,7 +27,7 @@
                 </div>
 
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <span class="fas fa-plus"></span> Add Role
+                    <i class="material-icons">add</i> Add Role
                 </button>
             </div>
         </div>
@@ -40,13 +40,12 @@
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
-                                <input class="form-check-input" type="checkbox" value="" id="roleCheck55">
+                                <input type="checkbox" value="" id="roleCheck55">
                                 <label class="form-check-label" for="roleCheck55">
                                 </label>
                             </div>
                         </th>
                         <th>Name</th>
-                        <th>permisions</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -55,7 +54,7 @@
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
-                                <input class="form-check-input" type="checkbox" value="" id="roleCheck1">
+                                <input type="checkbox" value="" id="roleCheck1">
                                 <label class="form-check-label" for="roleCheck1">
                                 </label>
                             </div>
@@ -65,10 +64,12 @@
                                 <span class="fw-bold">{{ $role->name }}</span>
                             </div>
                         </th>
-                        <th>{{ $role->permisions }}</th>
                         <th>
                             <span class="my-2 text-xs">
-                            <a wire:click="selectItem({{ $role->id }}, 'update')" class="mx-2 pointer">
+                                <a wire:click="selectItem({{ $role->id }}, 'permitions')" class="mx-2 pointer">
+                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>
+                                </a>
+                                <a wire:click="selectItem({{ $role->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
                                 <a wire:click="selectItem({{ $role->id }}, 'delete')" class="mx-2 pointer">
@@ -164,6 +165,76 @@
                 <div class="modal-footer">
                     <button wire:click="delete" class="btn btn-secondary">Eliminar</button>
                     <button type="button" class="btn btn-link text-gray-600 " data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Masive-->
+    <div wire:ignore.self class="modal fade" id="rolePermitions" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{$title_modal}}</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Module</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">See</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Create/Edit</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-xs">Drivers</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" value="" id="fcustomCheck" checked="">
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <input type="checkbox" value="" id="fcustomCheck1" checked="">
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <input type="checkbox" value="" id="fcustomCheck2">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-xs">Vehicle</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" value="" id="fcustomCheck1" checked="">
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <input type="checkbox" value="" id="fcustomCheck1">
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <input type="checkbox" value="" id="fcustomCheck1" >
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

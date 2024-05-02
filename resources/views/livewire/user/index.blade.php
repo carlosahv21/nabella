@@ -27,7 +27,7 @@
                 </div>
 
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <span class="fas fa-plus"></span> Add User
+                    <i class="material-icons">add</i> Add User
                 </button>
             </div>
         </div>
@@ -143,8 +143,7 @@
                                     <div class="mb-3 col-md-6">
                                         <label for="roleTipo" class="form-label">Rol <span class="text-danger"> *</span></label>
                                         <select wire:model="role" class="form-select" id="roleTipo">
-                                            <option value="" disabled selected>Elegir</option>
-                                            <option value="admin">Admin</option>
+                                            <option value="admin" selected>Admin</option>
                                             <option value="client">Cliente</option>
                                             <option value="domiciliary">Domiciliario</option>
                                         </select>

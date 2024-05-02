@@ -25,7 +25,7 @@
     <div class="virtual-reality">
         <x-navbars.navs.auth></x-navbars.navs.auth>
         <div class="border-radius-xl mx-2 mx-md-3 position-relative"
-            style="background-image: url('{{ asset('assets') }}/img/vr-bg.jpg'); background-size: cover;">
+            style="background-image: url('{{ asset(assets)}}/img/vr-bg.jpg'); background-size: cover;">
             <x-navbars.sidebar></x-navbars.sidebar>
             <main class="main-content border-radius-lg h-100">
                 {{  $slot }}

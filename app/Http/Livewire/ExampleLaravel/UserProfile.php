@@ -4,7 +4,7 @@ namespace App\Http\Livewire\ExampleLaravel;
 
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Hash;
+// use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\DB;
 
 class UserProfile extends Component
@@ -75,7 +75,7 @@ class UserProfile extends Component
             $user = User::findOrFail($this->modelId);
         }else{
             $user = new User;
-            $user->password = Hash::make('123456'); //solo cuando es un nuevo usuario 
+            $user->password = ('123456'); //solo cuando es un nuevo usuario 
             $this->validate();
         }
         
