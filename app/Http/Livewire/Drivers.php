@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class Drivers extends Component
 {
     public $name, $email, $phone, $location, $password, $modelId = '';
-    public $role = 'client';
+    public $role = 'driver';
     public $item, $action, $search, $title_modal, $countDrivers = '';
 
     protected $rules=[
@@ -65,7 +65,6 @@ class Drivers extends Component
         $this->email = null;
         $this->phone = null;
         $this->location = null;
-        $this->role = null;
         $this->password = null;
     }
 
@@ -75,7 +74,7 @@ class Drivers extends Component
             $user = User::findOrFail($this->modelId);
         }else{
             $user = new User;
-            $user->password = Hash::make('123456'); //solo cuando es un nuevo usuario 
+            $user->password = ('123456'); //solo cuando es un nuevo usuario 
             $this->validate();
         }
         
@@ -114,7 +113,7 @@ class Drivers extends Component
     public function render()
     {
         return view('livewire.drivers.index', [
-            'drivers' => User::search('name', $this->search)->where('role', '=', 'client')->get()
+            'drivers' => User::search('name', $this->search)->where('role', '=', 'driver')->get()
             ]
     );
     }

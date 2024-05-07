@@ -19,7 +19,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'user-profile' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('user-profile') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1.2rem;" class="fas fa-user-circle ps-2 pe-2 text-center"></i>
+                        <i class="material-icons">group</i>
                     </div>
                     <span class="nav-link-text ms-1">Users</span>
                 </a>
@@ -28,7 +28,8 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'role' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('role') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center"></i>
+                        <i class="material-icons">manage_accounts</i>
+                        
                     </div>
                     <span class="nav-link-text ms-1">Roles</span>
                 </a>
@@ -37,7 +38,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'driver' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('driver') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center"></i>
+                        <i class="material-icons">person</i>
                     </div>
                     <span class="nav-link-text ms-1">Drivers</span>
                 </a>
@@ -46,9 +47,18 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'vehicle' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('vehicle') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center"></i>
+                        <i class="material-icons">directions_car</i>
                     </div>
                     <span class="nav-link-text ms-1">Vehicles</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'client' ? ' active bg-gradient-primary' : '' }} "
+                    href="{{ route('client') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons">support_agent</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Clients</span>
                 </a>
             </li>
             <li class="nav-item mt-3">
