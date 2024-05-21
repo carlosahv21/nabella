@@ -8,7 +8,7 @@
                     <span class="input-group-text">
                         <i class="material-icons">search</i>
                     </span>
-                    <input wire:model="search" type="text" class="form-control" placeholder="Search vehicle...">
+                    <input wire:model="search" type="text" class="form-control" placeholder="Search service contract...">
                 </div>
             </div>
             <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
@@ -27,15 +27,15 @@
                 </div>
 
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <i class="material-icons">add</i> Add vehicle
+                    <i class="material-icons">add</i> Add Service Contract
                 </button>
             </div>
         </div>
     </div>
     <div class="card shadow border-0 table-wrapper table-responsive">
-        @if ($vehicles->count())
+        @if ($servicecontracts->count())
         <div wire:loading.class.delay="opacity-5">
-            <table class="table vehicle-table align-items-center">
+            <table class="table servicecontract-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -45,13 +45,14 @@
                                 </label>
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Brand</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Model</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subject</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date start - Date end</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($vehicles as $vehicle)
+                    @foreach ($servicecontracts as $servicecontract)
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
@@ -60,17 +61,17 @@
                                 </label>
                             </div>
                         </th>
-                        <th>{{ $vehicle->brand }}</th>
-                        <th>{{ $vehicle->model }}</th>
+                        <th>{{ $servicecontract->subject }}</th>
+                        <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('d/m/Y')}} - {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('d/m/Y')}}</th>
+
+                        <!-- <th>{{ $servicecontract->date_start }} / {{ $servicecontract->date_end }}</th> -->
+                        <th><a href="{{ route('client') }}"> {{ $servicecontract->client->company }}</a></th>
                         <th>
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="See file">visibility</i>
-                                </a>
-                                <a wire:click="selectItem({{ $vehicle->id }}, 'update')" class="mx-2 pointer">
+                                <a wire:click="selectItem({{ $servicecontract->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
-                                <a wire:click="selectItem({{ $vehicle->id }}, 'delete')" class="mx-2 pointer">
+                                <a wire:click="selectItem({{ $servicecontract->id }}, 'delete')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>
                             </span>
@@ -87,7 +88,7 @@
         @endif
     </div>
     <!-- Modal Add-->
-    <div wire:ignore.self class="modal fade" id="createVehicle" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="createServiceContract" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -99,47 +100,51 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Year</label>
-                                        <input wire:model="year" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('year'))
+                                        <label class="form-label">Subject</label>
+                                        <input wire:model="subject" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('subject'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('year') }}
+                                            {{ $errors->first('subject') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Make</label>
-                                        <input wire:model="brand" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('brand'))
+                                        <label class="form-label">State</label>
+                                        <select wire:ignore.self wire:model="state" class="form-select"  id="state">
+                                            <option>Elegir</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Date Start</label>
+                                        <input wire:model="date_start" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('date_start'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('brand') }}
+                                            {{ $errors->first('date_start') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Model</label>
-                                        <input wire:model="model" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('model'))
+                                        <label class="form-label">Date End</label>
+                                        <input wire:model="date_end" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('date_end'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('model') }}
+                                            {{ $errors->first('date_end') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Vin #</label>
-                                        <input wire:model="color" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('color'))
+                                        <label class="form-label">Client Owner</label>
+                                        <select wire:ignore.self wire:model="client_id" class="form-select"  id="client_id">
+                                            <option>Elegir</option>
+                                            @foreach ($clients as $client)
+                                            <option value="{{ $client->id }}">{{ $client->company }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('client_id'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('color') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Value</label>
-                                        <input wire:model="car_plate" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('car_plate'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('car_plate') }}
+                                            {{ $errors->first('client_id') }}
                                         </div>
                                         @endif
                                     </div>
@@ -156,7 +161,7 @@
         </div>
     </div>
     <!-- Modal Delete-->
-    <div wire:ignore.self class="modal fade" id="deleteVehicle" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteServiceContract" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -173,7 +178,7 @@
         </div>
     </div>
     <!-- Modal Delete Masive-->
-    <div wire:ignore.self class="modal fade" id="deleteVehicleMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteServiceContractMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -189,68 +194,5 @@
             </div>
         </div>
     </div>
-    <!-- Modal SeeFileVehicle-->
-    <div wire:ignore.self class="modal fade" id="SeeFileVehicle" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
-                </div>
-                <div class="modal-body">
-                    <img src="https://i.pinimg.com/736x/bc/c8/ee/bcc8ee6f1b51e5d9900a91141105e50c.jpg" alt="cherry" class="mb-3 w-50 border-radius-lg shadow-sm">
-                    <div class="table-responsive ">
-                        <table class="table align-items-center mb-0 table-striped">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <span class="font-weight-bolder">Make</span>
-                                    </td>
-                                    <td>
-                                        {{ $this->brand }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="font-weight-bolder">Model</span>
-                                    </td>
-                                    <td>
-                                        {{ $this->model }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="font-weight-bolder">Year</span>
-                                    </td>
-                                    <td>
-                                        {{ $this->year }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="font-weight-bolder">Vin #</span>
-                                    </td>
-                                    <td>
-                                        {{ $this->color }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="font-weight-bolder">Value</span>
-                                    </td>
-                                    <td>
-                                        ${{ $this->car_plate }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link text-gray-600 " data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- <script src="{{asset('public/assets/js/users.js') }}"></script> -->
+    <!-- <script src="{{asset('public/assets/js/users.js') }}"></script> -->

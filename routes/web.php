@@ -19,6 +19,8 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\Vehicles;
 use App\Http\Livewire\Clients;
+use App\Http\Livewire\Patients;
+use App\Http\Livewire\ServiceContracts;
 use App\Http\Livewire\VirtualReality;
 use GuzzleHttp\Middleware;
 
@@ -55,6 +57,10 @@ Route::get('driver', Drivers::class)->middleware('auth')->name('driver');
 Route::get('vehicle', Vehicles::class)->middleware('auth')->name('vehicle');
 
 Route::get('client', Clients::class)->middleware('auth')->name('client');
+
+Route::get('servicecontract', ServiceContracts::class)->middleware('auth')->name('servicecontract');
+
+Route::get('patient', Patients::class)->middleware('auth')->name('patient');
 
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
