@@ -4,19 +4,20 @@ namespace App\Http\Livewire\ExampleLaravel;
 
 use App\Models\User;
 use Livewire\Component;
-// use Illuminate\Support\Facades\Hash;
-// use Illuminate\Support\Facades\DB;
+
+use Livewire\WithPagination;
+use Spatie\Permission\Models\Role;
 
 class UserProfile extends Component
 {
 
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
     public $name, $email, $phone, $location, $role, $password, $modelId = '';
     public $item, $action, $search, $countUsers, $title_modal = '';
-
-    protected $rules=[
-        'name' => 'required|min:3',
-        'email' => 'required|email|unique:users,email'
-    ];
+    public $isEdit = false;
 
     protected $listeners = [
         'getModelId',
@@ -27,21 +28,38 @@ class UserProfile extends Component
     {
         $this->item = $item;
 
-        if($action == 'delete'){
+        if ($action == 'delete') {
             $this->title_modal = 'Eliminar Usuario';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteUser']);
-        }else if($action == 'masiveDelete'){
+        } else if ($action == 'masiveDelete') {
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteUserMasive']);
             $this->countUsers = count($this->selected);
-        }else if($action == 'create'){
+        } else if ($action == 'create') {
             $this->title_modal = 'Crear Usuario';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createUser']);
             $this->emit('clearForm');
-        }else{
+        } else {
             $this->title_modal = 'Editar Usuario';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createUser']);
             $this->emit('getModelId', $this->item);
+        }
+    }
 
+    public function rules()
+    {
+        if ($this->isEdit) {
+            return [
+                'name' => 'required|min:3',
+                'email' => 'required|email',
+                'role' => 'required|string|exists:roles,name',
+            ];
+        } else {
+            
+            return [
+                'name' => 'required|min:3',
+                'email' => 'required|email|unique:users,email',
+                'role' => 'required|string|exists:roles,name',
+            ];
         }
     }
 
@@ -55,7 +73,6 @@ class UserProfile extends Component
         $this->email = $model->email;
         $this->phone = $model->phone;
         $this->location = $model->location;
-        $this->role = $model->role;
     }
 
     private function clearForm()
@@ -71,24 +88,45 @@ class UserProfile extends Component
 
     public function save()
     {
-        if($this->modelId){
+        if ($this->modelId) {
+            $this->isEdit = true;
+            $this->validate();
+
             $user = User::findOrFail($this->modelId);
-        }else{
+        } else {
+            $this->validate();
             $user = new User;
             $user->password = ('123456'); //solo cuando es un nuevo usuario 
-            $this->validate();
         }
-        
+
         $user->name = $this->name;
         $user->email = $this->email;
         $user->phone = $this->phone;
         $user->location = $this->location;
-        $user->role = $this->role;    
-        
+        $user->syncRoles($this->role);
+
         $user->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createUser']);
         $this->clearForm();
+
+        if ($this->isEdit) {
+            $data = [
+                'message' => 'User updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        } else {
+            $data = [
+                'message' => 'User created successfully!',
+                'type' => 'info',
+                'icon' => 'check',
+            ];
+        }
+
+        if ($data) {
+            $this->sessionAlert($data);
+        }
     }
 
     public function forcedCloseModal()
@@ -99,6 +137,7 @@ class UserProfile extends Component
         // These will reset our error bags
         $this->resetErrorBag();
         $this->resetValidation();
+        $this->isEdit = false;
     }
 
     public function delete()
@@ -107,18 +146,42 @@ class UserProfile extends Component
         $user->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteUser']);
-        $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Usuario eliminado!']);
+        
+        $data = [
+            'message' => 'User deleted successfully!',
+            'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
 
     }
 
-public function render()
+    function sessionAlert($data) {
+        session()->flash('alert', $data); 
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
+    }
+
+    public function updatingSearch()
     {
-        // sleep(1);
-        return view('livewire.user.index', 
+        $this->resetPage();
+    }
+
+    public function updatinDelete()
+    {
+        $this->resetPage();
+    }
+
+    public function render()
+    {
+        return view(
+            'livewire.user.index',
             [
-                'users' => User::search('name', $this->search)->where('role', '<>', 'client')->get()
+                'users' => User::where('name', "like", "%$this->search%")
+                    ->orWhere('email', "like", "%$this->search%")
+                    ->paginate(10),
+                'roles' => Role::all(),
             ]
         );
     }
-
 }

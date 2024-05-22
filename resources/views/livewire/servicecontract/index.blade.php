@@ -20,15 +20,19 @@
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
+                        @can('servicecontract.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
+                        @endcan
                     </ul>
                 </div>
 
+                @can('servicecontract.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons">add</i> Add Service Contract
                 </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -68,12 +72,16 @@
                         <th><a href="{{ route('client') }}"> {{ $servicecontract->client->company }}</a></th>
                         <th>
                             <span class="my-2 text-xs">
+                                @can('servicecontract.update')
                                 <a wire:click="selectItem({{ $servicecontract->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
+                                @endcan
+                                @can('servicecontract.delete')
                                 <a wire:click="selectItem({{ $servicecontract->id }}, 'delete')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>
+                                @endcan
                             </span>
                         </th>
                     </tr>

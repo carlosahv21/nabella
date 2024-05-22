@@ -15,15 +15,18 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Modules</h6>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'user-profile' ? ' active bg-gradient-primary' : '' }} "
-                    href="{{ route('user-profile') }}">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">group</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Users</span>
-                </a>
-            </li>
+            @can ('user.view')
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'user-profile' ? ' active bg-gradient-primary' : '' }} "
+                        href="{{ route('user-profile') }}">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons">group</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Users</span>
+                    </a>
+                </li>
+            @endcan
+            @can ('role.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'role' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('role') }}">
@@ -34,6 +37,8 @@
                     <span class="nav-link-text ms-1">Roles</span>
                 </a>
             </li>
+            @endcan
+            @can ('driver.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'driver' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('driver') }}">
@@ -43,6 +48,8 @@
                     <span class="nav-link-text ms-1">Drivers</span>
                 </a>
             </li>
+            @endcan
+            @can ('vehicle.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'vehicle' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('vehicle') }}">
@@ -52,6 +59,8 @@
                     <span class="nav-link-text ms-1">Vehicles</span>
                 </a>
             </li>
+            @endcan
+            @can ('client.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'client' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('client') }}">
@@ -61,6 +70,8 @@
                     <span class="nav-link-text ms-1">Clients</span>
                 </a>
             </li>
+            @endcan
+            @can ('servicecontract.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'servicecontract' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('servicecontract') }}">
@@ -70,6 +81,8 @@
                     <span class="nav-link-text ms-1">Service Contracts</span>
                 </a>
             </li>
+            @endcan
+            @can ('patient.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'patient' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('patient') }}">
@@ -79,6 +92,7 @@
                     <span class="nav-link-text ms-1">Patient</span>
                 </a>
             </li>
+            @endcan
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6>
             </li>

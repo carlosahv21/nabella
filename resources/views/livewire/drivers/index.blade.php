@@ -20,15 +20,18 @@
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
+                        @can('driver.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
+                        @endcan
                     </ul>
                 </div>
-
+                @can('driver.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons">add</i> Add Driver
                 </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -46,7 +49,6 @@
                             </div>
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rol</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Location</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
@@ -67,19 +69,18 @@
                                 <div class="small text-gray">{{ $driver->email }}</div>
                             </div>
                         </th>
-                        <th>Driver</th>
                         <th>{{ $driver->location }}</th>
                         <th>
-                            @if( $driver->role != 'admin' )
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $driver->id }}, 'update')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
+                                @can('driver.update')
+                                <a wire:click="selectItem({{ $driver->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
-                                <a wire:click="selectItem({{ $driver->id }}, 'delete')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
-                                </a>
+                                @endcan
+                                @can('driver.delete')
+                                <a wire:click="selectItem({{ $driver->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                @endcan
                             </span>
-                            @endif
                         </th>
                     </tr>
                     @endforeach
@@ -91,6 +92,9 @@
             <span class="text-gray-500"><i class="fas fa-archive"></i> There are no users to show</span>
         </div>
         @endif
+        <div class="d-flex justify-content-end py-1 mx-5">
+            {{ $drivers->links() }}
+        </div>
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createDriver" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">

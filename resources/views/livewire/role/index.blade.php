@@ -20,15 +20,18 @@
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
+                        @can('role.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
+                        @endcan
                     </ul>
                 </div>
-
+                @can('role.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons">add</i> Add Role
                 </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -66,15 +69,20 @@
                         </th>
                         <th>
                             <span class="my-2 text-xs">
+                                
                                 <a wire:click="selectItem({{ $role->id }}, 'permitions')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>
                                 </a>
+                                @can('role.update', $role)
                                 <a wire:click="selectItem({{ $role->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
+                                @endcan
+                                @can('role.delete', $role)
                                 <a wire:click="selectItem({{ $role->id }}, 'delete')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>
+                                @endcan
                             </span>
                         </th>
                     </tr>

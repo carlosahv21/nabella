@@ -412,18 +412,6 @@
       top: $dropdown-hover-arrow-active-top;
     }
   }
-
-  &:before {
-    font-family: "FontAwesome";
-    content: "\f0d8";
-    position: absolute;
-    top: 0;
-    left: $dropdown-animation-arrow-left-position;
-    right: auto;
-    font-size: $dropdown-animation-arrow-font-size;
-    color: $white;
-    transition: $dropdown-animation-arrow-transition;
-  }
 }
 
 .choices[data-type*=select-one] .choices__input{

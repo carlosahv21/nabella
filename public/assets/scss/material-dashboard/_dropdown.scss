@@ -79,20 +79,6 @@
       margin-top: $dropdown-mt !important;
     }
 
-    .dropdown-menu {
-      &:before {
-        font-family: "FontAwesome";
-        content: "\f0d8";
-        position: absolute;
-        top: 0;
-        left: $dropdown-animation-arrow-left-position;
-        right: auto;
-        font-size: $dropdown-animation-arrow-font-size;
-        color: $white;
-        transition: $dropdown-animation-arrow-transition;
-      }
-    }
-
     .dropdown-item .arrow {
       transform: $dropdown-subitem-arrow-rotate;
     }
@@ -118,18 +104,6 @@
         backface-visibility: hidden;
         will-change: transform,box-shadow;
         box-shadow: $dropdown-box-shadow;
-
-        &:before {
-          font-family: "FontAwesome";
-          content: "\f0d8";
-          position: absolute;
-          top: 0;
-          left: $dropdown-animation-arrow-left-position;
-          right: auto;
-          font-size: $dropdown-animation-arrow-font-size;
-          color: $white;
-          transition: $dropdown-animation-arrow-transition;
-        }
       }
 
       &:not(.dropdown-hover) .dropdown-menu {
@@ -166,18 +140,6 @@
       backface-visibility: hidden;
       will-change: transform,box-shadow;
       box-shadow: $dropdown-box-shadow;
-
-      &:before {
-        font-family: "FontAwesome";
-        content: "\f0d8";
-        position: absolute;
-        top: 0;
-        left: $dropdown-animation-arrow-left-position;
-        right: auto;
-        font-size: $dropdown-animation-arrow-font-size;
-        color: $white;
-        transition: $dropdown-animation-arrow-transition;
-      }
     }
     &:not(.dropdown-hover) .dropdown-menu {
       margin-top: $dropdown-mt !important;

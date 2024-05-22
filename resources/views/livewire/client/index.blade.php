@@ -16,19 +16,22 @@
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons">expand_more</i>
                     </button>
-                    <ul class="dropdown-menu" >
+                    <ul class="dropdown-menu">
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
+                        @can('client.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
+                        @endcan
                     </ul>
                 </div>
-
+                @can('client.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons">add</i> Add Client
                 </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -70,12 +73,16 @@
                         <th>$ {{ $client->rate_per_mile }}</th>
                         <th>
                             <span class="my-2 text-xs">
+                                @can('client.update')
                                 <a wire:click="selectItem({{ $client->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
+                                @endcan
+                                @can('client.delete')
                                 <a wire:click="selectItem({{ $client->id }}, 'delete')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>
+                                @endcan
                             </span>
                         </th>
                     </tr>

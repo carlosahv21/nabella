@@ -20,15 +20,18 @@
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
+                        @can('vehicle.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
+                        @endcan
                     </ul>
                 </div>
-
+                @can('vehicle.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons">add</i> Add vehicle
                 </button>
+                @endcan
             </div>
         </div>
     </div>
@@ -67,9 +70,11 @@
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="See file">visibility</i>
                                 </a>
+                                @can('vehicle.update', $vehicle)
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'update')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                 </a>
+                                @endcan
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'delete')" class="mx-2 pointer">
                                     <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
                                 </a>

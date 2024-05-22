@@ -16,7 +16,7 @@
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons">expand_more</i>
                     </button>
-                    <ul class="dropdown-menu" >
+                    <ul class="dropdown-menu">
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
@@ -32,9 +32,25 @@
             </div>
         </div>
     </div>
+    <div class="position-fixed top-2 end-2 z-index-2">
+        <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
+            <div class="toast-header bg-transparent text-white border-0">
+                <i class="material-icons me-2">
+                    {{ session('alert.icon') }}
+                </i>
+                <span class="me-auto font-weight-bold">Notification!</span>
+                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            </div>
+            <hr class="horizontal dark m-0">
+            <div class="toast-body text-white ">
+                {{ session('alert.message') }}
+            </div>
+        </div>
+    </div>
+
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($users->count())
-        <div wire:loading.class.delay="opacity-5">
+        <div wire:loading.class.delay="opacity-9">
             <table class="table user-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
@@ -67,19 +83,19 @@
                                 <div class="small text-gray">{{ $user->email }}</div>
                             </div>
                         </th>
-                        <th>{{ $user->role }}</th>
+                        <th>{{ $user->getRoleNames()->first() }}</th>
                         <th>{{ $user->location }}</th>
                         <th>
-                            @if( $user->role != 'admin' )
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $user->id }}, 'update')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
+                                @can('user.update', $user)
+                                <a wire:click="selectItem({{ $user->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
-                                <a wire:click="selectItem({{ $user->id }}, 'delete')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
-                                </a>
+                                @endcan
+                                @can('user.delete', $user)
+                                <a wire:click="selectItem({{ $user->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                @endcan
                             </span>
-                            @endif
                         </th>
                     </tr>
                     @endforeach
@@ -91,6 +107,9 @@
             <span class="text-gray-500"><i class="fas fa-archive"></i> There are no users to show</span>
         </div>
         @endif
+        <div class="d-flex justify-content-end py-1 mx-5">
+            {{ $users->links() }}
+        </div>
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createUser" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
@@ -143,10 +162,16 @@
                                     <div class="mb-3 col-md-6">
                                         <label for="roleTipo" class="form-label">Rol <span class="text-danger"> *</span></label>
                                         <select wire:model="role" class="form-select" id="roleTipo">
-                                            <option value="admin" selected>Admin</option>
-                                            <option value="client">Cliente</option>
-                                            <option value="domiciliary">Domiciliario</option>
+                                            <option value="">Elegir</option>
+                                            @foreach ($roles as $role)
+                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                            @endforeach
                                         </select>
+                                        @if ($errors->has('role'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('role') }}
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </form>

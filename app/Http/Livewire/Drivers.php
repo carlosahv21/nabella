@@ -4,13 +4,20 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
+
 // /Users/carloshernandez/Sites/nabella_app/app/Http/Livewire/ExampleLaravel/UserProfile.php
 
 class Drivers extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
     public $name, $email, $phone, $location, $password, $modelId = '';
-    public $role = 'driver';
+    public $role = 'Driver';
     public $item, $action, $search, $title_modal, $countDrivers = '';
 
     protected $rules=[
@@ -82,12 +89,19 @@ class Drivers extends Component
         $user->email = $this->email;
         $user->phone = $this->phone;
         $user->location = $this->location;
-        $user->role = $this->role;    
+        $user->syncRoles($this->role);
         
         $user->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createDriver']);
         $this->clearForm();
+
+        $data = [
+            'message' => 'User deleted successfully!',
+            'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
     }
 
     public function forcedCloseModal()
@@ -106,15 +120,37 @@ class Drivers extends Component
         $user->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteDriver']);
-        $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Usuario eliminado!']);
+        
+        $data = [
+            'message' => 'User deleted successfully!',
+            'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
+    }
 
+    function sessionAlert($data) {
+        session()->flash('alert', $data); 
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
     
     public function render()
     {
+        $roleName = 'Driver';
+
+        $data = DB::table('users')
+            ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->select('users.*')
+            ->where('roles.name', '=', $roleName)
+            ->where('users.id', '!=', auth()->id())
+            ->where('users.name', 'like', '%'.$this->search.'%')
+            ->paginate(10);
+
         return view('livewire.drivers.index', [
-            'drivers' => User::search('name', $this->search)->where('role', '=', 'driver')->get()
+            'drivers' => $data
             ]
-    );
+        );
     }
 }

@@ -67,12 +67,19 @@
         window.addEventListener('openModal', event => {
             $('#' + event.detail.name).modal('show');
         })
-        $(document).ready(function() {
 
+        window.addEventListener('showToast', event => {
+                console.log('here');
+                $('#' + event.detail.name).toast('show');
+            // $('#toast').toast('show');
+        })
+
+        $(document).ready(function() {
             var modals = ['createUser', 'createDriver', 'createRole'];
 
             modals.forEach(element => {
                 $("#" + element).on('hidden.bs.modal', function() {
+                    // sleep(2000);
                     livewire.emit('forcedCloseModal');
                 });
             });

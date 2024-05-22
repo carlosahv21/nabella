@@ -47,20 +47,20 @@ Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->n
 Route::get('sign-up', Register::class)->middleware('guest')->name('register');
 Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
-Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-profile');
+Route::get('user-profile', UserProfile::class)->middleware('can:user.view')->name('user-profile');
 
-Route::get('role', Roles::class)->middleware('auth')->name('role');
+Route::get('role', Roles::class)->middleware('can:role.view')->name('role');
 Route::get('show', [Roles::class, 'show']);
 
-Route::get('driver', Drivers::class)->middleware('auth')->name('driver');
+Route::get('driver', Drivers::class)->middleware('can:driver.view')->name('driver');
 
-Route::get('vehicle', Vehicles::class)->middleware('auth')->name('vehicle');
+Route::get('vehicle', Vehicles::class)->middleware('can:vehicle.view')->name('vehicle');
 
-Route::get('client', Clients::class)->middleware('auth')->name('client');
+Route::get('client', Clients::class)->middleware('can:client.view')->name('client');
 
-Route::get('servicecontract', ServiceContracts::class)->middleware('auth')->name('servicecontract');
+Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicecontract.view')->name('servicecontract');
 
-Route::get('patient', Patients::class)->middleware('auth')->name('patient');
+Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');
 
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
