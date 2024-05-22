@@ -35,9 +35,26 @@
             </div>
         </div>
     </div>
+    <!-- notifications -->
+    <div class="position-fixed top-2 end-2 z-index-2">
+        <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
+            <div class="toast-header bg-transparent text-white border-0">
+                <i class="material-icons me-2">
+                    {{ session('alert.icon') }}
+                </i>
+                <span class="me-auto font-weight-bold">Notification!</span>
+                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            </div>
+            <hr class="horizontal light m-0">
+            <div class="toast-body text-white ">
+                {{ session('alert.message') }}
+            </div>
+        </div>
+    </div>
+    <!-- end notifications -->
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($roles->count())
-        <div wire:loading.class.delay="opacity-5">
+        <div>
             <table class="table role-table align-items-center">
                 <thead class="thead-dark">
                     <tr>

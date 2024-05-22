@@ -37,7 +37,7 @@
     </div>
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($clients->count())
-        <div wire:loading.class.delay="opacity-5">
+        <div>
             <table class="table Client-table align-items-center">
                 <thead class="thead-dark">
                     <tr>

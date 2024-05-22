@@ -32,6 +32,7 @@
             </div>
         </div>
     </div>
+    <!-- notifications -->
     <div class="position-fixed top-2 end-2 z-index-2">
         <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
             <div class="toast-header bg-transparent text-white border-0">
@@ -41,13 +42,13 @@
                 <span class="me-auto font-weight-bold">Notification!</span>
                 <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
             </div>
-            <hr class="horizontal dark m-0">
+            <hr class="horizontal light m-0">
             <div class="toast-body text-white ">
                 {{ session('alert.message') }}
             </div>
         </div>
     </div>
-
+    <!-- end notifications -->
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($users->count())
         <div wire:loading.class.delay="opacity-9">
@@ -124,7 +125,7 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Email address</label>
+                                        <label class="form-label">Email address <span class="text-danger"> *</span></label>
                                         <input wire:model="email" type="email" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('email'))
                                         <div class="text-danger inputerror">
@@ -133,7 +134,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Name</label>
+                                        <label class="form-label">Name <span class="text-danger"> *</span></label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
                                         <div class="text-danger inputerror">
@@ -164,7 +165,7 @@
                                         <select wire:model="role" class="form-select" id="roleTipo">
                                             <option value="">Elegir</option>
                                             @foreach ($roles as $role)
-                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                                <option value="{{ $role->name }}">{{ $role->name }}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('role'))

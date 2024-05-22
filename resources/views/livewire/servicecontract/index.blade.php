@@ -38,7 +38,7 @@
     </div>
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($servicecontracts->count())
-        <div wire:loading.class.delay="opacity-5">
+        <div>
             <table class="table servicecontract-table align-items-center">
                 <thead class="thead-dark">
                     <tr>

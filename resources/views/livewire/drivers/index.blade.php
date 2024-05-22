@@ -16,7 +16,7 @@
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons">expand_more</i>
                     </button>
-                    <ul class="dropdown-menu" >
+                    <ul class="dropdown-menu">
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
@@ -35,9 +35,27 @@
             </div>
         </div>
     </div>
+
+    <!-- notifications -->
+    <div class="position-fixed top-2 end-2 z-index-2">
+        <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
+            <div class="toast-header bg-transparent text-white border-0">
+                <i class="material-icons me-2">
+                    {{ session('alert.icon') }}
+                </i>
+                <span class="me-auto font-weight-bold">Notification!</span>
+                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            </div>
+            <hr class="horizontal light m-0">
+            <div class="toast-body text-white ">
+                {{ session('alert.message') }}
+            </div>
+        </div>
+    </div>
+    <!-- end notifications -->
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($drivers->count())
-        <div wire:loading.class.delay="opacity-5">
+        <div>
             <table class="table driver-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
@@ -109,7 +127,7 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Email address</label>
+                                        <label class="form-label">Email address <span class="text-danger"> *</span></label>
                                         <input wire:model="email" type="email" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('email'))
                                         <div class="text-danger inputerror">
@@ -118,7 +136,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Name</label>
+                                        <label class="form-label">Name<span class="text-danger"> *</span></label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
                                         <div class="text-danger inputerror">

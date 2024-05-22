@@ -35,9 +35,26 @@
             </div>
         </div>
     </div>
+    <!-- notifications -->
+    <div class="position-fixed top-2 end-2 z-index-2">
+        <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
+            <div class="toast-header bg-transparent text-white border-0">
+                <i class="material-icons me-2">
+                    {{ session('alert.icon') }}
+                </i>
+                <span class="me-auto font-weight-bold">Notification!</span>
+                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            </div>
+            <hr class="horizontal light m-0">
+            <div class="toast-body text-white ">
+                {{ session('alert.message') }}
+            </div>
+        </div>
+    </div>
+    <!-- end notifications -->
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($vehicles->count())
-        <div wire:loading.class.delay="opacity-5">
+        <div>
             <table class="table vehicle-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
@@ -48,8 +65,9 @@
                                 </label>
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Brand</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Make</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Model</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Driver</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
@@ -63,8 +81,9 @@
                                 </label>
                             </div>
                         </th>
-                        <th>{{ $vehicle->brand }}</th>
+                        <th>{{ $vehicle->make }}</th>
                         <th>{{ $vehicle->model }}</th>
+                        <th>{{ $vehicle->user->name }}</th>
                         <th>
                             <span class="my-2 text-xs">
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="mx-2 pointer">
@@ -104,7 +123,7 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Year</label>
+                                        <label class="form-label">Year <span class="text-danger"> *</span></label>
                                         <input wire:model="year" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('year'))
                                         <div class="text-danger inputerror">
@@ -113,16 +132,16 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Make</label>
-                                        <input wire:model="brand" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('brand'))
+                                        <label class="form-label">Make <span class="text-danger"> *</span></label>
+                                        <input wire:model="make" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('make'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('brand') }}
+                                            {{ $errors->first('make') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Model</label>
+                                        <label class="form-label">Model <span class="text-danger"> *</span></label>
                                         <input wire:model="model" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('model'))
                                         <div class="text-danger inputerror">
@@ -132,19 +151,33 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Vin #</label>
-                                        <input wire:model="color" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('color'))
+                                        <input wire:model="vin" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('vin'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('color') }}
+                                            {{ $errors->first('vin') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Value</label>
-                                        <input wire:model="car_plate" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('car_plate'))
+                                        <input wire:model="value" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('value'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('car_plate') }}
+                                            {{ $errors->first('value') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Driver</label>
+                                        <select wire:model.ignore="user_id" class="form-select">
+                                            <option value="">Elegir</option>
+                                            @foreach ($drivers as $driver)
+                                            <option value="{{ $driver->id }}">{{ $driver->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('driver'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('driver') }}
                                         </div>
                                         @endif
                                     </div>
@@ -211,7 +244,7 @@
                                         <span class="font-weight-bolder">Make</span>
                                     </td>
                                     <td>
-                                        {{ $this->brand }}
+                                        {{ $this->make }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -224,7 +257,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                    <span class="font-weight-bolder">Year</span>
+                                        <span class="font-weight-bolder">Year</span>
                                     </td>
                                     <td>
                                         {{ $this->year }}
@@ -235,7 +268,7 @@
                                         <span class="font-weight-bolder">Vin #</span>
                                     </td>
                                     <td>
-                                        {{ $this->color }}
+                                        {{ $this->vin }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -243,7 +276,15 @@
                                         <span class="font-weight-bolder">Value</span>
                                     </td>
                                     <td>
-                                        ${{ $this->car_plate }}
+                                        ${{ $this->value }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="font-weight-bolder">Driver</span>
+                                    </td>
+                                    <td>
+                                        {{ $this->driver }}
                                     </td>
                                 </tr>
                             </tbody>

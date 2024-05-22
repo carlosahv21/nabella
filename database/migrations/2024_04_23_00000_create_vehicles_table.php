@@ -15,11 +15,12 @@ class CreateVehiclesTable extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->string('brand');
-            $table->string('model');
             $table->string('year');
-            $table->string('color');
-            $table->string('car_plate');
+            $table->string('make');
+            $table->string('model');
+            $table->string('vin');
+            $table->string('value');
+            $table->integer('user_id')->unsigned()->references('id')->on('users')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });

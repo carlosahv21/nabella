@@ -4,16 +4,25 @@ namespace App\Http\Livewire;
 
 use App\Models\Vehicle;
 use Livewire\Component;
+use App\Models\User;
+
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
 
 class Vehicles extends Component
 {
-    public $search, $title_modal, $item, $countVehicles, $modelId = '';
-    public $brand, $model, $year, $color, $car_plate = '';
+    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId = '';
+    public $make, $model, $year, $vin, $value = '';
+    public $action, $isEdit = false;
 
     protected $rules=[
-        'brand' => 'required|min:3',
+        'make' => 'required|min:3',
         'model' => 'required|min:3',
-        'year' => 'required|numeric|min:4',
+        'year' => 'required|numeric|min:4'
     ];
 
     protected $listeners = [
@@ -50,51 +59,90 @@ class Vehicles extends Component
     private function clearForm()
     {
         $this->modelId = null;
-        $this->brand = null;
-        $this->model = null;
         $this->year = null;
-        $this->color = null;
-        $this->car_plate = null;
+        $this->make = null;
+        $this->model = null;
+        $this->vin = null;
+        $this->value = null;
+        $this->user_id = null;
+        $this->driver = null;
 
     }
 
     public function getModelId($modelId)
     {
-
         $this->modelId = $modelId;
 
         $model = Vehicle::find($this->modelId);
-        $this->brand = $model->brand;
+        $this->make = $model->make;
         $this->model = $model->model;
         $this->year = $model->year;
-        $this->color = $model->color;
-        $this->car_plate = $model->car_plate;
-
+        $this->vin = $model->vin;
+        $this->value = $model->value;
+        $this->user_id = $model->user_id;
+        $this->driver = User::find($this->user_id)->name;
     }
 
     public function save()
     {
+        $this->validate();
+
         if($this->modelId){
             $vehicle = Vehicle::findOrFail($this->modelId);
+            $this->isEdit = true;
         }else{
             $vehicle = new Vehicle;
-            $this->validate();
         }
 
-        $vehicle->brand = $this->brand;
+        $vehicle->make = $this->make;
         $vehicle->model = $this->model;
         $vehicle->year = $this->year;
-        $vehicle->color = $this->color;
-        $vehicle->car_plate = $this->car_plate;
+        $vehicle->vin = $this->vin;
+        $vehicle->value = $this->value;
+        $vehicle->user_id = $this->user_id;
         
         $vehicle->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
         $this->clearForm();
+
+        if ($this->isEdit) {
+            $data = [
+                'message' => 'Vehicle updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        } else {
+            $data = [
+                'message' => 'Vehicle created successfully!',
+                'type' => 'info',
+                'icon' => 'check',
+            ];
+        }
+
+        if ($data) {
+            $this->sessionAlert($data);
+        }
+    }
+
+    public function delete()
+    {
+        $vehicle = Vehicle::findOrFail($this->item);
+        $vehicle->delete();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteVehicle']);
+        
+        $data = [
+            'message' => 'Vehicle deleted successfully!',
+            'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
     }
 
     public function forcedCloseModal()
     {
+        sleep(2);
         // This is to <re></re>set our public variables
         $this->clearForm();
 
@@ -103,10 +151,29 @@ class Vehicles extends Component
         $this->resetValidation();
     }
 
+    function sessionAlert($data) {
+        session()->flash('alert', $data); 
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
+    }
+
     public function render()
     {
+        $roleName = 'Driver';
+
+        $data = DB::table('users')
+        ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+        ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+        ->select('users.*')
+        ->where('roles.name', '=', $roleName)
+        ->get();
+
         return view('livewire.vehicle.index', 
-        ['vehicles' => Vehicle::search('name', $this->search)->paginate(10)]
-    );
+            [
+                'vehicles' => Vehicle::where('make', 'like', '%'.$this->search.'%')
+                ->paginate(10),
+                'drivers' => $data
+            ]
+        );
     }
 }

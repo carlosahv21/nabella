@@ -9,11 +9,14 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'brand',
-        'model',
-        'year',
-        'color',
-        'car_plate'
-    ];
+
+    /**
+     * Get the user that owns the vehicle
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
 }

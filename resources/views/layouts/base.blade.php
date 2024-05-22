@@ -69,17 +69,14 @@
         })
 
         window.addEventListener('showToast', event => {
-                console.log('here');
-                $('#' + event.detail.name).toast('show');
-            // $('#toast').toast('show');
+            $('#' + event.detail.name).toast('show');
         })
 
         $(document).ready(function() {
-            var modals = ['createUser', 'createDriver', 'createRole'];
+            var modals = ['createUser', 'createDriver', 'createRole', 'createVehicle', 'createClient', 'createServiceContract', 'createPatient', 'SeeFileVehicle'];
 
             modals.forEach(element => {
                 $("#" + element).on('hidden.bs.modal', function() {
-                    // sleep(2000);
                     livewire.emit('forcedCloseModal');
                 });
             });

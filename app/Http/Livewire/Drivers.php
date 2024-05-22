@@ -17,13 +17,25 @@ class Drivers extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $name, $email, $phone, $location, $password, $modelId = '';
-    public $role = 'Driver';
     public $item, $action, $search, $title_modal, $countDrivers = '';
+    public $role = 'Driver';
+    public $isEdit = false;
 
-    protected $rules=[
-        'name' => 'required|min:3',
-        'email' => 'required|email|unique:users,email'
-    ];
+
+    public function rules()
+    {
+        if ($this->isEdit) {
+            return [
+                'name' => 'required|min:3',
+                'email' => 'required|email',
+            ];
+        } else {
+            return [
+                'name' => 'required|min:3',
+                'email' => 'required|email|unique:users,email',
+            ];
+        }
+    }
 
     protected $listeners = [
         'getModelId',
@@ -62,7 +74,7 @@ class Drivers extends Component
         $this->email = $model->email;
         $this->phone = $model->phone;
         $this->location = $model->location;
-        $this->role = $model->role;
+
     }
 
     private function clearForm()
@@ -77,12 +89,14 @@ class Drivers extends Component
 
     public function save()
     {
+        $this->validate();
+
         if($this->modelId){
             $user = User::findOrFail($this->modelId);
+            $this->isEdit = true;
         }else{
             $user = new User;
             $user->password = ('123456'); //solo cuando es un nuevo usuario 
-            $this->validate();
         }
         
         $user->name = $this->name;
@@ -96,12 +110,23 @@ class Drivers extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createDriver']);
         $this->clearForm();
 
-        $data = [
-            'message' => 'User deleted successfully!',
-            'type' => 'danger',
-            'icon' => 'delete',
-        ];
-        $this->sessionAlert($data);
+        if ($this->isEdit) {
+            $data = [
+                'message' => 'User updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        } else {
+            $data = [
+                'message' => 'User created successfully!',
+                'type' => 'info',
+                'icon' => 'check',
+            ];
+        }
+
+        if ($data) {
+            $this->sessionAlert($data);
+        }
     }
 
     public function forcedCloseModal()
@@ -112,6 +137,7 @@ class Drivers extends Component
         // These will reset our error bags
         $this->resetErrorBag();
         $this->resetValidation();
+        $this->isEdit = false;
     }
 
     public function delete()
