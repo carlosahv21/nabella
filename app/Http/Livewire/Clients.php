@@ -9,6 +9,7 @@ class Clients extends Component
 {
     public $company, $contact_name, $rate_per_mile, $modelId = '';
     public $item, $action, $search, $title_modal, $countClients = '';
+    public $isEdit = false;
 
     protected $rules=[
         'company' => 'required',
@@ -60,12 +61,14 @@ class Clients extends Component
         $this->company = null;
         $this->contact_name = null;
         $this->rate_per_mile = null;
+        $this->isEdit = false;
     }
 
     public function save()
     {
         if($this->modelId){
             $client = Client::findOrFail($this->modelId);
+            $this->isEdit = true;
         }else{
             $client = new Client;
             $this->validate();
@@ -78,11 +81,32 @@ class Clients extends Component
         $client->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createClient']);
+
+        if ($this->isEdit) {
+            $data = [
+                'message' => 'Client updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        } else {
+            $data = [
+                'message' => 'Client created successfully!',
+                'type' => 'info',
+                'icon' => 'check',
+            ];
+        }
+
+        if ($data) {
+            $this->sessionAlert($data);
+        }
+
         $this->clearForm();
+
     }
 
     public function forcedCloseModal()
     {
+        sleep(2);
         // This is to <re></re>set our public variables
         $this->clearForm();
 
@@ -97,8 +121,20 @@ class Clients extends Component
         $client->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteClient']);
-        $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'Client delete!']);
+        
+        $data = [        
+            'message' => 'Client deleted successfully!',
+            'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
 
+    }
+
+    function sessionAlert($data) {
+        session()->flash('alert', $data); 
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
     
     public function render()

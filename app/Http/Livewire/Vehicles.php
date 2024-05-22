@@ -66,6 +66,7 @@ class Vehicles extends Component
         $this->value = null;
         $this->user_id = null;
         $this->driver = null;
+        $this->isEdit = false;
 
     }
 
@@ -104,7 +105,6 @@ class Vehicles extends Component
         $vehicle->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
-        $this->clearForm();
 
         if ($this->isEdit) {
             $data = [
@@ -123,6 +123,9 @@ class Vehicles extends Component
         if ($data) {
             $this->sessionAlert($data);
         }
+
+        $this->clearForm();
+
     }
 
     public function delete()

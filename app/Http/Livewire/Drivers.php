@@ -85,16 +85,20 @@ class Drivers extends Component
         $this->phone = null;
         $this->location = null;
         $this->password = null;
+        $this->isEdit = false;
     }
 
     public function save()
     {
-        $this->validate();
 
         if($this->modelId){
-            $user = User::findOrFail($this->modelId);
             $this->isEdit = true;
+            $this->validate();
+            
+            $user = User::findOrFail($this->modelId);
         }else{
+            $this->validate();
+
             $user = new User;
             $user->password = ('123456'); //solo cuando es un nuevo usuario 
         }
@@ -108,7 +112,6 @@ class Drivers extends Component
         $user->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createDriver']);
-        $this->clearForm();
 
         if ($this->isEdit) {
             $data = [
@@ -127,10 +130,14 @@ class Drivers extends Component
         if ($data) {
             $this->sessionAlert($data);
         }
+
+        $this->clearForm();
+
     }
 
     public function forcedCloseModal()
     {
+        sleep(2);
         // This is to <re></re>set our public variables
         $this->clearForm();
 

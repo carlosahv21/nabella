@@ -10,6 +10,7 @@ class ServiceContracts extends Component
 {
     public $subject, $state, $date_start, $date_end, $client_id, $modelId = '';
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
+    public $isEdit = false;
 
     protected $rules=[
         'subject' => 'required',
@@ -67,12 +68,14 @@ class ServiceContracts extends Component
         $this->date_start = null;
         $this->date_end = null;
         $this->client_id = null;
+        $this->isEdit = false;
     }
 
     public function save()
     {
         if($this->modelId){
             $servicecontract = ServiceContract::findOrFail($this->modelId);
+            $this->isEdit = true;
         }else{
             $servicecontract = new ServiceContract;
             $this->validate();
@@ -87,11 +90,31 @@ class ServiceContracts extends Component
         $servicecontract->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createServiceContract']);
+
+        if ($this->isEdit) {
+            $data = [
+                'message' => 'Service Contract updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        } else {
+            $data = [
+                'message' => 'Service Contract created successfully!',
+                'type' => 'info',
+                'icon' => 'check',
+            ];
+        }
+
+        if ($data) {
+            $this->sessionAlert($data);
+        }
+
         $this->clearForm();
     }
 
     public function forcedCloseModal()
     {
+        sleep(2);
         // This is to <re></re>set our public variables
         $this->clearForm();
 
@@ -106,8 +129,20 @@ class ServiceContracts extends Component
         $ServiceContract->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteServiceContract']);
-        $this->dispatchBrowserEvent('notify', ['type' => 'success', 'message' => 'ServiceContract delete!']);
 
+        $data = [
+            'message' => 'Service Contract deleted successfully!',
+            'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
+
+    }
+
+    function sessionAlert($data) {
+        session()->flash('alert', $data); 
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
     
     public function render()
