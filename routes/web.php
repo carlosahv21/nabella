@@ -21,6 +21,7 @@ use App\Http\Livewire\Vehicles;
 use App\Http\Livewire\Clients;
 use App\Http\Livewire\Patients;
 use App\Http\Livewire\Hospitals;
+use App\Http\Livewire\Schedulings;
 use App\Http\Livewire\ServiceContracts;
 use App\Http\Livewire\VirtualReality;
 use GuzzleHttp\Middleware;
@@ -65,12 +66,14 @@ Route::get('patient', Patients::class)->middleware('can:patient.view')->name('pa
 
 Route::get('hospital', Hospitals::class)->middleware('auth')->name('hospital');
 
+Route::get('scheduling', Schedulings::class)->middleware('auth')->name('scheduling');
+
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
 Route::group(['middleware' => 'auth'], function () {
-Route::get('dashboard', Dashboard::class)->name('dashboard');
-Route::get('billing', Billing::class)->name('billing');
-Route::get('profile', Profile::class)->name('profile');
-Route::get('tables', Tables::class)->name('tables');
-Route::get('notifications', Notifications::class)->name("notifications");
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::get('billing', Billing::class)->name('billing');
+    Route::get('profile', Profile::class)->name('profile');
+    Route::get('tables', Tables::class)->name('tables');
+    Route::get('notifications', Notifications::class)->name("notifications");
 });
