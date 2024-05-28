@@ -20,6 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\Vehicles;
 use App\Http\Livewire\Clients;
 use App\Http\Livewire\Patients;
+use App\Http\Livewire\Hospitals;
 use App\Http\Livewire\ServiceContracts;
 use App\Http\Livewire\VirtualReality;
 use GuzzleHttp\Middleware;
@@ -61,6 +62,8 @@ Route::get('client', Clients::class)->middleware('can:client.view')->name('clien
 Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicecontract.view')->name('servicecontract');
 
 Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');
+
+Route::get('hospital', Hospitals::class)->middleware('auth')->name('hospital');
 
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 

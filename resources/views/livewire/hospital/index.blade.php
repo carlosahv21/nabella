@@ -8,7 +8,7 @@
                     <span class="input-group-text">
                         <i class="material-icons">search</i>
                     </span>
-                    <input wire:model="search" type="text" class="form-control" placeholder="Search service contract...">
+                    <input wire:model="search" type="text" class="form-control" placeholder="Search hospital...">
                 </div>
             </div>
             <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
@@ -20,19 +20,16 @@
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
-                        @can('servicecontract.delete')
+                        @can('hospital.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
                         @endcan
                     </ul>
                 </div>
-
-                @can('servicecontract.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <i class="material-icons">add</i> Add Service Contract
+                    <i class="material-icons">add</i> Add Hospital
                 </button>
-                @endcan
             </div>
         </div>
     </div>
@@ -54,9 +51,9 @@
     </div>
     <!-- end notifications -->
     <div class="card shadow border-0 table-wrapper table-responsive">
-        @if ($servicecontracts->count())
+        @if ($hospitals->count())
         <div>
-            <table class="table servicecontract-table align-items-center">
+            <table class="table Hospital-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -66,14 +63,13 @@
                                 </label>
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subject</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date start - Date end</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name of the hospital</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Address</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($servicecontracts as $servicecontract)
+                    @foreach ($hospitals as $hospital)
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
@@ -82,21 +78,18 @@
                                 </label>
                             </div>
                         </th>
-                        <th>{{ $servicecontract->subject }}</th>
-                        <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('d/m/Y')}} - {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('d/m/Y')}}</th>
-
-                        <!-- <th>{{ $servicecontract->date_start }} / {{ $servicecontract->date_end }}</th> -->
-                        <th><a href="{{ route('client') }}"> {{ $servicecontract->client->company }}</a></th>
                         <th>
-                            <span class="my-2 text-xs">    
-                                @can('servicecontract.update')
-                                <a wire:click="selectItem({{ $servicecontract->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                            <div class="d-block">
+                                <span class="fw-bold">{{ $hospital->name }}</span>
+                            </div>
+                        </th>
+                        <th>{{ $hospital->address }}, {{ $hospital->city }}, {{ $hospital->state }}</th>
+                        <th>
+                            <span class="my-2 text-xs">
+                                <a wire:click="selectItem({{ $hospital->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
-                                @endcan
-                                @can('servicecontract.delete')
-                                <a wire:click="selectItem({{ $servicecontract->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                @endcan
+                                <a wire:click="selectItem({{ $hospital->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                             </span>
                         </th>
                     </tr>
@@ -106,12 +99,12 @@
         </div>
         @else
         <div class="d-flex justify-content-center py-6">
-            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no users to show</span>
+            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no hospital to show</span>
         </div>
         @endif
     </div>
     <!-- Modal Add-->
-    <div wire:ignore.self class="modal fade" id="createServiceContract" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="createHospital" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -123,51 +116,38 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Subject</label>
-                                        <input wire:model="subject" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('subject'))
+                                        <label class="form-label">Name of the hospital <span class="text-danger">*</span></label>
+                                        <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('name'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('subject') }}
+                                            {{ $errors->first('name') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">State</label>
-                                        <select wire:ignore.self wire:model="state" class="form-select"  id="state">
-                                            <option>Elegir</option>
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Date Start</label>
-                                        <input wire:model="date_start" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('date_start'))
+                                        <label class="form-label">Address of the hospital <span class="text-danger">*</span></label>
+                                        <input wire:model="address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('address'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('date_start') }}
+                                            {{ $errors->first('address') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Date End</label>
-                                        <input wire:model="date_end" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('date_end'))
+                                        <label class="form-label">City <span class="text-danger">*</span></label>
+                                        <input wire:model="city" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('city'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('date_end') }}
+                                            {{ $errors->first('city') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Client Owner</label>
-                                        <select wire:ignore.self wire:model="client_id" class="form-select"  id="client_id">
-                                            <option>Elegir</option>
-                                            @foreach ($clients as $client)
-                                            <option value="{{ $client->id }}">{{ $client->company }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('client_id'))
+                                        <label class="form-label">State <span class="text-danger">*</span></label>
+                                        <input wire:model="state" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('state'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('client_id') }}
+                                            {{ $errors->first('state') }}
                                         </div>
                                         @endif
                                     </div>
@@ -184,7 +164,7 @@
         </div>
     </div>
     <!-- Modal Delete-->
-    <div wire:ignore.self class="modal fade" id="deleteServiceContract" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteHospital" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -201,7 +181,7 @@
         </div>
     </div>
     <!-- Modal Delete Masive-->
-    <div wire:ignore.self class="modal fade" id="deleteServiceContractMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteHospitalMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -217,5 +197,6 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- <script src="{{asset('public/assets/js/users.js') }}"></script> -->
+<!-- <script src="{{asset('public/assets/js/users.js') }}"></script> -->

@@ -86,19 +86,16 @@
                         </th>
                         <th>
                             <span class="my-2 text-xs">
-                                
-                                <a wire:click="selectItem({{ $role->id }}, 'permitions')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>
+                                <a wire:click="selectItem({{ $role->id }}, 'permitions')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
                                 </a>
                                 @can('role.update', $role)
-                                <a wire:click="selectItem({{ $role->id }}, 'update')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
+                                <a wire:click="selectItem({{ $role->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
                                 @can('role.delete', $role)
-                                <a wire:click="selectItem({{ $role->id }}, 'delete')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
-                                </a>
+                                <a wire:click="selectItem({{ $role->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a> 
                                 @endcan
                             </span>
                         </th>

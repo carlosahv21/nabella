@@ -91,14 +91,12 @@
                         <th>
                             <span class="my-2 text-xs">
                                 @can('client.update')
-                                <a wire:click="selectItem({{ $client->id }}, 'update')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
+                                <a wire:click="selectItem({{ $client->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
                                 @can('client.delete')
-                                <a wire:click="selectItem({{ $client->id }}, 'delete')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
-                                </a>
+                                <a wire:click="selectItem({{ $client->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
                         </th>

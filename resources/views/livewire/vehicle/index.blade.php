@@ -86,17 +86,17 @@
                         <th>{{ $vehicle->user->name }}</th>
                         <th>
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="See file">visibility</i>
+                                <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
                                 </a>
                                 @can('vehicle.update', $vehicle)
-                                <a wire:click="selectItem({{ $vehicle->id }}, 'update')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
+                                <a wire:click="selectItem({{ $vehicle->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
-                                <a wire:click="selectItem({{ $vehicle->id }}, 'delete')" class="mx-2 pointer">
-                                    <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Delete">delete</i>
-                                </a>
+                                @can('vehicle.delete', $vehicle)
+                                <a wire:click="selectItem({{ $vehicle->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                @endcan
                             </span>
                         </th>
                     </tr>
