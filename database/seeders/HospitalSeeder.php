@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Client;
+use App\Models\Hospital;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
-
-class ClientSeeader extends Seeder
+class HospitalSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,10 +17,11 @@ class ClientSeeader extends Seeder
         $faker = Faker::create();
 
         for ($i = 0; $i < 10; $i++) {
-            Client::create([
-                'company' => $faker->company,
-                'contact_name' => $faker->name,
-                'rate_per_mile' => $faker->randomFloat(2, 0, 50),
+            Hospital::create([
+                'name' => $faker->company,
+                'address' => $faker->streetAddress,
+                'city' => $faker->city,
+                'state' => $faker->state
             ]);
         }
     }

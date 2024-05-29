@@ -64,7 +64,7 @@
                             </div>
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name of the hospital</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Address</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="width: 75px;">Address</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>

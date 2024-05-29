@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class Patients extends Component
 {
-    public $name, $birthdate, $description, $modelId = '';
+    public $name, $birthdate, $description, $service_contract_id, $modelId = '';
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
 
@@ -53,6 +53,7 @@ class Patients extends Component
         $this->name = $model->name;
         $this->birthdate = $model->birthdate;
         $this->description = $model->description;
+        $this->service_contract_id = $model->service_contract_id;
     }
 
     private function clearForm()
@@ -61,6 +62,7 @@ class Patients extends Component
         $this->name = null;
         $this->birthdate = null;
         $this->description = null;
+        $this->service_contract_id = null;
         $this->isEdit = false;
     }
 
@@ -77,6 +79,7 @@ class Patients extends Component
         $patient->name = $this->name;
         $patient->birthdate = $this->birthdate;
         $patient->description = $this->description;
+        $patient->service_contract_id = $this->service_contract_id;
         
         $patient->save();
 
@@ -141,7 +144,7 @@ class Patients extends Component
         return view('livewire.patient.index', 
             [
                 'patients' => Patient::search('company', $this->search)->paginate(10),
-                'clients' => DB::table('clients')->get()
+                'service_contracts' => DB::table('service_contracts')->get()
             ],
         );
     }

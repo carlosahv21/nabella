@@ -86,7 +86,7 @@
                         <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('d/m/Y')}} - {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('d/m/Y')}}</th>
 
                         <!-- <th>{{ $servicecontract->date_start }} / {{ $servicecontract->date_end }}</th> -->
-                        <th><a href="{{ route('client') }}"> {{ $servicecontract->client->company }}</a></th>
+                        <th> {{ $servicecontract->company }}</th>
                         <th>
                             <span class="my-2 text-xs">    
                                 @can('servicecontract.update')
@@ -122,6 +122,60 @@
                         <div class="card-body p-3">
                             <form>
                                 <div class="row">
+                                <div class="mb-3 col-md-6">
+                                        <label class="form-label">Company</label>
+                                        <input wire:model="company" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('company'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('company') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Contact Name</label>
+                                        <input wire:model="contact_name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('contact_name'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('contact_name') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Rate Per Mile</label>
+                                        <input wire:model="rate_per_mile" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('rate_per_mile'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('rate_per_mile') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Overcharge</label>
+                                        <input wire:model="overcharge" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('overcharge'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('overcharge') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Customer address</label>
+                                        <input wire:model="address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('address'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('address') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Customer phone</label>
+                                        <input wire:model="phone" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('phone'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('phone') }}
+                                        </div>
+                                        @endif
+                                    </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Subject</label>
                                         <input wire:model="subject" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
@@ -154,20 +208,6 @@
                                         @if ($errors->has('date_end'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('date_end') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Client Owner</label>
-                                        <select wire:ignore.self wire:model="client_id" class="form-select"  id="client_id">
-                                            <option>Elegir</option>
-                                            @foreach ($clients as $client)
-                                            <option value="{{ $client->id }}">{{ $client->company }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('client_id'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('client_id') }}
                                         </div>
                                         @endif
                                     </div>

@@ -4,17 +4,20 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Scheduling;
+use App\Models\Patient;
+use App\Models\ServiceContract;
+use App\Models\Hospital;
 
 class Schedulings extends Component
 {
-    public $company, $contact_name, $rate_per_mile, $modelId = '';
+    public $patient_id, $service_contract_id, $hospital_id, $modelId = '';
     public $item, $action, $search, $title_modal, $countSchedulings = '';
     public $isEdit = false;
 
     protected $rules=[
-        'company' => 'required',
-        'contact_name' => 'required',
-        'rate_per_mile' => 'required'
+        'patient_id' => 'required',
+        'service_contract_id' => 'required',
+        'hospital_id' => 'required'
     ];
 
     protected $listeners = [
@@ -50,35 +53,35 @@ class Schedulings extends Component
         $this->modelId = $modelId;
 
         $model = Scheduling::find($this->modelId);
-        $this->company = $model->company;
-        $this->contact_name = $model->contact_name;
-        $this->rate_per_mile = $model->rate_per_mile;
+        $this->patient_id = $model->patient_id;
+        $this->service_contract_id = $model->service_contract_id;
+        $this->hospital_id = $model->hospital_id;
     }
 
     private function clearForm()
     {
         $this->modelId = null;
-        $this->company = null;
-        $this->contact_name = null;
-        $this->rate_per_mile = null;
+        $this->patient_id = null;
+        $this->service_contract_id = null;
+        $this->hospital_id = null;
         $this->isEdit = false;
     }
 
     public function save()
     {
         if($this->modelId){
-            $client = Scheduling::findOrFail($this->modelId);
+            $scheduling = Scheduling::findOrFail($this->modelId);
             $this->isEdit = true;
         }else{
-            $client = new Scheduling;
+            $scheduling = new Scheduling;
             $this->validate();
         }
         
-        $client->company = $this->company;
-        $client->contact_name = $this->contact_name;
-        $client->rate_per_mile = $this->rate_per_mile;
+        $scheduling->patient_id = $this->patient_id;
+        $scheduling->service_contract_id = $this->service_contract_id;
+        $scheduling->hospital_id = $this->hospital_id;
         
-        $client->save();
+        $scheduling->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
@@ -117,8 +120,8 @@ class Schedulings extends Component
 
     public function delete()
     {
-        $client = Scheduling::findOrFail($this->item);
-        $client->delete();
+        $scheduling = Scheduling::findOrFail($this->item);
+        $scheduling->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteScheduling']);
         
@@ -141,7 +144,10 @@ class Schedulings extends Component
     {
         return view('livewire.scheduling.index',
         [
-            'schedulings' => Scheduling::search('company', $this->search)->paginate(10)
+            'schedulings' => Scheduling::search('company', $this->search)->paginate(10),
+            'patients' => Patient::all(),
+            'service_contracts' => ServiceContract::all(),
+            'hospitals' => Hospital::all(),
         ],
     );
     }

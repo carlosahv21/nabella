@@ -168,6 +168,15 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
+                                        <label class="form-label">Type</label>
+                                        <input wire:model="type" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('type'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('type') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Driver</label>
                                         <select wire:model.ignore="user_id" class="form-select">
                                             <option value="">Elegir</option>
@@ -277,6 +286,14 @@
                                     </td>
                                     <td>
                                         ${{ $this->value }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="font-weight-bolder">Type</span>
+                                    </td>
+                                    <td>
+                                        {{ $this->type }}
                                     </td>
                                 </tr>
                                 <tr>

@@ -58,8 +58,6 @@ Route::get('driver', Drivers::class)->middleware('can:driver.view')->name('drive
 
 Route::get('vehicle', Vehicles::class)->middleware('can:vehicle.view')->name('vehicle');
 
-Route::get('client', Clients::class)->middleware('can:client.view')->name('client');
-
 Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicecontract.view')->name('servicecontract');
 
 Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');

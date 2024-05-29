@@ -115,46 +115,51 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">None</label>
-                                        <input class="form-control" id="choices-tags" data-color="dark" type="text" value="vuejs, angular, react, laravel" placeholder="Enter something" />
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Name</label>
-                                        <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('name'))
+                                        <label class="form-label">Patient</label>
+                                        <select wire.ignore.self wire:model="patient_id" class="form-select" id="patient_id">
+                                            <option value="">Select a patient</option>
+                                            @foreach($patients as $patient)
+                                            <option value="{{ $patient->id }}">{{ $patient->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('patient_id'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('name') }}
+                                            {{ $errors->first('patient_id') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Address</label>
-                                        <input wire:model="address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('address'))
+                                        <label class="form-label">Service Contract</label>
+                                        <select wire.ignore.self wire:model="service_contract_id" class="form-select" id="service_contract_id">
+                                            <option value="">Select a service contract</option>
+                                            @foreach($service_contracts as $service_contract)
+                                            <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('service_contract_id'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('address') }}
+                                            {{ $errors->first('service_contract_id') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Contact</label>
-                                        <input wire:model="contact" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('contact'))
+                                        <label class="form-label">Hospital</label>
+                                        <select wire.ignore.self wire:model="hospital_id" class="form-select" id="hospital_id">
+                                            <option value="">Select a hospital</option>
+                                            @foreach($hospitals as $hospital)
+                                            <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('hospital_id'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('contact') }}
+                                            {{ $errors->first('hospital_id') }}
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Description</label>
-                                        <textarea wire:model="description" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
-                                        @if ($errors->has('description'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('description') }}
-                                        </div>
-                                        @endif
+                                    <div class="form-check mb-3 col-md-12">
+                                        <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1" checked="">
+                                        <label class="custom-control-label" for="customCheck1">Auto agend</label>
                                     </div>
-                                </div>
                             </form>
                         </div>
                     </div>

@@ -60,17 +60,6 @@
                 </a>
             </li>
             @endcan
-            @can ('client.view')
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'client' ? ' active bg-gradient-primary' : '' }} "
-                    href="{{ route('client') }}">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">support_agent</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Clients</span>
-                </a>
-            </li>
-            @endcan
             @can ('servicecontract.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'servicecontract' ? ' active bg-gradient-primary' : '' }} "

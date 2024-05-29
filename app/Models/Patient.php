@@ -9,13 +9,10 @@ class Patient extends Model
 {
     use HasFactory;
 
-    /**
-     * Get the servicecontracts that owns the Patient
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function servicecontract()
+    protected $table = 'patients';
+
+    public function service_contract()
     {
-        return $this->belongsTo('App\Models\ServiceContract', 'servicecontract_id');
+        return $this->belongsTo('App\Models\ServiceContract');
     }
 }

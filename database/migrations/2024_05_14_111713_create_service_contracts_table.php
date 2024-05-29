@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('service_contracts', function (Blueprint $table) {
             $table->id();
+            $table->string('company');
+            $table->string('contact_name');
+            $table->string('rate_per_mile');
+            $table->string('overcharge');
+            $table->string('address');
+            $table->string('phone');
             $table->string('subject');
             $table->string('state');
             $table->date('date_start');
@@ -28,5 +34,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('service_contracts');
+        Schema::dropIfExists('clients');
     }
 };

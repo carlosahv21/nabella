@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('birthdate');
             $table->string('description');
+            $table->integer('service_contract_id')->unsigned()->references('id')->on('service_contracts')->nullable();
             $table->timestamps();
         });
     }

@@ -9,13 +9,8 @@ class ServiceContract extends Model
 {
     use HasFactory;
 
-    /**
-     * Get the clients that owns the ServiceContract
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function client()
+    public function patients()
     {
-        return $this->belongsTo('App\Models\Client', 'client_id');
+        return $this->belongsTo('App\Models\Patient');  
     }
 }

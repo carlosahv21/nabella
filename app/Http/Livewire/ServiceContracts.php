@@ -4,11 +4,11 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\ServiceContract;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 
 class ServiceContracts extends Component
 {
-    public $subject, $state, $date_start, $date_end, $client_id, $modelId = '';
+    public $company, $contact_name, $rate_per_mile, $overcharge, $address, $phone, $subject, $state, $date_start, $date_end, $modelId = '';
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
     public $isEdit = false;
 
@@ -53,21 +53,31 @@ class ServiceContracts extends Component
         $this->modelId = $modelId;
 
         $model = ServiceContract::find($this->modelId);
+        $this->company = $model->company;
+        $this->contact_name = $model->contact_name;
+        $this->rate_per_mile = $model->rate_per_mile;
+        $this->overcharge = $model->overcharge;
+        $this->address = $model->address;
+        $this->phone = $model->phone;
         $this->subject = $model->subject;
         $this->state = $model->state;
         $this->date_start = $model->date_start;
         $this->date_end = $model->date_end;
-        $this->client_id = $model->client_id;
     }
 
     private function clearForm()
     {
         $this->modelId = null;
+        $this->company = null;
+        $this->contact_name = null;
+        $this->rate_per_mile = null;
+        $this->overcharge = null;
+        $this->address = null;
+        $this->phone = null;
         $this->subject = null;
         $this->state = null;
         $this->date_start = null;
         $this->date_end = null;
-        $this->client_id = null;
         $this->isEdit = false;
     }
 
@@ -81,6 +91,12 @@ class ServiceContracts extends Component
             $this->validate();
         }
         
+        $servicecontract->company = $this->company;
+        $servicecontract->contact_name = $this->contact_name;
+        $servicecontract->rate_per_mile = $this->rate_per_mile;
+        $servicecontract->overcharge = $this->overcharge;
+        $servicecontract->address = $this->address;
+        $servicecontract->phone = $this->phone;
         $servicecontract->subject = $this->subject;
         $servicecontract->state = $this->state;
         $servicecontract->date_start = $this->date_start;
@@ -150,7 +166,6 @@ class ServiceContracts extends Component
         return view('livewire.servicecontract.index', 
             [
                 'servicecontracts' => ServiceContract::search('company', $this->search)->paginate(10),
-                'clients' => DB::table('clients')->get()
             ],
         );
     }

@@ -23,6 +23,7 @@ class VehicleSeeader extends Seeder
                 'year' => $faker->year,
                 'make' => $faker->company,
                 'model' => $faker->word,
+                'type' => $faker->randomElement(['Sedan', 'SUV', 'Coupe', 'Hatchback', 'Crossover']),
                 'vin' => $faker->text(5),
                 'user_id'  => 2,
                 'value' => $faker->randomFloat(2, 1000, 50000)

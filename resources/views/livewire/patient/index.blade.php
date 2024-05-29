@@ -66,7 +66,7 @@
                             </div>
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Birthdate</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Contract</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
@@ -85,7 +85,11 @@
                                 <span class="fw-bold">{{ $patient->name }}</span>
                             </div>
                         </th>
-                        <th>{{ $patient->birthdate }}</th>
+                        @if($patient->service_contract)
+                            <th>{{ $patient->service_contract->company }}</th>   
+                        @else
+                            <th></th>
+                        @endif
                         <th>
                             <span class="my-2 text-xs">
                                 @can('patient.update')
@@ -145,6 +149,20 @@
                                         @if ($errors->has('description'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('description') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-12">
+                                        <label class="form-label">Service contact <span class="text-danger">*</span></label>
+                                        <select wire:model="service_contract_id" class="form-select"  id="service_contract_id">
+                                            <option>Elegir</option>
+                                            @foreach ($service_contracts as $service_contract_id)
+                                                <option value="{{ $service_contract_id->id }}">{{ $service_contract_id->company }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('service_contract_id'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('service_contract_id') }}
                                         </div>
                                         @endif
                                     </div>

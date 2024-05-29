@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('schedulings', function (Blueprint $table) {
             $table->id();
+            $table->integer('patient_id')->unsigned()->references('id')->on('patients')->nullable();
+            $table->integer('servicecontract_id')->unsigned()->references('id')->on('service_contracts')->nullable();
+            $table->integer('hospital_id')->unsigned()->references('id')->on('hospitals')->nullable();
+            $table->boolean('auto_agend')->default(false);
             $table->timestamps();
         });
     }
