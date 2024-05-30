@@ -126,7 +126,7 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Name of the patient <span class="text-danger">*</span></label>
+                                        <label class="form-label">Name <span class="text-danger">*</span></label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
                                         <div class="text-danger inputerror">
@@ -135,24 +135,69 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Birthdate</label>
-                                        <input wire:model="birthdate" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('birthdate'))
+                                        <label class="form-label">County</label>
+                                        <input wire:model="county" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('county'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('birthdate') }}
+                                            {{ $errors->first('county') }}
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-12">
-                                        <label class="form-label">Description of the patient <span class="text-danger">*</span></label>
-                                        <textarea wire:model="description" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
-                                        @if ($errors->has('description'))
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Home address</label>
+                                        <input wire:model="home_address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('home_address'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('description') }}
+                                            {{ $errors->first('home_address') }}
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-12">
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Destination address</label>
+                                        <input wire:model="destination_address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('destination_address'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('destination_address') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Phone</label>
+                                        <input wire:model="phone" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('phone'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('phone') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Medicaid</label>
+                                        <input wire:model="medicaid" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('medicaid'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('medicaid') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Billing code</label>
+                                        <input wire:model="billing_code" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('billing_code'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('billing_code') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Ambulatory</label>
+                                        <input wire:model="ambulatory" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('ambulatory'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('ambulatory') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Service contact <span class="text-danger">*</span></label>
                                         <select wire:model="service_contract_id" class="form-select"  id="service_contract_id">
                                             <option>Elegir</option>
@@ -163,6 +208,15 @@
                                         @if ($errors->has('service_contract_id'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('service_contract_id') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-12">
+                                        <label class="form-label">Observations</label>
+                                        <textarea wire:model="observations" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
+                                        @if ($errors->has('observations'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('observations') }}
                                         </div>
                                         @endif
                                     </div>

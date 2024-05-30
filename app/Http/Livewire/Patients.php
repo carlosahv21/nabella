@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\DB;
 
 class Patients extends Component
 {
-    public $name, $birthdate, $description, $service_contract_id, $modelId = '';
+    public $name, $county, $home_address, $destination_address, $phone, $medicaid, $billing_code, $ambulatory, $observations, $service_contract_id, $modelId = '';
+
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
 
     protected $rules=[
         'name' => 'required',
-        'description' => 'required'
+        'observations' => 'required'
     ];
 
     protected $listeners = [
@@ -51,8 +52,14 @@ class Patients extends Component
 
         $model = Patient::find($this->modelId);
         $this->name = $model->name;
-        $this->birthdate = $model->birthdate;
-        $this->description = $model->description;
+        $this->county = $model->county;
+        $this->home_address = $model->home_address;
+        $this->destination_address = $model->destination_address;
+        $this->phone = $model->phone;
+        $this->medicaid = $model->medicaid;
+        $this->billing_code = $model->billing_code;
+        $this->ambulatory = $model->ambulatory;
+        $this->observations = $model->observations;
         $this->service_contract_id = $model->service_contract_id;
     }
 
@@ -60,8 +67,14 @@ class Patients extends Component
     {
         $this->modelId = null;
         $this->name = null;
-        $this->birthdate = null;
-        $this->description = null;
+        $this->county = null;
+        $this->home_address = null;
+        $this->destination_address = null;
+        $this->phone = null;
+        $this->medicaid = null;
+        $this->billing_code = null;
+        $this->ambulatory = null;
+        $this->observations = null;
         $this->service_contract_id = null;
         $this->isEdit = false;
     }
@@ -77,8 +90,14 @@ class Patients extends Component
         }
         
         $patient->name = $this->name;
-        $patient->birthdate = $this->birthdate;
-        $patient->description = $this->description;
+        $patient->county = $this->county;
+        $patient->home_address = $this->home_address;
+        $patient->destination_address = $this->destination_address;
+        $patient->phone = $this->phone;
+        $patient->medicaid = $this->medicaid;
+        $patient->billing_code = $this->billing_code;
+        $patient->ambulatory = $this->ambulatory;
+        $patient->observations = $this->observations;
         $patient->service_contract_id = $this->service_contract_id;
         
         $patient->save();

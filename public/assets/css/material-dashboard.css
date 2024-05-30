@@ -22,7 +22,7 @@
   bottom: -3%
 }
 .page-header-bg{
-  background-image: url('https://img.freepik.com/fotos-premium/furgoneta-blanca-carretera-borron-movimiento_234209-3119.jpg?w=1800');
+  background-image: url("../../assets/img/background.jpg") 
 }
 
 .pointer{
