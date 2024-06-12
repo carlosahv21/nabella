@@ -86,16 +86,13 @@
                         </th>
                         <th>
                             <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $role->id }}, 'permitions')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
-                                </a>
                                 @can('role.update', $role)
                                 <a wire:click="selectItem({{ $role->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
                                 @can('role.delete', $role)
-                                <a wire:click="selectItem({{ $role->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a> 
+                                <a wire:click="selectItem({{ $role->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
                         </th>
@@ -124,10 +121,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
-                        <div class="card-body p-3">
+                        <div class="card-body p-0">
                             <form>
                                 <div class="row">
-                                    <div class="mb-3 col-md-6">
+                                    <div class="mb-3 col-md-12">
                                         <label class="form-label">Name</label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
@@ -136,14 +133,82 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">permisions</label>
-                                        <input wire:model="permisions" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('permisions'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('permisions') }}
+                                    <div class="mb-3 col-md-12">
+                                        <label class="form-label">Permissions</label>
+                                    </div>
+                                    <div class="mb-3 col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Module</th>
+                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">View</th>
+                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Create</th>
+                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Update</th>
+                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                    $permissionMap = [];
+
+                                                    // Clasificar los permisos por módulo y acción
+                                                    foreach ($permissions as $permission) {
+                                                    [$module, $action] = explode('.', $permission->name);
+                                                    $permissionMap[$module][$action] = $permission;
+                                                    }
+
+                                                    $modules = array_keys($permissionMap);
+                                                    @endphp
+
+                                                    @foreach ($modules as $module)
+                                                    @php
+                                                    $view = $permissionMap[$module]['view'] ?? null;
+                                                    $create = $permissionMap[$module]['create'] ?? null;
+                                                    $update = $permissionMap[$module]['update'] ?? null;
+                                                    $delete = $permissionMap[$module]['delete'] ?? null;
+                                                    @endphp
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex px-2 py-1">
+                                                                <div class="d-flex flex-column justify-content-center">
+                                                                    <h6 class="mb-0 text-xs">{{ ucfirst($module) }}</h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            @if ($view)
+                                                            <div class="form-check">
+                                                                <input type="checkbox" wire:model="checkPermitions" value="{{ $view ? $view->id : ''}}" id="fcustomCheck{{ $view ? $view->id : '' }}" data-name="{{ $view ? $view->name : '' }}">
+                                                            </div>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($create)
+                                                            <div class="form-check">
+                                                                <input type="checkbox" wire:model="checkPermitions" value="{{ $create ? $create->id : ''}}" id="fcustomCheck{{ $create ? $create->id : '' }}" data-name="{{ $create ? $create->name : '' }}">
+                                                            </div>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($update)
+                                                            <div class="form-check">
+                                                                <input type="checkbox" wire:model="checkPermitions" value="{{ $update ? $update->id : ''}}" id="fcustomCheck{{ $update ? $update->id : '' }}" data-name="{{ $update ? $update->name : '' }}">
+                                                            </div>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($delete)
+                                                            <div class="form-check">
+                                                                <input type="checkbox" wire:model="checkPermitions" value="{{  $delete ? $delete->id : ''}}" id="fcustomCheck{{  $delete ? $delete->id : '' }}" data-name="{{  $delete ? $delete->name : '' }}">
+                                                            </div>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        @endif
                                     </div>
                                 </div>
                             </form>
@@ -187,76 +252,6 @@
                 <div class="modal-footer">
                     <button wire:click="delete" class="btn btn-secondary">Eliminar</button>
                     <button type="button" class="btn btn-link text-gray-600 " data-bs-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Delete Masive-->
-    <div wire:ignore.self class="modal fade" id="rolePermitions" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
-                </div>
-                <div class="modal-body">
-                    <div class="card">
-                        <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Module</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">See</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Create/Edit</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-xs">Drivers</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-check">
-                                                <input type="checkbox" value="" id="fcustomCheck" checked="">
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <input type="checkbox" value="" id="fcustomCheck1" checked="">
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <input type="checkbox" value="" id="fcustomCheck2">
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-xs">Vehicle</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-check">
-                                                <input type="checkbox" value="" id="fcustomCheck1" checked="">
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <input type="checkbox" value="" id="fcustomCheck1">
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <input type="checkbox" value="" id="fcustomCheck1" >
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

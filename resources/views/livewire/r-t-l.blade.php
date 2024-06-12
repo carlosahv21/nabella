@@ -732,7 +732,7 @@
                                 <span class="font-weight-bold">24%</span> هذا الشهر
                             </p>
                         </div>
-                        <div class="card-body p-3">
+                        <div class="card-body p-0">
                             <div class="timeline timeline-one-side">
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">

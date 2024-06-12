@@ -15,29 +15,6 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Modules</h6>
             </li>
-            @can ('user.view')
-                <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'user-profile' ? ' active bg-gradient-primary' : '' }} "
-                        href="{{ route('user-profile') }}">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons">group</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Users</span>
-                    </a>
-                </li>
-            @endcan
-            @can ('role.view')
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'role' ? ' active bg-gradient-primary' : '' }} "
-                    href="{{ route('role') }}">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">manage_accounts</i>
-                        
-                    </div>
-                    <span class="nav-link-text ms-1">Roles</span>
-                </a>
-            </li>
-            @endcan
             @can ('driver.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'driver' ? ' active bg-gradient-primary' : '' }} "
@@ -82,6 +59,7 @@
                 </a>
             </li>
             @endcan
+            @can ('hospital.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'hospital' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('hospital') }}">
@@ -91,6 +69,8 @@
                     <span class="nav-link-text ms-1">Hospital</span>
                 </a>
             </li>
+            @endcan
+            @can ('scheduling.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'scheduling' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('scheduling') }}">
@@ -100,6 +80,8 @@
                     <span class="nav-link-text ms-1">Scheduling</span>
                 </a>
             </li>
+            @endcan
+            @can ('dashboard.view')
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6>
             </li>
@@ -112,6 +94,7 @@
                     <span class="nav-link-text ms-1">Dashboard</span>
                 </a>
             </li>
+            @endcan
         </ul>
     </div>
 </aside>

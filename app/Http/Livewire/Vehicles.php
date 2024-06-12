@@ -22,8 +22,8 @@ class Vehicles extends Component
     protected $rules=[
         'make' => 'required|min:3',
         'model' => 'required|min:3',
-        'year' => 'required|numeric|min:4',
-        'type' => 'require'
+        'year' => 'required|numeric|min_digits:4',
+        'type' => 'required'
     ];
 
     protected $listeners = [
@@ -55,7 +55,6 @@ class Vehicles extends Component
 
         }
     }
-
 
     private function clearForm()
     {
@@ -89,6 +88,10 @@ class Vehicles extends Component
 
     public function save()
     {
+        if($this->checkIfUserHasVehicle()){
+            return;
+        }
+
         $this->validate();
 
         if($this->modelId){
@@ -162,6 +165,22 @@ class Vehicles extends Component
         session()->flash('alert', $data); 
 
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
+    }
+
+    // funcion que valide si un usuario ya tiene asignado un vehiculo
+    public function checkIfUserHasVehicle()
+    {
+        $user = User::find($this->user_id);
+        if ($user->vehicles->count() > 0) {
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
+            $this->sessionAlert([
+                'message' => 'You already have a vehicle assigned to you!',
+                'type' => 'danger',
+                'icon' => 'delete',
+            ]);
+            return true;
+        }
+        return false;
     }
 
     public function render()

@@ -9,7 +9,7 @@
                         <div class="card-header p-3">
                             <h5 class="mb-0">Alerts</h5>
                         </div>
-                        <div class="card-body p-3 pb-0">
+                        <div class="card-body p-0 pb-0">
                             <div class="alert alert-primary alert-dismissible text-white" role="alert">
                                 <span class="text-sm">A simple primary alert with <a href="javascript:;"
                                         class="alert-link text-white">an example link</a>. Give it a click if you
@@ -93,7 +93,7 @@
           ">here</a>.
                             </p>
                         </div>
-                        <div class="card-body p-3">
+                        <div class="card-body p-0">
                             <div class="row">
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <button class="btn bg-gradient-success w-100 mb-0 toast-btn" type="button"

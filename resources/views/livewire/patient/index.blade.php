@@ -122,7 +122,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
-                        <div class="card-body p-3">
+                        <div class="card-body p-0">
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">

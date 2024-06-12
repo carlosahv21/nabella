@@ -119,7 +119,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
-                        <div class="card-body p-3">
+                        <div class="card-body p-0">
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
@@ -168,7 +168,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Type</label>
+                                        <label class="form-label">Type <span class="text-danger">*</span></label>
                                         <input wire:model="type" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('type'))
                                         <div class="text-danger inputerror">

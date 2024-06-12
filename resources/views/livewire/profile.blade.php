@@ -59,7 +59,7 @@
                                 <div class="card-header pb-0 p-3">
                                     <h6 class="mb-0">Platform Settings</h6>
                                 </div>
-                                <div class="card-body p-3">
+                                <div class="card-body p-0">
                                     <h6 class="text-uppercase text-body text-xs font-weight-bolder">Account</h6>
                                     <ul class="list-group">
                                         <li class="list-group-item border-0 px-0">
@@ -137,7 +137,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body p-3">
+                                <div class="card-body p-0">
                                     <p class="text-sm">
                                         Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If
                                         two equally difficult paths, choose the one more painful in the short term
@@ -177,7 +177,7 @@
                                 <div class="card-header pb-0 p-3">
                                     <h6 class="mb-0">Conversations</h6>
                                 </div>
-                                <div class="card-body p-3">
+                                <div class="card-body p-0">
                                     <ul class="list-group">
                                         <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2 pt-0">
                                             <div class="avatar me-3">
@@ -257,7 +257,7 @@
                                                     alt="img-blur-shadow" class="img-fluid shadow border-radius-xl">
                                             </a>
                                         </div>
-                                        <div class="card-body p-3">
+                                        <div class="card-body p-0">
                                             <p class="mb-0 text-sm">Project #2</p>
                                             <a href="javascript:;">
                                                 <h5>
@@ -308,7 +308,7 @@
                                                     alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
                                             </a>
                                         </div>
-                                        <div class="card-body p-3">
+                                        <div class="card-body p-0">
                                             <p class="mb-0 text-sm">Project #1</p>
                                             <a href="javascript:;">
                                                 <h5>
@@ -360,7 +360,7 @@
                                                     alt="img-blur-shadow" class="img-fluid shadow border-radius-xl">
                                             </a>
                                         </div>
-                                        <div class="card-body p-3">
+                                        <div class="card-body p-0">
                                             <p class="mb-0 text-sm">Project #3</p>
                                             <a href="javascript:;">
                                                 <h5>
@@ -411,7 +411,7 @@
                                                     alt="img-blur-shadow" class="img-fluid shadow border-radius-xl">
                                             </a>
                                         </div>
-                                        <div class="card-body p-3">
+                                        <div class="card-body p-0">
                                             <p class="mb-0 text-sm">Project #4</p>
                                             <a href="javascript:;">
                                                 <h5>

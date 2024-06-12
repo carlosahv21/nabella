@@ -38,11 +38,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'vehicle.update'])->syncRoles([$role1]);
         Permission::create(['name' => 'vehicle.delete'])->syncRoles([$role1]);
 
-        Permission::create(['name' => 'client.view'])->syncRoles([$role1],$role2);
-        Permission::create(['name' => 'client.create'])->syncRoles([$role1]);
-        Permission::create(['name' => 'client.update'])->syncRoles([$role1]);
-        Permission::create(['name' => 'client.delete'])->syncRoles([$role1]);
-
         Permission::create(['name' => 'servicecontract.view'])->syncRoles([$role1],$role2);
         Permission::create(['name' => 'servicecontract.create'])->syncRoles([$role1]);
         Permission::create(['name' => 'servicecontract.update'])->syncRoles([$role1]);
@@ -52,5 +47,12 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'patient.create'])->syncRoles([$role1]);
         Permission::create(['name' => 'patient.update'])->syncRoles([$role1]);
         Permission::create(['name' => 'patient.delete'])->syncRoles([$role1]);
+
+        Permission::create(['name' => 'scheduling.view'])->syncRoles([$role1],$role2);
+        Permission::create(['name' => 'scheduling.create'])->syncRoles([$role1]);
+        Permission::create(['name' => 'scheduling.update'])->syncRoles([$role1]);
+        Permission::create(['name' => 'scheduling.delete'])->syncRoles([$role1]);
+
+        Permission::create(['name' => 'dashboard.view'])->syncRoles([$role1],$role2);
     }
 }

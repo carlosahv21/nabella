@@ -25,6 +25,7 @@ use App\Http\Livewire\Schedulings;
 use App\Http\Livewire\ServiceContracts;
 use App\Http\Livewire\VirtualReality;
 use GuzzleHttp\Middleware;
+use App\Http\Livewire\Calendar;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,8 @@ Route::get('hospital', Hospitals::class)->middleware('auth')->name('hospital');
 Route::get('scheduling', Schedulings::class)->middleware('auth')->name('scheduling');
 
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
+
+Route::get('calendar', Calendar::class)->middleware('auth')->name('calendar');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');

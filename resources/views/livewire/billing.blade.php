@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body p-3">
+                                <div class="card-body p-0">
                                     <div class="row">
                                         <div class="col-md-6 mb-md-0 mb-4">
                                             <div
@@ -134,7 +134,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body p-3 pb-0">
+                        <div class="card-body p-0 pb-0">
                             <ul class="list-group">
                                 <li
                                     class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
