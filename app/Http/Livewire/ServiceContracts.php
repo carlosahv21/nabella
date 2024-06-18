@@ -8,7 +8,7 @@ use App\Models\ServiceContract;
 
 class ServiceContracts extends Component
 {
-    public $company, $contact_name, $rate_per_mile, $overcharge, $address, $phone, $subject, $state, $date_start, $date_end, $modelId = '';
+    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $address, $phone, $state, $date_start, $date_end, $modelId = '';
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
     public $isEdit = false;
 
@@ -55,11 +55,20 @@ class ServiceContracts extends Component
         $model = ServiceContract::find($this->modelId);
         $this->company = $model->company;
         $this->contact_name = $model->contact_name;
+        $this->wheelchair = $model->wheelchair;
+        $this->ambulatory = $model->ambulatory;
+        $this->out_of_hours = $model->out_of_hours;
+        $this->saturdays = $model->saturdays;
+        $this->sundays_holidays = $model->sundays_holidays;
+        $this->companion = $model->companion;
+        $this->additional_waiting = $model->additional_waiting;
+        $this->after = $model->after;
+        $this->fast_track = $model->fast_track;
+        $this->if_not_cancel = $model->if_not_cancel;
         $this->rate_per_mile = $model->rate_per_mile;
         $this->overcharge = $model->overcharge;
         $this->address = $model->address;
         $this->phone = $model->phone;
-        $this->subject = $model->subject;
         $this->state = $model->state;
         $this->date_start = $model->date_start;
         $this->date_end = $model->date_end;
@@ -69,12 +78,21 @@ class ServiceContracts extends Component
     {
         $this->modelId = null;
         $this->company = null;
+        $this->wheelchair = null;
+        $this->ambulatory = null;
+        $this->out_of_hours = null;
+        $this->saturdays = null;
+        $this->sundays_holidays = null;
+        $this->companion = null;
+        $this->additional_waiting = null;
+        $this->after = null;
+        $this->fast_track = null;
+        $this->if_not_cancel = null;
         $this->contact_name = null;
         $this->rate_per_mile = null;
         $this->overcharge = null;
         $this->address = null;
         $this->phone = null;
-        $this->subject = null;
         $this->state = null;
         $this->date_start = null;
         $this->date_end = null;
@@ -93,12 +111,21 @@ class ServiceContracts extends Component
         
         $servicecontract->company = $this->company;
         $servicecontract->contact_name = $this->contact_name;
+        $servicecontract->wheelchair = $this->wheelchair;
+        $servicecontract->ambulatory = $this->ambulatory;
+        $servicecontract->out_of_hours = $this->out_of_hours;
+        $servicecontract->saturdays = $this->saturdays;
+        $servicecontract->sundays_holidays = $this->sundays_holidays;
+        $servicecontract->companion = $this->companion;
+        $servicecontract->additional_waiting = $this->additional_waiting;
+        $servicecontract->after = $this->after;
+        $servicecontract->fast_track = $this->fast_track;
+        $servicecontract->if_not_cancel = $this->if_not_cancel;
         $servicecontract->rate_per_mile = $this->rate_per_mile;
         $servicecontract->overcharge = $this->overcharge;
         $servicecontract->address = $this->address;
         $servicecontract->phone = $this->phone;
         $servicecontract->subject = $this->subject;
-        $servicecontract->state = $this->state;
         $servicecontract->date_start = $this->date_start;
         $servicecontract->date_end = $this->date_end;
         $servicecontract->client_id = $this->client_id;

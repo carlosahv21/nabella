@@ -14,15 +14,18 @@ return new class extends Migration
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->string('county');
-            $table->string('name');
-            $table->string('home_address');
-            $table->string('destination_address');
-            $table->string('phone');
-            $table->string('medicaid');
-            $table->string('billing_code');
-            $table->string('ambulatory');
-            $table->string('observations');
             $table->integer('service_contract_id')->unsigned()->references('id')->on('service_contracts')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('birth_date');
+            $table->string('phone1');
+            $table->string('phone2');
+            $table->string('medicalid');
+            $table->string('billing_code');
+            $table->string('emergency_contact');
+            $table->date('date_start');
+            $table->date('date_end');
+            $table->string('observations');
             $table->timestamps();
         });
     }

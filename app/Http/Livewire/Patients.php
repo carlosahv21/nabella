@@ -4,11 +4,16 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Patient;
+use App\Models\Address;
+
 use Illuminate\Support\Facades\DB;
 
 class Patients extends Component
 {
-    public $name, $county, $home_address, $destination_address, $phone, $medicaid, $billing_code, $ambulatory, $observations, $service_contract_id, $modelId = '';
+    public $county, $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
+    
+    public $inputs = [];
+    public $inputs_view = [];
 
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
@@ -47,36 +52,45 @@ class Patients extends Component
 
     public function getModelId($modelId)
     {
-
         $this->modelId = $modelId;
 
         $model = Patient::find($this->modelId);
-        $this->name = $model->name;
         $this->county = $model->county;
-        $this->home_address = $model->home_address;
-        $this->destination_address = $model->destination_address;
-        $this->phone = $model->phone;
-        $this->medicaid = $model->medicaid;
-        $this->billing_code = $model->billing_code;
-        $this->ambulatory = $model->ambulatory;
-        $this->observations = $model->observations;
         $this->service_contract_id = $model->service_contract_id;
+        $this->first_name = $model->first_name;
+        $this->last_name = $model->last_name;
+        $this->birth_date = $model->birth_date;
+        $this->phone1 = $model->phone1;
+        $this->phone2 = $model->phone2;
+        $this->medicalid = $model->medicalid;
+        $this->billing_code = $model->billing_code;
+        $this->emergency_contact = $model->emergency_contact;
+        $this->date_start = $model->date_start;
+        $this->date_end = $model->date_end;
+        $this->observations = $model->observations;
+
+        $this->inputs_view = Address::where('user_id', $this->modelId)->get();
+
     }
 
     private function clearForm()
     {
-        $this->modelId = null;
-        $this->name = null;
         $this->county = null;
-        $this->home_address = null;
-        $this->destination_address = null;
-        $this->phone = null;
-        $this->medicaid = null;
-        $this->billing_code = null;
-        $this->ambulatory = null;
-        $this->observations = null;
         $this->service_contract_id = null;
+        $this->first_name = null;
+        $this->last_name = null;
+        $this->birth_date = null;
+        $this->phone1 = null;
+        $this->phone2 = null;
+        $this->medicalid = null;
+        $this->billing_code = null;
+        $this->emergency_contact = null;
+        $this->date_start = null;
+        $this->date_end = null;
+        $this->observations = null;
         $this->isEdit = false;
+        $this->inputs = [];
+        $this->inputs_view = [];
     }
 
     public function save()
@@ -89,18 +103,31 @@ class Patients extends Component
             $this->validate();
         }
         
-        $patient->name = $this->name;
+
         $patient->county = $this->county;
-        $patient->home_address = $this->home_address;
-        $patient->destination_address = $this->destination_address;
-        $patient->phone = $this->phone;
-        $patient->medicaid = $this->medicaid;
-        $patient->billing_code = $this->billing_code;
-        $patient->ambulatory = $this->ambulatory;
-        $patient->observations = $this->observations;
         $patient->service_contract_id = $this->service_contract_id;
-        
+        $patient->first_name = $this->first_name;
+        $patient->last_name = $this->last_name;
+        $patient->birth_date = $this->birth_date;
+        $patient->phone1 = $this->phone1;
+        $patient->phone2 = $this->phone2;
+        $patient->medicalid = $this->medicalid;
+        $patient->billing_code = $this->billing_code;
+        $patient->emergency_contact = $this->emergency_contact;
+        $patient->date_start = $this->date_start;
+        $patient->date_end = $this->date_end;
+        $patient->observations = $this->observations;
+
         $patient->save();
+
+        for ($i=0; $i < count($this->inputs); $i++) { 
+            $address = new Address;
+
+            $address->user_id = $patient->id;
+            $address->address = $this->inputs[$i];
+
+            $address->save();
+        }
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createPatient']);
 
@@ -156,6 +183,17 @@ class Patients extends Component
         session()->flash('alert', $data); 
 
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
+    }
+
+    public function addInput()
+    {
+        $this->inputs[] = '';
+    }
+
+    public function removeInput($index)
+    {
+        unset($this->inputs[$index]);
+        $this->inputs = array_values($this->inputs); // Reindex array
     }
     
     public function render()

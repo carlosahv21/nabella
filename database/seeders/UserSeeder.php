@@ -21,6 +21,18 @@ class UserSeeder extends Seeder
         ])->assignRole('Admin');
 
         User::factory()->create([
+            'name' => 'Laura ',
+            'email' => 'laura@nabella.com',
+            'password' => ('nabella')
+        ])->assignRole('Admin');
+
+        User::factory()->create([
+            'name' => 'Cony',
+            'email' => 'cony@nabella.com',
+            'password' => ('nabella')
+        ])->assignRole('Admin');
+
+        User::factory()->create([
             'name' => 'Carlos Hernandez',
             'email' => 'carlos@material.com',
             'password' => ('secret')

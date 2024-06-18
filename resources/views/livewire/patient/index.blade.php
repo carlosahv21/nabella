@@ -82,13 +82,13 @@
                         </th>
                         <th>
                             <div class="d-block">
-                                <span class="fw-bold">{{ $patient->name }}</span>
+                                <span class="fw-bold">{{ $patient->first_name }} {{ $patient->last_name }}</span>
                             </div>
                         </th>
                         @if($patient->service_contract)
-                            <th>{{ $patient->service_contract->company }}</th>   
+                        <th>{{ $patient->service_contract->company }}</th>
                         @else
-                            <th></th>
+                        <th></th>
                         @endif
                         <th>
                             <span class="my-2 text-xs">
@@ -126,15 +126,6 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Name <span class="text-danger">*</span></label>
-                                        <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('name'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('name') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">County</label>
                                         <input wire:model="county" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('county'))
@@ -144,38 +135,70 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Home address</label>
-                                        <input wire:model="home_address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('home_address'))
+                                        <label class="form-label">Contract <span class="text-danger">*</span></label>
+                                        <select wire:model="service_contract_id" class="form-select" id="service_contract_id">
+                                            <option>Elegir</option>
+                                            @foreach ($service_contracts as $service_contract_id)
+                                            <option value="{{ $service_contract_id->id }}">{{ $service_contract_id->company }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('service_contract_id'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('home_address') }}
+                                            {{ $errors->first('service_contract_id') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Destination address</label>
-                                        <input wire:model="destination_address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('destination_address'))
+                                        <label class="form-label">First Name</label>
+                                        <input wire:model="first_name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('first_name'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('destination_address') }}
+                                            {{ $errors->first('first_name') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Phone</label>
-                                        <input wire:model="phone" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('phone'))
+                                        <label class="form-label">Last Name</label>
+                                        <input wire:model="last_name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('last_name'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('phone') }}
+                                            {{ $errors->first('last_name') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Medicaid</label>
-                                        <input wire:model="medicaid" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('medicaid'))
+                                        <label class="form-label">Birth Date</label>
+                                        <input wire:model="birth_date" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('birth_date'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('medicaid') }}
+                                            {{ $errors->first('birth_date') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Phone 1</label>
+                                        <input wire:model="phone1" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('phone1'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('phone1') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Phone 2</label>
+                                        <input wire:model="phone2" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('phone2'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('phone2') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Medicalid #</label>
+                                        <input wire:model="medicalid" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('medicalid'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('medicalid') }}
                                         </div>
                                         @endif
                                     </div>
@@ -189,30 +212,67 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Ambulatory</label>
-                                        <input wire:model="ambulatory" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('ambulatory'))
+                                        <label class="form-label">Emergency Contact</label>
+                                        <input wire:model="emergency_contact" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('emergency_contact'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('ambulatory') }}
+                                            {{ $errors->first('emergency_contact') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    @if($inputs_view)
+                                    <div class="row">
+                                        <hr class="dark horizontal">
+                                        <label class="form-label">Created addresses</label>
+                                        @foreach($inputs_view as $index => $input)
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                <i class="material-icons">location_on</i>
+                                                {{ $input->address }}</label>
+                                        </div>
+                                        @endforeach
+                                        <hr class="dark horizontal">
+                                    </div>
+                                    @endif
+                                    <div class="mb-3 col-md-12">
+                                        <label class="form-label">Address</label>
+                                        <button type="button" wire:click="addInput" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add address">
+                                            <i class="material-icons">add</i>
+                                        </button>
+                                        <!-- Add new address -->
+                                        @foreach($inputs as $index => $input)
+                                        <div class="row mb-3 me-3">
+                                            <div class="col-md-11">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="inputs.{{ $index }}" placeholder="Address {{ $index+1}}">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeInput({{ $index }})">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Date start</label>
+                                        <input wire:model="date_start" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('date_start'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('date_start') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Service contact <span class="text-danger">*</span></label>
-                                        <select wire:model="service_contract_id" class="form-select"  id="service_contract_id">
-                                            <option>Elegir</option>
-                                            @foreach ($service_contracts as $service_contract_id)
-                                                <option value="{{ $service_contract_id->id }}">{{ $service_contract_id->company }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('service_contract_id'))
+                                        <label class="form-label">Date end</label>
+                                        <input wire:model="date_end" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('date_end'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('service_contract_id') }}
+                                            {{ $errors->first('date_end') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-12">
-                                        <label class="form-label">Observations</label>
+                                        <label class="form-label">Description of the patient</label>
                                         <textarea wire:model="observations" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
                                         @if ($errors->has('observations'))
                                         <div class="text-danger inputerror">

@@ -5,12 +5,12 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Scheduling;
 use App\Models\Patient;
-use App\Models\ServiceContract;
+use App\Models\Event;
 use App\Models\Hospital;
 
 class Schedulings extends Component
 {
-    public $patient_id, $service_contract_id, $hospital_id, $modelId = '';
+    public $patient_id, $service_contract_id, $hospital_id, $pick_up, $pick_up_time, $check_in, $modelId = '';
     public $item, $action, $search, $title_modal, $countSchedulings = '';
     public $isEdit = false;
 
@@ -142,12 +142,23 @@ class Schedulings extends Component
     
     public function render()
     {
+        $events = Event::all();
+
+        foreach ($events as $event) {
+            $events[] =  [
+                'id' => $event->id,
+                'title' => $event->name,
+                'start' => $event->start_time,
+                'end' => $event->end_time,
+            ];
+        }
+
         return view('livewire.scheduling.index',
         [
             'schedulings' => Scheduling::search('company', $this->search)->paginate(10),
             'patients' => Patient::all(),
-            'service_contracts' => ServiceContract::all(),
             'hospitals' => Hospital::all(),
+            'events' => $events,
         ],
     );
     }

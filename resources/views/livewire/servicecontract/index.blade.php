@@ -66,7 +66,6 @@
                                 </label>
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subject</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date start - Date end</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
@@ -82,13 +81,10 @@
                                 </label>
                             </div>
                         </th>
-                        <th>{{ $servicecontract->subject }}</th>
                         <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('d/m/Y')}} - {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('d/m/Y')}}</th>
-
-                        <!-- <th>{{ $servicecontract->date_start }} / {{ $servicecontract->date_end }}</th> -->
                         <th> {{ $servicecontract->company }}</th>
                         <th>
-                            <span class="my-2 text-xs">    
+                            <span class="my-2 text-xs">
                                 @can('servicecontract.update')
                                 <a wire:click="selectItem({{ $servicecontract->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
@@ -122,7 +118,7 @@
                         <div class="card-body p-0">
                             <form>
                                 <div class="row">
-                                <div class="mb-3 col-md-6">
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Company</label>
                                         <input wire:model="company" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('company'))
@@ -137,24 +133,6 @@
                                         @if ($errors->has('contact_name'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('contact_name') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Rate Per Mile</label>
-                                        <input wire:model="rate_per_mile" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('rate_per_mile'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('rate_per_mile') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Overcharge</label>
-                                        <input wire:model="overcharge" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('overcharge'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('overcharge') }}
                                         </div>
                                         @endif
                                     </div>
@@ -176,18 +154,157 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Subject</label>
-                                        <input wire:model="subject" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('subject'))
+                                    <hr class="dark horizontal">
+                                    <label class="form-label mb-3">Rate config</label>
+                                    <hr class="dark horizontal">
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Wheelchair</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="wheelchair" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('wheelchair'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('subject') }}
+                                            {{ $errors->first('wheelchair') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Ambulatory</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="ambulatory" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('ambulatory'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('ambulatory') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Out of hours</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="out_of_hours" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('out_of_hours'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('out_of_hours') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Saturdays</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="saturdays" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('saturdays'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('saturdays') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Sundays/Holidays</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="sundays_holidays" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('sundays_holidays'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('sundays_holidays') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Companion</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="companion" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('companion'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('companion') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Additional waiting</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="additional_waiting" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('additional_waiting'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('additional_waiting') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">After</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="after" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('after'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('after') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Fast track</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="fast_track" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('fast_track'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('fast_track') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">If not cancel</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="if_not_cancel" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('if_not_cancel'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('if_not_cancel') }}
+                                        </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Rate Per Mile</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="rate_per_mile" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('rate_per_mile'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('rate_per_mile') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3">
+                                        <div class="input-group input-group-dynamic mb-4">
+                                            <label class="form-label">Overcharge</label>
+                                            <span class="input-group-text">$</span>
+                                            <input wire:model="overcharge" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                        @if ($errors->has('overcharge'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('overcharge') }}
                                         </div>
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">State</label>
-                                        <select wire:ignore.self wire:model="state" class="form-select"  id="state">
+                                        <select wire:ignore.self wire:model="state" class="form-select" id="state">
                                             <option>Elegir</option>
                                             <option value="active">Active</option>
                                             <option value="inactive">Inactive</option>

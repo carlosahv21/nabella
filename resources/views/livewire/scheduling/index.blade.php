@@ -48,59 +48,10 @@
         </div>
     </div>
     <!-- end notifications -->
-    <div class="card shadow border-0 table-wrapper table-responsive">
-        @if ($schedulings->count())
-        <div>
-            <table class="table scheduling-table align-items-center">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>
-                            <div class="form-check dashboard-check">
-                                <input class="form-check-input" type="checkbox" value="" id="userCheck55">
-                                <label class="form-check-label" for="userCheck55">
-                                </label>
-                            </div>
-                        </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($schedulings as $scheduling)
-                    <tr>
-                        <th>
-                            <div class="form-check dashboard-check">
-                                <input class="form-check-input" type="checkbox" value="" id="userCheck1">
-                                <label class="form-check-label" for="userCheck1">
-                                </label>
-                            </div>
-                        </th>
-                        <th>{{ $scheduling->id }}</th>
-                        <th>
-                            <span class="my-2 text-xs">
-                                <a wire:click="selectItem({{ $scheduling->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
-                                </a>
-                                @can('scheduling.update', $scheduling)
-                                <a wire:click="selectItem({{ $scheduling->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
-                                </a>
-                                @endcan
-                                @can('scheduling.delete', $scheduling)
-                                <a wire:click="selectItem({{ $scheduling->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                @endcan
-                            </span>
-                        </th>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <div class="card card-calendar">
+        <div class="card-body p-3">
+            <div wire:ignore class="calendar" data-bs-toggle="calendar" id="calendar" style="max-height: 735px;"></div>
         </div>
-        @else
-        <div class="d-flex justify-content-center py-6">
-            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no scheduling to show</span>
-        </div>
-        @endif
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createScheduling" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
@@ -129,23 +80,9 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Service Contract</label>
-                                        <select wire.ignore.self wire:model="service_contract_id" class="form-select" id="service_contract_id">
-                                            <option value="">Select a service contract</option>
-                                            @foreach($service_contracts as $service_contract)
-                                            <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('service_contract_id'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('service_contract_id') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Hospital</label>
+                                        <label class="form-label">Facility</label>
                                         <select wire.ignore.self wire:model="hospital_id" class="form-select" id="hospital_id">
-                                            <option value="">Select a hospital</option>
+                                            <option value="">Select a facility</option>
                                             @foreach($hospitals as $hospital)
                                             <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
                                             @endforeach
@@ -156,9 +93,67 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="form-check mb-3 col-md-12">
-                                        <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1" checked="">
-                                        <label class="custom-control-label" for="customCheck1">Auto agend</label>
+                                    <div class="mb-3 col-md-6">
+                                        <div class="input-group input-group-static my-3">
+                                            <label>Date</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <div class="input-group input-group-static my-3">
+                                            <label>Check In</label>
+                                            <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Pick Up</label>
+                                        <select wire.ignore.self wire:model="pick_up" class="form-select" id="pick_up">
+                                            <option value="">Select a pick up</option>
+                                            @foreach($hospitals as $hospital)
+                                            <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('pick_up'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('pick_up') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <div class="input-group input-group-static my-3">
+                                            <label>Pick up time</label>
+                                            <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Wheelchair</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Ambulatory</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Saturdays</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Companion</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Fast track</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Sundays/Holidays</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Out of hour</label>
+                                        </div>
                                     </div>
                             </form>
                         </div>
@@ -206,3 +201,59 @@
         </div>
     </div>
 </div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.13/index.global.min.js'></script>
+
+<script>
+    var calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+        initialView: "timeGridWeek",
+        headerToolbar: {
+            start: 'title', // will normally be on the left. if RTL, will be on the right
+            center: '',
+            end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
+        },  
+        events: @json($events),
+        slotMinTime: '09:00:00',
+        slotMaxTime: '20:00:00',
+        editable: true,
+        selectable: true,
+        hiddenDays: [ 6, 7 ],
+        eventClick: function(info) {
+            Livewire.emit('editEvent', info.event.id);
+        },
+        eventDrop: function(info) {
+            Livewire.emit('updateEventDate', info.event.id, formatDateToYmdHis(info.event.start), formatDateToYmdHis(info.event.end));
+        }
+    });
+
+    calendar.render();
+
+    window.addEventListener('eventAdded', event => {
+        calendar.addEvent(event.detail);
+    });
+
+    window.addEventListener('eventUpdated', event => {
+        var eventObj = calendar.getEventById(event.detail.id);
+
+        eventObj.setProp('title', event.detail.title);
+        eventObj.setStart(event.detail.start_time);
+        eventObj.setEnd(event.detail.end_time);
+    });
+
+    window.addEventListener('eventDeleted', eventId => {
+        var eventObj = calendar.getEventById(eventId);
+        eventObj.remove();
+    });
+
+    function formatDateToYmdHis(date) {
+        var d = new Date(date);
+        var yyyy = d.getFullYear();
+        var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+        var dd = ('0' + d.getDate()).slice(-2);
+        var hh = ('0' + d.getHours()).slice(-2);
+        var ii = ('0' + d.getMinutes()).slice(-2);
+        var ss = ('0' + d.getSeconds()).slice(-2);
+
+        return `${yyyy}-${mm}-${dd} ${hh}:${ii}:${ss}`;
+    }
+</script>

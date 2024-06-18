@@ -21,13 +21,17 @@ class PatientSeeader extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Patient::create([
                 'county' => $faker->city,
-                'name' => $faker->name,
-                'home_address' => $faker->streetAddress,
-                'destination_address' => $faker->streetAddress,
-                'phone' => $faker->phoneNumber,
-                'medicaid' => $faker->numberBetween(1000, 5000),
+                'service_contract_id' => $faker->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']),
+                'first_name' => $faker->name,
+                'last_name' => $faker->lastName,
+                'birth_date' => $faker->dateTimeBetween('-1 year', '+1 year'),
+                'phone1' => $faker->phoneNumber,
+                'phone2' => $faker->phoneNumber,
+                'medicalid' => $faker->text(5),
                 'billing_code' => $faker->randomElement(['A0130-Wheelchair', 'A0120 Ambulatory', 'Rowan A0100']),
-                'ambulatory' => $faker->text(100),
+                'emergency_contact' => $faker->phoneNumber,
+                'date_start' => $faker->dateTimeBetween('-1 year', '+1 year'),
+                'date_end' => $faker->dateTimeBetween('-1 year', '+1 year'),
                 'observations' => $faker->text(100),
             ]);
         }

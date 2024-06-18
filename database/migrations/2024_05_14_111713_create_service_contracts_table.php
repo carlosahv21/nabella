@@ -15,15 +15,23 @@ return new class extends Migration
             $table->id();
             $table->string('company');
             $table->string('contact_name');
-            $table->string('rate_per_mile');
-            $table->string('overcharge');
+            $table->integer('wheelchair')->default(0);
+            $table->integer('ambulatory')->default(0);
+            $table->integer('out_of_hours')->default(0);
+            $table->integer('saturdays')->default(0);
+            $table->integer('sundays_holidays')->default(0);
+            $table->integer('companion')->default(0);
+            $table->integer('additional_waiting')->default(0); 
+            $table->integer('after')->default(0);
+            $table->integer('fast_track')->default(0);
+            $table->integer('if_not_cancel')->default(0);
+            $table->integer('rate_per_mile')->default(0);
+            $table->integer('overcharge')->default(0);
             $table->string('address');
             $table->string('phone');
-            $table->string('subject');
             $table->string('state');
             $table->date('date_start');
             $table->date('date_end');
-            $table->integer('client_id')->unsigned()->references('id')->on('clients')->nullable();
             $table->timestamps();
         });
     }
