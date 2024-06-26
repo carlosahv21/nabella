@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         Seeder::call(PatientSeeader::class);
         Seeder::call(HospitalSeeder::class);
         Seeder::call(EventSeeder::class);
+        Seeder::call(SchedulingSeeder::class);
 
     }
 }
