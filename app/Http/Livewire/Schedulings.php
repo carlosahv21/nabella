@@ -171,7 +171,6 @@ class Schedulings extends Component
             'start' => $scheduling->date . " " . $scheduling->check_in,
             'end' => $scheduling->date . " " . $scheduling->pick_up_time,
             'color' => $color
-,
         ];
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);

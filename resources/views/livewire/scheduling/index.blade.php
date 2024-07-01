@@ -82,7 +82,7 @@
                                     <input type="hidden" wire:model="address_hospital" id="address_hospital">
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <label class="form-label">Driver</label>
+                                    <label class="form-label">Driver assigned</label>
                                     <select wire.ignore.self wire:model="driver_id" class="form-select" id="driver_id">
                                         <option value="">Select a Driver</option>
                                         @foreach($drivers as $drive)
@@ -104,12 +104,12 @@
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <div class="input-group input-group-static my-3">
-                                        <label>Check In</label>
+                                        <label>Facility Check In</label>
                                         <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <label class="form-label">Pick Up</label>
+                                    <label class="form-label">Pick Up Address</label>
                                     <select wire.ignore.self wire:model="pick_up" class="form-select" id="pick_up">
                                         @for($i = 0; $i < count($addresses); $i++) <option value="{{ $addresses[$i]['value'] }}">{{ $addresses[$i]['text'] }}</option>
                                             @endfor
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <div class="input-group input-group-static my-3">
-                                        <label>Pick up time</label>
+                                        <label>Suggested pick up time</label>
                                         <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" readonly="readonly">
                                     </div>
                                 </div>

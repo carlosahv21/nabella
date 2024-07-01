@@ -93,9 +93,36 @@
                                             </a>
                                         </td>
                                         <td class="align-middle">
-                                            <a wire:click="selectItem({{ $event['id'] }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                                <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See details">info</i> See details
-                                            </a>
+                                            <div class="row">
+                                                <div class="form-check mb-3 col-md-3">
+                                                    <input class="form-check-input" type="checkbox" id="customWheelchair" @if($event['wheelchair']) checked @endif>
+                                                    <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
+                                                </div>
+                                                <div class="form-check mb-3 col-md-3">
+                                                    <input class="form-check-input" type="checkbox" id="customAmbulatory" @if($event['ambulatory']) checked @endif>
+                                                    <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
+                                                </div>
+                                                <div class="form-check mb-3 col-md-3">
+                                                    <input class="form-check-input" type="checkbox" id="customSaturdays" @if($event['saturdays']) checked @endif>
+                                                    <label class="custom-control-label" for="customSaturdays">Saturdays</label>
+                                                </div>
+                                                <div class="form-check mb-3 col-md-3">
+                                                    <input class="form-check-input" type="checkbox" id="customCompanion" @if($event['companion']) checked @endif>
+                                                    <label class="custom-control-label" for="customCompanion">Companion</label>
+                                                </div>
+                                                <div class="form-check mb-3 col-md-3">
+                                                    <input class="form-check-input" type="checkbox" id="customFastTrack" @if($event['fast_track']) checked @endif>
+                                                    <label class="custom-control-label" for="customFastTrack">Fast Track</label>
+                                                </div>
+                                                <div class="form-check mb-3 col-md-4">
+                                                    <input class="form-check-input" type="checkbox" id="customSundaysHolidays" @if($event['sundays_holidays']) checked @endif>
+                                                    <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
+                                                </div>
+                                                <div class="form-check mb-3 col-md-4">
+                                                    <input class="form-check-input" type="checkbox" id="customOutOfHours" @if($event['out_of_hours']) checked @endif>
+                                                    <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -108,86 +135,4 @@
         </div>
     </div>
 </div>
-
-<!-- Modal SeeEvent-->
-<div wire:ignore.self class="modal fade" id="seeEvent" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{$title_modal}}</h2>
-            </div>
-            <div class="modal-body">
-                <div class="card card-plain h-100">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Patient</label>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Facility</label>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Driver assigned</label>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <div class="input-group input-group-static my-3">
-                                    <label>Date</label>
-                                    <input type="date" class="form-control" id="date" wire:model="date">
-                                </div>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <div class="input-group input-group-static my-3">
-                                    <label>Facility Check In</label>
-                                    <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
-                                </div>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">Pick Up Address</label>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <div class="input-group input-group-static my-3">
-                                    <label>Suggested pick up time</label>
-                                    <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-check mb-3 col-md-3">
-                                    <input wire:model="dash_wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
-                                    <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
-                                    {{ var_export($wheelchair) }}
-                                </div>
-                                <div class="form-check mb-3 col-md-3">
-                                    <input wire:model="dash_ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
-                                    <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
-                                </div>
-                                <div class="form-check mb-3 col-md-3">
-                                    <input wire:model="dash_saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
-                                    <label class="custom-control-label" for="customSaturdays">Saturdays</label>
-                                </div>
-                                <div class="form-check mb-3 col-md-3">
-                                    <input wire:model="dash_companion" class="form-check-input" type="checkbox" id="customCompanion">
-                                    <label class="custom-control-label" for="customCompanion">Companion</label>
-                                </div>
-                                <div class="form-check mb-3 col-md-3">
-                                    <input wire:model="dash_fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
-                                    <label class="custom-control-label" for="customFastTrack">Fast Track</label>
-                                </div>
-                                <div class="form-check mb-3 col-md-4">
-                                    <input wire:model="dash_sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
-                                    <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
-                                </div>
-                                <div class="form-check mb-3 col-md-4">
-                                    <input wire:model="dash_out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
-                                    <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal SeeEvent-->
-@endif
+@endifa

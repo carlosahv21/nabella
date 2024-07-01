@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('check_in');
             $table->string('pick_up');
             $table->string('pick_up_time');
+            $table->string('status')->default('Waiting');
             $table->boolean('wheelchair')->default(false);
             $table->boolean('ambulatory')->default(false);
             $table->boolean('out_of_hours')->default(false);

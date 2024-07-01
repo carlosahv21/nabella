@@ -72,7 +72,7 @@
         })
 
         $(document).ready(function() {
-            var modals = ['createUser', 'createDriver', 'createRole', 'createVehicle', 'createClient', 'createServiceContract', 'createPatient', 'SeeFileVehicle', 'createScheduling'];
+            var modals = ['createUser', 'createDriver', 'createRole', 'createVehicle', 'createClient', 'createServiceContract', 'createPatient', 'SeeFileVehicle', 'createScheduling', 'seeEventDetails'];
 
             modals.forEach(element => {
                 $("#" + element).on('hidden.bs.modal', function() {
