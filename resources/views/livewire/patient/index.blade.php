@@ -112,6 +112,9 @@
             <span class="text-gray-500"><i class="fas fa-archive"></i> There are no patient to show</span>
         </div>
         @endif
+        <div class="d-flex justify-content-end py-1 mx-5">
+            {{ $patients->links() }}
+        </div>
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createPatient" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
@@ -168,7 +171,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Birth Date</label>
-                                        <input wire:model="birth_date" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="birth_date" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('birth_date'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('birth_date') }}

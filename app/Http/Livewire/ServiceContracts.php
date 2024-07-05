@@ -4,20 +4,24 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\ServiceContract;
-// use Illuminate\Support\Facades\DB;
+
+use Livewire\WithPagination;
 
 class ServiceContracts extends Component
 {
+
+    use WithPagination;
+    
+    protected $paginationTheme = 'bootstrap';
+
     public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $address, $phone, $state, $date_start, $date_end, $modelId = '';
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
     public $isEdit = false;
 
     protected $rules=[
-        'subject' => 'required',
         'state' => 'required',
         'date_start' => 'required',
         'date_end' => 'required',
-        'client_id' => 'required',
     ];
 
     protected $listeners = [
@@ -125,10 +129,9 @@ class ServiceContracts extends Component
         $servicecontract->overcharge = $this->overcharge;
         $servicecontract->address = $this->address;
         $servicecontract->phone = $this->phone;
-        $servicecontract->subject = $this->subject;
         $servicecontract->date_start = $this->date_start;
         $servicecontract->date_end = $this->date_end;
-        $servicecontract->client_id = $this->client_id;
+        $servicecontract->state = $this->state;
         
         $servicecontract->save();
 

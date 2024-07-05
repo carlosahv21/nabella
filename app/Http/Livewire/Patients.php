@@ -8,8 +8,14 @@ use App\Models\Address;
 
 use Illuminate\Support\Facades\DB;
 
+use Livewire\WithPagination;
+
 class Patients extends Component
 {
+    use WithPagination;
+    
+    protected $paginationTheme = 'bootstrap';
+
     public $county, $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
     
     public $inputs = [];
@@ -19,7 +25,9 @@ class Patients extends Component
     public $isEdit = false;
 
     protected $rules=[
-        'name' => 'required',
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'phone1' => 'required',
         'observations' => 'required'
     ];
 
@@ -110,7 +118,7 @@ class Patients extends Component
         $patient->last_name = $this->last_name;
         $patient->birth_date = $this->birth_date;
         $patient->phone1 = $this->phone1;
-        $patient->phone2 = $this->phone2;
+        $patient->phone2 = ($this->phone2) ? $this->phone2 : '';
         $patient->medicalid = $this->medicalid;
         $patient->billing_code = $this->billing_code;
         $patient->emergency_contact = $this->emergency_contact;
@@ -200,7 +208,7 @@ class Patients extends Component
     {
         return view('livewire.patient.index', 
             [
-                'patients' => Patient::search('company', $this->search)->paginate(10),
+                'patients' => Patient::search('first_name', $this->search)->paginate(10),
                 'service_contracts' => DB::table('service_contracts')->get()
             ],
         );

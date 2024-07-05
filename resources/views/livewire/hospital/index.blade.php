@@ -53,7 +53,7 @@
     <div class="card shadow border-0 table-wrapper table-responsive">
         @if ($hospitals->count())
         <div>
-            <table class="table Hospital-table align-items-center">
+            <table class="table hospital-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -63,8 +63,8 @@
                                 </label>
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name of the hospital</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="width: 75px;">Address</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Location</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
@@ -86,10 +86,14 @@
                         <th>{{ $hospital->address }}, {{ $hospital->city }}, {{ $hospital->state }}</th>
                         <th>
                             <span class="my-2 text-xs">
+                                @can('hospital.update')
                                 <a wire:click="selectItem({{ $hospital->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
+                                @endcan
+                                @can('hospital.delete')
                                 <a wire:click="selectItem({{ $hospital->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                @endcan
                             </span>
                         </th>
                     </tr>
@@ -99,9 +103,12 @@
         </div>
         @else
         <div class="d-flex justify-content-center py-6">
-            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no hospital to show</span>
+            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no facilities to show</span>
         </div>
         @endif
+        <div class="d-flex justify-content-end py-1 mx-5">
+            {{ $hospitals->links() }}
+        </div>
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createHospital" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">

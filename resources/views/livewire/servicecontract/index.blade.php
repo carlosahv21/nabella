@@ -105,6 +105,9 @@
             <span class="text-gray-500"><i class="fas fa-archive"></i> There are no users to show</span>
         </div>
         @endif
+        <div class="d-flex justify-content-end py-1 mx-5">
+            {{ $servicecontracts->links() }}
+        </div>
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createServiceContract" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">

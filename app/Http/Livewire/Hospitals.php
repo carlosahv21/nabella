@@ -5,8 +5,14 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Hospital;
 
+use Livewire\WithPagination;
+
 class Hospitals extends Component
 {
+    use WithPagination;
+    
+    protected $paginationTheme = 'bootstrap';
+
     public $name, $address, $city, $state, $modelId = '';
     public $item, $action, $search, $title_modal, $countHospitals = '';
     public $isEdit = false;

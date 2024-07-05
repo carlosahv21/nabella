@@ -27,6 +27,7 @@ use App\Http\Livewire\VirtualReality;
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Calendar;
 use App\Http\Livewire\Dash;
+use App\Http\Livewire\Reports;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,8 @@ Route::get('scheduling', Schedulings::class)->middleware('auth')->name('scheduli
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
 Route::get('calendar', Calendar::class)->middleware('auth')->name('calendar');
+
+Route::get('reports', Reports::class)->middleware('auth')->name('reports');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dash::class)->name('dashboard');
