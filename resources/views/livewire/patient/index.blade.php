@@ -129,15 +129,6 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">County</label>
-                                        <input wire:model="county" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('county'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('county') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Contract <span class="text-danger">*</span></label>
                                         <select wire:model="service_contract_id" class="form-select" id="service_contract_id">
                                             <option>Elegir</option>
@@ -197,7 +188,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Medicalid #</label>
+                                        <label class="form-label">Medicateid ID</label>
                                         <input wire:model="medicalid" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('medicalid'))
                                         <div class="text-danger inputerror">
@@ -207,7 +198,12 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Billing code</label>
-                                        <input wire:model="billing_code" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <select wire:model="billing_code" class="form-select" id="billing_code">
+                                            <option value="">Select a billing code</option>
+                                            <option value="A0100">A0100</option>
+                                            <option value="A0120-Ambulatory">A0120 - Ambulatory</option>
+                                            <option value="A0130-Wheelchair">A0130 - Wheelchair </option>
+                                        </select>
                                         @if ($errors->has('billing_code'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('billing_code') }}

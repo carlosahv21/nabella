@@ -21,9 +21,15 @@ class Schedulings extends Component
     public $sundays_holidays = false;
     public $out_of_hours = false;
     public $auto_agend = false;
+    public $hour_to = null;
+    public $hour_from = null;
 
     public $item, $action, $search, $title_modal, $countSchedulings = '';
     public $isEdit = false;
+
+    public $weekdays = [];
+    public $ends_schedule;
+    public $ends_date;
 
     // Variables para la API Holidays
     public $url = 'https://holidays.abstractapi.com/v1/';
@@ -367,6 +373,15 @@ class Schedulings extends Component
         }
 
         $this->emit('updateEvents', $new_events);
+    }
+
+    public function updatedEndsSchedule($value)
+    {
+        if ($value == 'ends_check') {
+            $this->ends_date = null; // Reset ends_date if 'ends_check' is selected
+        } else {
+            $this->ends_date = ''; // Disable ends_date if any other option is selected
+        }
     }
 
     public function render()

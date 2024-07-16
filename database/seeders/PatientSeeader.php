@@ -20,7 +20,6 @@ class PatientSeeader extends Seeder
 
         for ($i = 0; $i < 10; $i++) {
             Patient::create([
-                'county' => $faker->city,
                 'service_contract_id' => $faker->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']),
                 'first_name' => $faker->name,
                 'last_name' => $faker->lastName,

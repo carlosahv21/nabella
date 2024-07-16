@@ -16,7 +16,7 @@ class Drivers extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $name, $email, $phone, $location, $password, $modelId = '';
+    public $name, $email, $phone, $password, $modelId = '';
     public $item, $action, $search, $title_modal, $countDrivers = '';
     public $role = 'Driver';
     public $isEdit = false;
@@ -73,7 +73,6 @@ class Drivers extends Component
         $this->name = $model->name;
         $this->email = $model->email;
         $this->phone = $model->phone;
-        $this->location = $model->location;
 
     }
 
@@ -83,7 +82,6 @@ class Drivers extends Component
         $this->name = null;
         $this->email = null;
         $this->phone = null;
-        $this->location = null;
         $this->password = null;
         $this->isEdit = false;
     }
@@ -106,7 +104,6 @@ class Drivers extends Component
         $user->name = $this->name;
         $user->email = $this->email;
         $user->phone = $this->phone;
-        $user->location = $this->location;
         $user->syncRoles($this->role);
         
         $user->save();

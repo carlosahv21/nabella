@@ -23,13 +23,13 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Laura ',
             'email' => 'laura@nabella.com',
-            'password' => ('nabella')
+            'password' => ('secret')
         ])->assignRole('Admin');
 
         User::factory()->create([
             'name' => 'Cony',
             'email' => 'cony@nabella.com',
-            'password' => ('nabella')
+            'password' => ('secret')
         ])->assignRole('Admin');
 
         User::factory()->create([
@@ -37,7 +37,5 @@ class UserSeeder extends Seeder
             'email' => 'carlos@material.com',
             'password' => ('secret')
         ])->assignRole('Driver');
-
-        User::factory(30)->create(['password' => ('secret')]);
     }
 }

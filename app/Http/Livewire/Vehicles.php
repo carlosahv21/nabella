@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Validator;
 
 class Vehicles extends Component
 {
-    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $type, $modelId = '';
-    public $make, $model, $year, $vin, $value = '';
+    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle = '';
+    public $make, $model, $year, $vin = '';
     public $action, $isEdit = false;
 
     protected $rules=[
@@ -63,10 +63,9 @@ class Vehicles extends Component
         $this->make = null;
         $this->model = null;
         $this->vin = null;
-        $this->value = null;
+        $this->number_vehicle = null;
         $this->user_id = null;
         $this->driver = null;
-        $this->type = null;
         $this->isEdit = false;
 
     }
@@ -80,9 +79,8 @@ class Vehicles extends Component
         $this->model = $model->model;
         $this->year = $model->year;
         $this->vin = $model->vin;
-        $this->value = $model->value;
+        $this->number_vehicle = $model->number_vehicle;
         $this->user_id = $model->user_id;
-        $this->type = $model->type;
         $this->driver = User::find($this->user_id)->name;
     }
 
@@ -105,8 +103,6 @@ class Vehicles extends Component
         $vehicle->model = $this->model;
         $vehicle->year = $this->year;
         $vehicle->vin = $this->vin;
-        $vehicle->value = $this->value;
-        $vehicle->type = $this->type;
         $vehicle->user_id = $this->user_id;
         
         $vehicle->save();

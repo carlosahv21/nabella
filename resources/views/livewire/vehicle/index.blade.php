@@ -159,20 +159,11 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Value</label>
-                                        <input wire:model="value" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('value'))
+                                        <label class="form-label">Vehicle #<span class="text-danger">*</span></label>
+                                        <input wire:model="number_vehicle" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('number_vehicle'))
                                         <div class="text-danger inputerror">
-                                            {{ $errors->first('value') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Type <span class="text-danger">*</span></label>
-                                        <input wire:model="type" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('type'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('type') }}
+                                            {{ $errors->first('number_vehicle') }}
                                         </div>
                                         @endif
                                     </div>
@@ -278,22 +269,6 @@
                                     </td>
                                     <td>
                                         {{ $this->vin }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="font-weight-bolder">Value</span>
-                                    </td>
-                                    <td>
-                                        ${{ $this->value }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="font-weight-bolder">Type</span>
-                                    </td>
-                                    <td>
-                                        {{ $this->type }}
                                     </td>
                                 </tr>
                                 <tr>

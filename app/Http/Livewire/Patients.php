@@ -16,7 +16,7 @@ class Patients extends Component
     
     protected $paginationTheme = 'bootstrap';
 
-    public $county, $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
+    public $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
     
     public $inputs = [];
     public $inputs_view = [];
@@ -63,7 +63,6 @@ class Patients extends Component
         $this->modelId = $modelId;
 
         $model = Patient::find($this->modelId);
-        $this->county = $model->county;
         $this->service_contract_id = $model->service_contract_id;
         $this->first_name = $model->first_name;
         $this->last_name = $model->last_name;
@@ -83,7 +82,6 @@ class Patients extends Component
 
     private function clearForm()
     {
-        $this->county = null;
         $this->service_contract_id = null;
         $this->first_name = null;
         $this->last_name = null;
@@ -111,8 +109,6 @@ class Patients extends Component
             $this->validate();
         }
         
-
-        $patient->county = $this->county;
         $patient->service_contract_id = $this->service_contract_id;
         $patient->first_name = $this->first_name;
         $patient->last_name = $this->last_name;

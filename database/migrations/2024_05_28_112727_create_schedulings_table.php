@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('schedulings', function (Blueprint $table) {
-            $table->id();
-            $table->integer('patient_id')->unsigned()->references('id')->on('patients')->nullable();
-            $table->integer('hospital_id')->unsigned()->references('id')->on('hospitals')->nullable();
-            $table->integer('driver_id')->unsigned()->references('id')->on('drivers')->nullable();
+            $table->bigIncrements('id');
+            $table->unsignedInteger('patient_id');
+            $table->unsignedInteger('hospital_id');
+            $table->unsignedInteger('driver_id');
+            $table->unsignedInteger('driver_return_id'); // Nuevo campo para el conductor del viaje de vuelta
             $table->string('distance');
             $table->string('duration');
             $table->date('date');

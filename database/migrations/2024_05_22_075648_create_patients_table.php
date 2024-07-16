@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->string('county');
             $table->integer('service_contract_id')->unsigned()->references('id')->on('service_contracts')->nullable();
             $table->string('first_name');
             $table->string('last_name');

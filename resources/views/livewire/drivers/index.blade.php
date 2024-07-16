@@ -67,7 +67,6 @@
                             </div>
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Location</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
@@ -87,7 +86,6 @@
                                 <div class="small text-gray">{{ $driver->email }}</div>
                             </div>
                         </th>
-                        <th>{{ $driver->location }}</th>
                         <th>
                             <span class="my-2 text-xs">
                                 @can('driver.update')
@@ -150,15 +148,6 @@
                                         @if ($errors->has('phone'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('phone') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Location</label>
-                                        <input wire:model="location" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('location'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('location') }}
                                         </div>
                                         @endif
                                     </div>

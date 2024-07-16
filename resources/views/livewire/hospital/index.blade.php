@@ -28,7 +28,7 @@
                     </ul>
                 </div>
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <i class="material-icons">add</i> Add Hospital
+                    <i class="material-icons">add</i> Add Facility
                 </button>
             </div>
         </div>
@@ -123,7 +123,7 @@
                             <form>
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Name of the hospital <span class="text-danger">*</span></label>
+                                        <label class="form-label">Name of the Facility <span class="text-danger">*</span></label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
                                         <div class="text-danger inputerror">
@@ -132,7 +132,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Address of the hospital <span class="text-danger">*</span></label>
+                                        <label class="form-label">Address of the Facility <span class="text-danger">*</span></label>
                                         <input wire:model="address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('address'))
                                         <div class="text-danger inputerror">

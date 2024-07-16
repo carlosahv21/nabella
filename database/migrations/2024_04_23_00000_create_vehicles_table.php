@@ -20,7 +20,6 @@ class CreateVehiclesTable extends Migration
             $table->string('model');
             $table->string('vin');
             $table->string('value');
-            $table->string('type');
             $table->integer('user_id')->unsigned()->references('id')->on('users')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
