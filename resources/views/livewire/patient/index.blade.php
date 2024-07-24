@@ -219,15 +219,18 @@
                                         </div>
                                         @endif
                                     </div>
-                                    @if($inputs_view)
+                                    @if(count($inputs_view) > 0)
                                     <div class="row">
                                         <hr class="dark horizontal">
                                         <label class="form-label">Created addresses</label>
                                         @foreach($inputs_view as $index => $input)
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <label class="form-label">
                                                 <i class="material-icons">location_on</i>
-                                                {{ $input->address }}</label>
+                                                {{ $input->address }} </label>
+                                                <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input->id }})">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
                                         </div>
                                         @endforeach
                                         <hr class="dark horizontal">
@@ -241,8 +244,14 @@
                                         <!-- Add new address -->
                                         @foreach($inputs as $index => $input)
                                         <div class="row mb-3 me-3">
-                                            <div class="col-md-11">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="inputs.{{ $index }}" placeholder="Address {{ $index+1}}">
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="inputs.{{ $index }}" placeholder="Address and city">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="state.{{ $index }}" placeholder="State">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="zipcode.{{ $index }}" placeholder="Zipcode">
                                             </div>
                                             <div class="col-md-1">
                                                 <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeInput({{ $index }})">

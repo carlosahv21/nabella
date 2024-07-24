@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Scheduling;
 use App\Models\Patient;
-use App\Models\Hospital;
+use App\Models\Facility;
 use App\Models\Address;
 use Illuminate\Support\Facades\DB;
 
@@ -21,8 +21,7 @@ class Schedulings extends Component
     public $sundays_holidays = false;
     public $out_of_hours = false;
     public $auto_agend = false;
-    public $hour_to = null;
-    public $hour_from = null;
+    public $type_of_trip;
 
     public $item, $action, $search, $title_modal, $countSchedulings = '';
     public $isEdit = false;
@@ -136,7 +135,7 @@ class Schedulings extends Component
             $this->isEdit = true;
 
             $minutes = explode(' ', $this->duration)[0];
-            $date = $this->date . ' ' . $this->check_in;
+            $date = $this->date . ' ' . $this->customHourTo;
             $endTimestamp = strtotime("+$minutes minutes", strtotime($date));
             $this->pick_up_time = date('H:i', $endTimestamp);
         } else {
@@ -211,7 +210,7 @@ class Schedulings extends Component
 
     public function updateHospitalAddress($hospitalId)
     {
-        $hospital = Hospital::findOrFail($hospitalId);
+        $hospital = Facility::findOrFail($hospitalId);
         $this->address_hospital = $hospital->address;
     }
 
@@ -305,8 +304,6 @@ class Schedulings extends Component
             $this->distance = $distance;
             $this->duration = $duration;
             $this->pick_up_time = $this->getTime($duration, $arrivalTime);
-
-            $this->dispatchBrowserEvent('distanceCalculated', ['distance' => $distance, 'duration' => $duration]);
         } else {
             return false;
         }
@@ -314,7 +311,7 @@ class Schedulings extends Component
 
     public function getTime($duration, $arrivalTime)
     {
-        $minutesToSubtract = intval($duration);
+        $minutesToSubtract = $this->convertToMinutes($duration);
         $totalMinutesToSubtract = $minutesToSubtract + 10;
 
         list($date, $time) = explode(' ', $arrivalTime);
@@ -326,6 +323,26 @@ class Schedulings extends Component
 
         return date('H:i', $newTimestamp);
     }
+
+    public function convertToMinutes($timeString) {
+        $totalMinutes = 0;
+        preg_match_all('/(\d+)\s*(hours?|mins?)/', $timeString, $matches, PREG_SET_ORDER);
+        
+        foreach ($matches as $match) {
+            $value = intval($match[1]);
+            $unit = $match[2];
+            
+            if (strpos($unit, 'hour') !== false) {
+                $totalMinutes += $value * 60;
+            } elseif (strpos($unit, 'min') !== false) {
+                $totalMinutes += $value;
+            }
+        }
+        
+        return $totalMinutes;
+    }
+
+
 
     public function editEvent($id)
     {
@@ -375,6 +392,32 @@ class Schedulings extends Component
         $this->emit('updateEvents', $new_events);
     }
 
+    public function updatedCheckIn($value)
+    {
+        $this->validateFields();
+    }
+
+    public function updatedPickUp($value)
+    {
+        $this->validateFields();
+    }
+
+    public function updatedDate($value)
+    {
+        $this->validateFields();
+    }
+
+    public function validateFields()
+    {
+        if($this->patient_id && $this->hospital_id && $this->date && $this->check_in){
+            $origin = Address::find($this->pick_up)->address;
+            $destination = $this->address_hospital;
+            $arrivalTime = $this->date . ' ' . $this->check_in;
+
+            $this->getDistance($origin, $destination, $arrivalTime);
+        }
+    }
+
     public function updatedEndsSchedule($value)
     {
         if ($value == 'ends_check') {
@@ -418,7 +461,7 @@ class Schedulings extends Component
 
         return view('livewire.scheduling.index', [
             'patients' => Patient::all(),
-            'hospitals' => Hospital::all(),
+            'hospitals' => Facility::all(),
             'drivers' => $driver,
             'events' => $events
         ]);

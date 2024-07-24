@@ -59,10 +59,10 @@
                 </a>
             </li>
             @endcan
-            @can ('hospital.view')
+            @can ('facility.view')
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'hospital' ? ' active bg-gradient-primary' : '' }} "
-                    href="{{ route('hospital') }}">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'facility' ? ' active bg-gradient-primary' : '' }} "
+                    href="{{ route('facility') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons">local_hospital</i>
                     </div>

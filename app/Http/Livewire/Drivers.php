@@ -16,7 +16,7 @@ class Drivers extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $name, $email, $phone, $password, $modelId = '';
+    public $name, $email, $phone, $password, $dob, $dl_state, $dl_number, $date_of_hire, $modelId = '';
     public $item, $action, $search, $title_modal, $countDrivers = '';
     public $role = 'Driver';
     public $isEdit = false;
@@ -47,17 +47,17 @@ class Drivers extends Component
         $this->item = $item;
 
         if($action == 'delete'){
-            $this->title_modal = 'Eliminar Conductor';
+            $this->title_modal = 'Delete Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriver']);
         }else if($action == 'masiveDelete'){
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriverMasive']);
             $this->countDrivers = count($this->selected);
         }else if($action == 'create'){
-            $this->title_modal = 'Crear Conductor';
+            $this->title_modal = 'Create Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('clearForm');
         }else{
-            $this->title_modal = 'Editar Conductor';
+            $this->title_modal = 'Edit Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('getModelId', $this->item);
 
@@ -73,6 +73,10 @@ class Drivers extends Component
         $this->name = $model->name;
         $this->email = $model->email;
         $this->phone = $model->phone;
+        $this->dob = $model->dob;
+        $this->dl_state = $model->dl_state;
+        $this->dl_number = $model->dl_number;
+        $this->date_of_hire = $model->date_of_hire;
 
     }
 
@@ -82,6 +86,10 @@ class Drivers extends Component
         $this->name = null;
         $this->email = null;
         $this->phone = null;
+        $this->dob = null;
+        $this->dl_state = null;
+        $this->dl_number = null;
+        $this->date_of_hire = null;
         $this->password = null;
         $this->isEdit = false;
     }
@@ -104,6 +112,10 @@ class Drivers extends Component
         $user->name = $this->name;
         $user->email = $this->email;
         $user->phone = $this->phone;
+        $user->dob = $this->dob;
+        $user->dl_state = $this->dl_state;
+        $user->dl_number = $this->dl_number;
+        $user->date_of_hire = $this->date_of_hire;
         $user->syncRoles($this->role);
         
         $user->save();

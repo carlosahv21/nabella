@@ -19,7 +19,7 @@ class CreateVehiclesTable extends Migration
             $table->string('make');
             $table->string('model');
             $table->string('vin');
-            $table->string('value');
+            $table->integer('number_vehicle')->nullable();
             $table->integer('user_id')->unsigned()->references('id')->on('users')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();

@@ -27,8 +27,8 @@ return new class extends Migration
             $table->integer('if_not_cancel')->default(0);
             $table->integer('rate_per_mile')->default(0);
             $table->integer('overcharge')->default(0);
-            $table->string('address');
-            $table->string('phone');
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
             $table->string('state');
             $table->date('date_start');
             $table->date('date_end');

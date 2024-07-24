@@ -151,6 +151,42 @@
                                         </div>
                                         @endif
                                     </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">DOB</label>
+                                        <input wire:model="dob" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('dob'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('dob') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">DL State</label>
+                                        <input wire:model="dl_state" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('dl_state'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('dl_state') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">DL Number</label>
+                                        <input wire:model="dl_number" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('dl_number'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('dl_number') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Date of Hire</label>
+                                        <input wire:model="date_of_hire" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('date_of_hire'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('date_of_hire') }}
+                                        </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </form>
                         </div>

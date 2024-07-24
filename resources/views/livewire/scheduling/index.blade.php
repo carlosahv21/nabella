@@ -50,6 +50,9 @@
                 <div class="card card-plain h-100">
                     <div class="card-body p-0">
                         <form>
+                            <input type="hidden" wire:model="address_hospital" id="address_hospital">
+                            <input type="hidden" wire:model="distance" id="distance">
+                            <input type="hidden" wire:model="duration" id="duration">
                             <div class="row">
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Patient</label>
@@ -78,7 +81,6 @@
                                         {{ $errors->first('hospital_id') }}
                                     </div>
                                     @endif
-                                    <input type="hidden" wire:model="address_hospital" id="address_hospital">
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Pick Up Address</label>
@@ -104,71 +106,68 @@
                                     <label class="custom-control-label" for="auto_agend">Auto Agend</label>
                                 </div>
                                 @if($auto_agend)
-                                    <hr class="dark horizontal">
-                                    <label class="form-label">Select Days</label>
-                                    <div class="row">
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customMon day" value="1" wire:model="weekdays">
-                                            <label class="form-check-label" for="customMonday">Monday</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customTuesday" value="2" wire:model="weekdays">
-                                            <label class="form-check-label" for="customTuesday">Tuesday</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customWednesday" value="3" wire:model="weekdays">
-                                            <label class="form-check-label" for="customWednesday">Wednesday</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customThursday" value="4" wire:model="weekdays">
-                                            <label class="form-check-label" for="customThursday">Thursday</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customFriday" value="5" wire:model="weekdays">
-                                            <label class="form-check-label" for="customFriday">Friday</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customSaturday" value="6" wire:model="weekdays">
-                                            <label class="form-check-label" for="customSaturday">Saturday</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-3">
-                                            <input class="form-check-input" type="checkbox" id="customSunday" value="7" wire:model="weekdays">
-                                            <label class="form-check-label" for="customSunday">Sunday</label>
-                                        </div>
-                                    </div>
-                                    <hr class="dark horizontal">
-                                    <label class="form-label">Ends</label>
-                                    <div class="row">
-                                        <div class="form-check col-md-3">
-                                            <input class="form-check-input" type="radio" name="ends_date" id="customRadio1" value="never" wire:model="ends_schedule">
-                                            <label class="custom-control-label" for="customRadio1">Never</label>
-                                        </div>
-                                        <div class="form-check col-md-3">
-                                            <input class="form-check-input" type="radio" name="ends_date" id="customRadio2" value="ends_check" wire:model="ends_schedule">
-                                            <label class="custom-control-label" for="customRadio2">End Date</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-6">
-                                            <div class="input-group input-group-static">
-                                                <label>Date</label>
-                                                <input type="date" class="form-control" id="date_end" wire:model="ends_date" {{ $ends_schedule !== 'ends_check' ? 'disabled' : '' }}>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
                                 <hr class="dark horizontal">
-                                <label class="form-label">Facility arrival time</label>
+                                <label class="form-label">Select Days</label>
                                 <div class="row">
                                     <div class="form-check mb-3 col-md-3">
-                                        <label for="customHourTo">To</label>
+                                        <input class="form-check-input" type="checkbox" id="customMon day" value="1" wire:model="weekdays">
+                                        <label class="form-check-label" for="customMonday">Monday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input type="time" class="form-control" id="customHourTo" wire:model="hour_to">
+                                        <input class="form-check-input" type="checkbox" id="customTuesday" value="2" wire:model="weekdays">
+                                        <label class="form-check-label" for="customTuesday">Tuesday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <label for="customHourFrom">From</label>
+                                        <input class="form-check-input" type="checkbox" id="customWednesday" value="3" wire:model="weekdays">
+                                        <label class="form-check-label" for="customWednesday">Wednesday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input type="time" class="form-control" id="customHourFrom" wire:model="hour_from">
+                                        <input class="form-check-input" type="checkbox" id="customThursday" value="4" wire:model="weekdays">
+                                        <label class="form-check-label" for="customThursday">Thursday</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-3">
+                                        <input class="form-check-input" type="checkbox" id="customFriday" value="5" wire:model="weekdays">
+                                        <label class="form-check-label" for="customFriday">Friday</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-3">
+                                        <input class="form-check-input" type="checkbox" id="customSaturday" value="6" wire:model="weekdays">
+                                        <label class="form-check-label" for="customSaturday">Saturday</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-3">
+                                        <input class="form-check-input" type="checkbox" id="customSunday" value="7" wire:model="weekdays">
+                                        <label class="form-check-label" for="customSunday">Sunday</label>
+                                    </div>
+                                </div>
+                                <hr class="dark horizontal">
+                                <label class="form-label">Ends</label>
+                                <div class="row">
+                                    <div class="form-check col-md-3">
+                                        <input class="form-check-input" type="radio" name="ends_date" id="customRadio1" value="never" wire:model="ends_schedule">
+                                        <label class="custom-control-label" for="customRadio1">Never</label>
+                                    </div>
+                                    <div class="form-check col-md-3">
+                                        <input class="form-check-input" type="radio" name="ends_date" id="customRadio2" value="ends_check" wire:model="ends_schedule">
+                                        <label class="custom-control-label" for="customRadio2">End Date</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-6">
+                                        <div class="input-group input-group-static">
+                                            <label>Date</label>
+                                            <input type="date" class="form-control" id="date_end" wire:model="ends_date" {{ $ends_schedule !== 'ends_check' ? 'disabled' : '' }}>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="dark horizontal">
+                                @endif
+                                <div class="mb-3 col-md-6">
+                                    <div class="input-group input-group-static my-3">
+                                        <label>Facility Check In</label>
+                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <div class="input-group input-group-static my-3">
+                                        <label>Suggested pick up time</label>
+                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
@@ -184,20 +183,27 @@
                                         {{ $errors->first('driver_id') }}
                                     </div>
                                     @endif
-                                    <input type="hidden" wire:model="address_hospital" id="address_hospital">
                                 </div>
-                                <div class="mb-3 col-md-6">
-                                    <div class="input-group input-group-static my-3">
-                                        <label>Facility Check In</label>
-                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
+                                <div class="mb-3 col-md-6 mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="one_way" wire.ignore_self wire:model="type_of_trip">
+                                        <label class="custom-control-label" for="one_way">One way</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self wire:model="type_of_trip">
+                                        <label class="custom-control-label" for="round_trip">Round trip</label>
                                     </div>
                                 </div>
-                                <div class="mb-3 col-md-6">
-                                    <div class="input-group input-group-static my-3">
-                                        <label>Suggested pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" readonly="readonly">
+                                @if($type_of_trip == 'one_way')
+                                    <div class="mb-3 col-md-6">
+                                        <div class="input-group input-group-static my-3">
+                                            <label>Facility Check In</label>
+                                            <input type="text" wire.ignore.self wire:model="pick_up" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up">
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
+                                <hr class="dark horizontal">
                                 <div class="row">
                                     <div class="form-check mb-3 col-md-3">
                                         <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
@@ -228,13 +234,7 @@
                                         <label class="custom-control-label" for="customOutOfHours">After hours</label>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <hr class="dark horizontal">
-                                    <div class="form-check mb-3 col-md-12">
-                                        <input wire.ignore.self wire:model="auto_agend" class="form-check-input" type="checkbox" id="customAutoAgend">
-                                        <label class="custom-control-label" for="customAutoAgend">Auto Agend <i class="material-icons" data-bs-toggle="tooltip" data-bs-original-title="Automatically schedule your appointments">help</i></label>
-                                    </div>
-                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -347,15 +347,6 @@
             let date = $(this).val();
 
             Livewire.emit('checkDate', date);
-        });
-
-        $("#pick_up").on("change", function() {
-            let origin = $(this).find('option:selected').text();
-            let destination = $("#address_hospital").val();
-
-            let arrivalTime = $("#date").val() + " " + $("#check_in").val();
-
-            Livewire.emit('getDistance', origin, destination, arrivalTime);
         });
 
         document.querySelectorAll('.drivers').forEach(function(driverCheckbox) {

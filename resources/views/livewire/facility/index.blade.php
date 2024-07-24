@@ -8,7 +8,7 @@
                     <span class="input-group-text">
                         <i class="material-icons">search</i>
                     </span>
-                    <input wire:model="search" type="text" class="form-control" placeholder="Search hospital...">
+                    <input wire:model="search" type="text" class="form-control" placeholder="Search facilities...">
                 </div>
             </div>
             <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
@@ -20,7 +20,7 @@
                         <li>
                             <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
                         </li>
-                        @can('hospital.delete')
+                        @can('facilities.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
                         </li>
@@ -51,9 +51,9 @@
     </div>
     <!-- end notifications -->
     <div class="card shadow border-0 table-wrapper table-responsive">
-        @if ($hospitals->count())
+        @if ($facilities->count())
         <div>
-            <table class="table hospital-table align-items-center">
+            <table class="table facilities-table align-items-center">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -69,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($hospitals as $hospital)
+                    @foreach ($facilities as $facility)
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
@@ -80,19 +80,19 @@
                         </th>
                         <th>
                             <div class="d-block">
-                                <span class="fw-bold">{{ $hospital->name }}</span>
+                                <span class="fw-bold">{{ $facility->name }}</span>
                             </div>
                         </th>
-                        <th>{{ $hospital->address }}, {{ $hospital->city }}, {{ $hospital->state }}</th>
+                        <th>{{ $facility->address }}, {{ $facility->city }}, {{ $facility->state }}</th>
                         <th>
                             <span class="my-2 text-xs">
-                                @can('hospital.update')
-                                <a wire:click="selectItem({{ $hospital->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                @can('facilities.update')
+                                <a wire:click="selectItem({{ $facility->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
-                                @can('hospital.delete')
-                                <a wire:click="selectItem({{ $hospital->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                @can('facilities.delete')
+                                <a wire:click="selectItem({{ $facilities->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
                         </th>
@@ -107,11 +107,11 @@
         </div>
         @endif
         <div class="d-flex justify-content-end py-1 mx-5">
-            {{ $hospitals->links() }}
+            {{ $facilities->links() }}
         </div>
     </div>
     <!-- Modal Add-->
-    <div wire:ignore.self class="modal fade" id="createHospital" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="createFacility" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -171,7 +171,7 @@
         </div>
     </div>
     <!-- Modal Delete-->
-    <div wire:ignore.self class="modal fade" id="deleteHospital" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteFacility" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -188,7 +188,7 @@
         </div>
     </div>
     <!-- Modal Delete Masive-->
-    <div wire:ignore.self class="modal fade" id="deleteHospitalMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="deleteFacilityMasive" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">

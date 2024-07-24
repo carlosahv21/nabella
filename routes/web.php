@@ -6,25 +6,20 @@ use App\Http\Livewire\Auth\Register;
 use App\Http\Livewire\Auth\ResetPassword;
 use App\Http\Livewire\Billing;
 use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\ExampleLaravel\UserManagement;
 use App\Http\Livewire\ExampleLaravel\UserProfile;
 use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\Roles;
 use App\Http\Livewire\Drivers;
-use App\Http\Livewire\RTL;
-use App\Http\Livewire\StaticSignIn;
-use App\Http\Livewire\StaticSignUp;
+
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\Vehicles;
-use App\Http\Livewire\Clients;
 use App\Http\Livewire\Patients;
-use App\Http\Livewire\Hospitals;
+use App\Http\Livewire\Facilities;
 use App\Http\Livewire\Schedulings;
 use App\Http\Livewire\ServiceContracts;
-use App\Http\Livewire\VirtualReality;
-use GuzzleHttp\Middleware;
+
 use App\Http\Livewire\Calendar;
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
@@ -65,7 +60,7 @@ Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicec
 
 Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');
 
-Route::get('hospital', Hospitals::class)->middleware('auth')->name('hospital');
+Route::get('facility', Facilities::class)->middleware('auth')->name('facility');
 
 Route::get('scheduling', Schedulings::class)->middleware('auth')->name('scheduling');
 
@@ -74,6 +69,7 @@ Route::get('user-management', UserManagement::class)->middleware('auth')->name('
 Route::get('calendar', Calendar::class)->middleware('auth')->name('calendar');
 
 Route::get('reports', Reports::class)->middleware('auth')->name('reports');
+
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dash::class)->name('dashboard');

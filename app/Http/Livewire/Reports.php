@@ -6,11 +6,15 @@ use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use App\Models\ServiceContract;
+use App\Models\Scheduling;
+
+use Faker\Factory as Faker;
 
 class Reports extends Component
 {
     public $date_range, $service_contract_id;
     public $conditions = [];
+    public $data_report = [];
 
     public $date_ranges = [
         'Today',
@@ -45,24 +49,11 @@ class Reports extends Component
 
         $range = $this->rangeDates();
         
-        $sql = "SELECT * FROM schedulings WHERE service_contract_id = ".$this->service_contract_id." AND date BETWEEN '".$range['start']."' AND '".$range['end']."'";
+        $sql = "SELECT * FROM schedulings inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = ".$this->service_contract_id." AND date BETWEEN '".$range['start']."' AND '".$range['end']."'";
 
-        dd($sql); // This is for debugging purposes
-        $data = DB::select($sql);
-    }
-
-    public function whereArray($type, $param)
-    {
-        $condition = '';
-
-        if ($type == 'driver' && $param) {
-            $condition = 'driver_id = '.$param;
-        }
-        if ($type == 'patient' && $param) {
-            $condition = 'patient_id = '.$param;
-        }
-
-        return $condition;
+        $data_report = DB::select($sql);
+        
+        $this->$data_report = $data_report;
     }
 
     public function rangeDates()

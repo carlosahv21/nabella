@@ -38,10 +38,10 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'vehicle.update'])->syncRoles([$role1]);
         Permission::create(['name' => 'vehicle.delete'])->syncRoles([$role1]);
 
-        Permission::create(['name' => 'hospital.view'])->syncRoles([$role1]);
-        Permission::create(['name' => 'hospital.create'])->syncRoles([$role1]);
-        Permission::create(['name' => 'hospital.update'])->syncRoles([$role1]);
-        Permission::create(['name' => 'hospital.delete'])->syncRoles([$role1]);
+        Permission::create(['name' => 'facility.view'])->syncRoles([$role1]);
+        Permission::create(['name' => 'facility.create'])->syncRoles([$role1]);
+        Permission::create(['name' => 'facility.update'])->syncRoles([$role1]);
+        Permission::create(['name' => 'facility.delete'])->syncRoles([$role1]);
 
         Permission::create(['name' => 'servicecontract.view'])->syncRoles([$role1],$role2);
         Permission::create(['name' => 'servicecontract.create'])->syncRoles([$role1]);

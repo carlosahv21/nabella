@@ -22,27 +22,9 @@
                 <!-- Selector de fechas -->
                 <div class="input-group me-3">
                     <select wire:model="date_range" class="form-select" id="date_range">
-                        <option value="">Seleccione una fecha</option>
+                        <option value="">Select a date</option>
                         @foreach($date_ranges as $date_range)
                         <option value="{{ $date_range }}">{{ $date_range }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <!-- Selector de pacientes -->
-                <div class="input-group me-3">
-                    <select wire:model="patient_id" class="form-select" id="patient_id">
-                        <option value="">Seleccione un paciente</option>
-                        @foreach($patients as $patient)
-                        <option value="{{ $patient->id }}">{{ $patient->first_name }} {{ $patient->last_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <!-- Selector de conductores -->
-                <div class="input-group me-3">
-                    <select wire:model="driver_id" class="form-select" id="driver_id">
-                        <option value="">Seleccione un conductor</option>
-                        @foreach($drivers as $driver)
-                        <option value="{{ $driver->id }}">{{ $driver->name }}</option>
                         @endforeach
                     </select>
                 </div>

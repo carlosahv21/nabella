@@ -22,8 +22,7 @@ class Vehicles extends Component
     protected $rules=[
         'make' => 'required|min:3',
         'model' => 'required|min:3',
-        'year' => 'required|numeric|min_digits:4',
-        'type' => 'required'
+        'year' => 'required|numeric|min_digits:4'
     ];
 
     protected $listeners = [

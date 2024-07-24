@@ -83,7 +83,7 @@
                         </th>
                         <th>{{ $vehicle->make }}</th>
                         <th>{{ $vehicle->model }}</th>
-                        <th>{{ $vehicle->user->name }}</th>
+                        <th>{{ ($vehicle->user) ? $vehicle->user->name : '' }}</th>
                         <th>
                             <span class="my-2 text-xs">
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">

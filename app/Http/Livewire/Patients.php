@@ -19,6 +19,8 @@ class Patients extends Component
     public $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
     
     public $inputs = [];
+    public $state = [];
+    public $zipcode = [];
     public $inputs_view = [];
 
     public $item, $action, $search, $title_modal, $countPatients = '';
@@ -96,7 +98,10 @@ class Patients extends Component
         $this->observations = null;
         $this->isEdit = false;
         $this->inputs = [];
+        $this->state = [];
+        $this->zipcode = [];
         $this->inputs_view = [];
+        $this->modelId = null;
     }
 
     public function save()
@@ -128,7 +133,7 @@ class Patients extends Component
             $address = new Address;
 
             $address->user_id = $patient->id;
-            $address->address = $this->inputs[$i];
+            $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
 
             $address->save();
         }
@@ -165,6 +170,13 @@ class Patients extends Component
         // These will reset our error bags
         $this->resetErrorBag();
         $this->resetValidation();
+    }
+
+    public function removeAddress($index, $id)
+    {
+        $address = Address::find($id);
+        $address->delete();
+        unset($this->inputs_view[$index]);
     }
 
     public function delete()

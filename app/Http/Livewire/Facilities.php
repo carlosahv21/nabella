@@ -3,18 +3,18 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Hospital;
+use App\Models\Facility;
 
 use Livewire\WithPagination;
 
-class Hospitals extends Component
+class Facilities extends Component
 {
     use WithPagination;
     
     protected $paginationTheme = 'bootstrap';
 
     public $name, $address, $city, $state, $modelId = '';
-    public $item, $action, $search, $title_modal, $countHospitals = '';
+    public $item, $action, $search, $title_modal, $countFacilities = '';
     public $isEdit = false;
 
     protected $rules=[
@@ -34,18 +34,18 @@ class Hospitals extends Component
         $this->item = $item;
 
         if($action == 'delete'){
-            $this->title_modal = 'Delete Hospital';
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteHospital']);
+            $this->title_modal = 'Delete Facility';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteFacility']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteHospitalMasive']);
-            $this->countHospitals = count($this->selected);
+            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteFacilityMasive']);
+            $this->countFacilities = count($this->selected);
         }else if($action == 'create'){
-            $this->title_modal = 'Create Hospital';
-            $this->dispatchBrowserEvent('openModal', ['name' => 'createHospital']);
+            $this->title_modal = 'Create Facility';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'createFacility']);
             $this->emit('clearForm');
         }else{
-            $this->title_modal = 'Edit Hospital';
-            $this->dispatchBrowserEvent('openModal', ['name' => 'createHospital']);
+            $this->title_modal = 'Edit Facility';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'createFacility']);
             $this->emit('getModelId', $this->item);
 
         }
@@ -56,7 +56,7 @@ class Hospitals extends Component
 
         $this->modelId = $modelId;
 
-        $model = Hospital::find($this->modelId);
+        $model = Facility::find($this->modelId);
         $this->name = $model->name;
         $this->address = $model->address;
         $this->city = $model->city;
@@ -76,31 +76,31 @@ class Hospitals extends Component
     public function save()
     {
         if($this->modelId){
-            $hospital = Hospital::findOrFail($this->modelId);
+            $facility = Facility::findOrFail($this->modelId);
             $this->isEdit = true;
         }else{
-            $hospital = new Hospital;
+            $facility = new Facility;
             $this->validate();
         }
         
-        $hospital->name = $this->name;
-        $hospital->address = $this->address;
-        $hospital->city = $this->city;
-        $hospital->state = $this->state;
+        $facility->name = $this->name;
+        $facility->address = $this->address;
+        $facility->city = $this->city;
+        $facility->state = $this->state;
         
-        $hospital->save();
+        $facility->save();
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'createHospital']);
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'createFacility']);
 
         if ($this->isEdit) {
             $data = [
-                'message' => 'Hospital updated successfully!',
+                'message' => 'Facility updated successfully!',
                 'type' => 'success',
                 'icon' => 'edit',
             ];
         } else {
             $data = [
-                'message' => 'Hospital created successfully!',
+                'message' => 'Facility created successfully!',
                 'type' => 'info',
                 'icon' => 'check',
             ];
@@ -127,13 +127,13 @@ class Hospitals extends Component
 
     public function delete()
     {
-        $hospital = Hospital::findOrFail($this->item);
-        $hospital->delete();
+        $facility = Facility::findOrFail($this->item);
+        $facility->delete();
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteHospital']);
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteFacility']);
         
         $data = [        
-            'message' => 'Hospital deleted successfully!',
+            'message' => 'Facility deleted successfully!',
             'type' => 'danger',
             'icon' => 'delete',
         ];
@@ -149,9 +149,9 @@ class Hospitals extends Component
     
     public function render()
     {
-        return view('livewire.hospital.index', 
+        return view('livewire.facility.index', 
         [
-            'hospitals' => Hospital::search('name', $this->search)->paginate(10)
+            'facilities' => Facility::search('name', $this->search)->paginate(10)
         ],
     );
     }
