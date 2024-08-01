@@ -23,6 +23,8 @@ use App\Http\Livewire\ServiceContracts;
 use App\Http\Livewire\Calendar;
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
+use Illuminate\Support\Facades\DB;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +37,7 @@ use App\Http\Livewire\Reports;
 |
 */
 
-Route::get('/', function(){
+Route::get('/', function () {
     return redirect('sign-in');
 });
 
@@ -70,6 +72,97 @@ Route::get('calendar', Calendar::class)->middleware('auth')->name('calendar');
 
 Route::get('reports', Reports::class)->middleware('auth')->name('reports');
 
+
+Route::get('pdf', function () {
+    $schedulings = DB::table('schedulings')->get();
+    $service_contract = DB::table('service_contracts')->get()->first();
+
+    $total = 0;
+    foreach ($schedulings as $scheduling) {
+        $patient = DB::table('patients')->where('id', $scheduling->patient_id)->get()->first();
+        $scheduling->patient_name = $patient->first_name . ' ' . $patient->last_name;
+        $scheduling->description = getDescription($scheduling);
+
+        $service_contract = DB::table('service_contracts')->get()->first();
+        $scheduling->amount = explode(' ', $scheduling->distance)[0] * $service_contract->rate_per_mile;
+
+        $total = $total + $scheduling->amount;
+    }
+    return view('livewire.report.pdf', [
+        'data' => $schedulings,
+        'service_contract' => $service_contract,
+        'total' => $total
+    ]);
+
+        // Pdf::view('livewire.report.pdf', [
+        //     'data' => $schedulings,
+        //     'service_contract' => $service_contract,
+        //     'total' => $total
+        // ])->save('new.pdf');
+});
+
+Route::get('pdf_d', function () {
+    $name = 'pdfs/' . time() . 'invoice.pdf';
+    Pdf::view('livewire.report.pdf_d', [
+        'invoiceNumber' => '1234',
+        'customerName' => 'Grumpy Cat',
+    ])->save($name);
+
+    return 'Success!';
+});
+
+function getDescription($scheduling)
+{
+    $description = '';
+
+    if ($scheduling->wheelchair) {
+        $description .= 'WHEELCHAIR. ';
+    }
+
+    if ($scheduling->ambulatory) {
+        $description .= 'AMBULATORY. ';
+    }
+
+    $facility = DB::table('facilities')->where('id', $scheduling->hospital_id)->get()->first();
+
+    $address = DB::table('addresses')->where('id', $scheduling->pick_up)->get()->first();
+
+    $description .= 'Pick up: ' . $address->address . '. Drop off: ' . $facility->address . '.';
+
+    $charges = '';
+    if ($scheduling->saturdays) {
+        $charges .= ($charges) ? 'and Saturday ' : 'Saturdays ';
+    }
+
+    if ($scheduling->sundays_holidays) {
+        $charges .= ($charges) ? 'and Sunday/Holiday ' : 'Sundays/Holidays ';
+    }
+
+    if ($scheduling->companion) {
+        $charges .= ($charges) ? 'and Accompanist ' : 'Accompanist ';
+    }
+
+    if ($scheduling->fast_track) {
+        $charges .= ($charges) ? 'and Fast Track ' : 'Fast Track ';
+    }
+
+    if ($scheduling->out_of_hours) {
+        $charges .= ($charges) ? 'and Out of Hours ' : 'Out of Hours ';
+    }
+
+    if ($scheduling->aditional_waiting) {
+        $charges .= ($charges) ? 'and Aditional Waiting ' : 'Aditional Waiting ';
+    }
+
+    $description .= $charges . 'charge applied. ';
+
+    $distance_number = explode('mi', $scheduling->distance)[0];
+    $description .= $distance_number . 'miles ';
+
+    $description .= 'round trip.';
+
+    return $description;
+}
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dash::class)->name('dashboard');

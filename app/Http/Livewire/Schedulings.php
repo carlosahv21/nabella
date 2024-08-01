@@ -145,6 +145,7 @@ class Schedulings extends Component
         $scheduling->patient_id = $this->patient_id;
         $scheduling->hospital_id = $this->hospital_id;
         $scheduling->driver_id = $this->driver_id;
+        $scheduling->driver_return_id = $this->driver_id;
         $scheduling->distance = $this->distance;
         $scheduling->duration = $this->duration;
         $scheduling->date = $this->date;

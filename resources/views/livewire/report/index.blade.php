@@ -39,10 +39,16 @@
                 </div>
             </div>
             <div class="col-4 col-lg-4 d-flex justify-content-end mt-3 me-4">
-                <button class="btn bg-gradient-dark " wire:click="generateReport">
+                <button class="btn bg-gradient-dark" wire:click="generateReport" wire:loading.attr="disabled">
                     <i class="material-icons">picture_as_pdf</i> Generate Report
                 </button>
             </div>
         </div>
     </div>
-<div>
+    
+    @if($invoice)
+    <div>
+        <iframe src="{{ asset($invoice) }}" width="100%" class="pdf-frame p-2" style="height: 1500px;"></iframe>
+    </div>
+    @endif
+</div>

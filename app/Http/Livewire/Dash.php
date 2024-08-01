@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Scheduling;
 use App\Models\Patient;
-use App\Models\Hospital;
+use App\Models\Facility;
 use App\Models\Driver;
 use App\Models\Address;
 
@@ -56,7 +56,7 @@ class Dash extends Component
         $model = Scheduling::find($this->modelId);
 
         $patient = Patient::find($model->patient_id);
-        $hospital = Hospital::find($model->hospital_id);
+        $hospital = Facility::find($model->hospital_id);
         $driver = Driver::find($model->driver_id);
         $address = Address::find($model->pick_up);
 
@@ -125,7 +125,7 @@ class Dash extends Component
             $pick_up = DB::table('addresses')
                 ->where('id', '=', $event->pick_up)
                 ->get();
-            $hospital = DB::table('hospitals')
+            $hospital = DB::table('facilities')
                 ->where('id', '=', $event->hospital_id)
                 ->get();
 
@@ -173,7 +173,8 @@ class Dash extends Component
             $pick_up = DB::table('addresses')
                 ->where('id', '=', $event->pick_up)
                 ->get();
-            $hospital = DB::table('hospitals')
+        
+            $hospital = DB::table('facilities')
                 ->where('id', '=', $event->hospital_id)
                 ->get();
 
@@ -186,7 +187,7 @@ class Dash extends Component
                 ->get();
 
             $hospital_address = $hospital->first()->address;
-            $picl_up_address = $pick_up->first()->address;
+            $picl_up_address = ($pick_up->first()) ? $pick_up->first()->address : '';
 
             $all_events[] = [
                 'id' => $event->id,
