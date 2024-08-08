@@ -1,5 +1,5 @@
 <div>
-    <div class="table-settings mx-3 my-4">
+    <div class="table-settings mx-4 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
             <div class="col-8 col-lg-8 row mt-3">
                 @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-3 col-lg-3">
@@ -34,7 +34,7 @@
     </div>
 </div>
 <!-- end notifications -->
-<div class="card card-calendar">
+<div class="card card-calendar mx-2">
     <div class="card-body p-3">
         <div wire:ignore class="calendar" data-bs-toggle="calendar" id="calendar" style="max-height: 735px;"></div>
     </div>
@@ -50,9 +50,6 @@
                 <div class="card card-plain h-100">
                     <div class="card-body p-0">
                         <form>
-                            <input type="hidden" wire:model="address_hospital" id="address_hospital">
-                            <input type="hidden" wire:model="distance" id="distance">
-                            <input type="hidden" wire:model="duration" id="duration">
                             <div class="row">
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Patient</label>
@@ -82,18 +79,41 @@
                                     </div>
                                     @endif
                                 </div>
-                                <div class="mb-3 col-md-6">
-                                    <label class="form-label">Pick Up Address</label>
-                                    <select wire.ignore.self wire:model="pick_up" class="form-select" id="pick_up">
-                                        @for($i = 0; $i < count($addresses); $i++) <option value="{{ $addresses[$i]['value'] }}">{{ $addresses[$i]['text'] }}</option>
-                                            @endfor
-                                    </select>
-                                    @if ($errors->has('pick_up'))
-                                    <div class="text-danger inputerror">
-                                        {{ $errors->first('pick_up') }}
-                                    </div>
+                                <div class="mb-3 col-md-12">
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" placeholder="Pick up address">
+                                    @if (!empty($prediction_pick_up))
+                                    <ul class="list-group">
+                                        @foreach ($prediction_pick_up as $address_pick_up)
+                                        <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_pick_up }}')">{{ $address_pick_up }}</li>
+                                        @endforeach
+                                    </ul>
                                     @endif
                                 </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Drop off Address</label>
+                                    <button type="button" wire:click="addStop" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add stops">
+                                        <i class="material-icons">add</i>
+                                    </button>
+                                </div>
+                                @foreach ($stops as $index => $stop)
+                                <div class="mb-3 row">
+                                    <div class="col-md-11">
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value)">
+                                        @if (!empty($stops[$index]['addresses']))
+                                        <ul class="list-group">
+                                            @foreach ($stops[$index]['addresses'] as $address)
+                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $index }}, '{{ $address }}')">{{ $address }}</li>
+                                            @endforeach
+                                        </ul>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }})">
+                                            <i class="material-icons">delete</i>
+                                        </button>
+                                    </div>
+                                </div>
+                                @endforeach
                                 <hr class="dark horizontal">
                                 <div class="mb-3 col-md-6">
                                     <div class="input-group input-group-static">
@@ -158,51 +178,70 @@
                                 </div>
                                 <hr class="dark horizontal">
                                 @endif
-                                <div class="mb-3 col-md-6">
-                                    <div class="input-group input-group-static my-3">
-                                        <label>Facility Check In</label>
+                                <div class="mb-3 col-md-3">
+                                    <div class="input-group input-group-static my-1">
+                                        <label>Check In</label>
                                         <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
                                     </div>
                                 </div>
-                                <div class="mb-3 col-md-6">
-                                    <div class="input-group input-group-static my-3">
-                                        <label>Suggested pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" readonly="readonly">
+                                <div class="mb-3 col-md-3">
+                                    <div class="input-group input-group-static my-1">
+                                        <label>Pick up time</label>
+                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time">
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <label class="form-label">Driver assigned</label>
-                                    <select wire.ignore.self wire:model="driver_id" class="form-select" id="driver_id">
+                                    <label class="form-label">Pick up driver</label>
+                                    <select wire.ignore.self wire:model="pick_up_driver_id" class="form-select" id="pick_up_driver_id">
                                         <option value="">Select a Driver</option>
                                         @foreach($drivers as $drive)
                                         <option value="{{ $drive->id }}">{{ $drive->name }}</option>
                                         @endforeach
                                     </select>
-                                    @if ($errors->has('driver_id'))
+                                    @if ($errors->has('pick_up_driver_id'))
                                     <div class="text-danger inputerror">
-                                        {{ $errors->first('driver_id') }}
+                                        {{ $errors->first('pick_up_driver_id') }}
+                                    </div>
+                                    @endif
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Wait time</label>
+                                    <select wire.ignore.self wire:model="wait_time" class="form-select" id="wait_time">
+                                        <option value="">Select a Wait time</option>
+                                        <option value="15">15 mins</option>
+                                        <option value="30">30 mins</option>
+                                        <option value="45">45 mins</option>
+                                        <option value="60">60 mins</option>
+                                    </select>
+                                    @if ($errors->has('wait_time'))
+                                    <div class="text-danger inputerror">
+                                        {{ $errors->first('wait_time') }}
+                                    </div>
+                                    @endif
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Drop off driver</label>
+                                    <select wire.ignore.self wire:model="drop_off_driver_id" class="form-select" id="drop_off_driver_id">
+                                        <option value="">Select a Driver</option>
+                                        @foreach($drivers as $drive)
+                                        <option value="{{ $drive->id }}">{{ $drive->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('drop_off_driver_id'))
+                                    <div class="text-danger inputerror">
+                                        {{ $errors->first('drop_off_driver_id') }}
                                     </div>
                                     @endif
                                 </div>
                                 <div class="mb-3 col-md-6 mt-3">
-                                    <div class="form-check">
+                                    <label class="form-label">Type of trip</label>
+                                    <div class="form-check" style="padding-left: 0px;">
                                         <input class="form-check-input" type="radio" value="one_way" wire.ignore_self wire:model="type_of_trip">
                                         <label class="custom-control-label" for="one_way">One way</label>
-                                    </div>
-
-                                    <div class="form-check">
                                         <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self wire:model="type_of_trip">
                                         <label class="custom-control-label" for="round_trip">Round trip</label>
                                     </div>
                                 </div>
-                                @if($type_of_trip == 'one_way')
-                                    <div class="mb-3 col-md-6">
-                                        <div class="input-group input-group-static my-3">
-                                            <label>Facility Check In</label>
-                                            <input type="text" wire.ignore.self wire:model="pick_up" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up">
-                                        </div>
-                                    </div>
-                                @endif
                                 <hr class="dark horizontal">
                                 <div class="row">
                                     <div class="form-check mb-3 col-md-3">
@@ -251,15 +290,13 @@
 
 <script>
     let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-        initialView: "timeGridWeek",
+        // initialView: "dayGridYear",
         headerToolbar: {
             start: 'title', // will normally be on the left. if RTL, will be on the right
-            center: '',
+            center: 'dayGridMonth,timeGridWeek,timeGridDay',
             end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
         },
         events: @json($events),
-        slotMinTime: '09:00:00',
-        slotMaxTime: '20:00:00',
         editable: true,
         selectable: true,
         eventClick: function(info) {
@@ -333,15 +370,6 @@
     }
 
     $(document).ready(function() {
-        $("#patientId").on("change", function() {
-            let patientId = $(this).val();
-            Livewire.emit('updatePatientId', patientId);
-        });
-
-        $("#hospital_id").on("change", function() {
-            let hospitalId = $(this).val();
-            Livewire.emit('updateHospitalAddress', hospitalId);
-        });
 
         $("#date").on("change", function() {
             let date = $(this).val();

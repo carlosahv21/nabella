@@ -7544,6 +7544,9 @@ textarea.form-control-lg {
 .z-index-3 {
   z-index: 3 !important; }
 
+.z-index-100 {
+    z-index: 100 !important; }
+
 .letter-spacing-1 {
   letter-spacing: 1px !important; }
 

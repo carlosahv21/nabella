@@ -49,8 +49,6 @@
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     Status</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Map</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     Details</th>
                             </tr>
                         </thead>
@@ -65,12 +63,12 @@
                                                     <i class="material-icons text-success text-gradient">location_on</i>
                                                 </span>
                                                 <div class="timeline-content">
-                                                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0"> {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['pick_up_time'])->format('H:i A') }} </p>
+                                                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
+                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0"> {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <div class="timeline-content pt-3">
-                                                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['hospital_address'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $event['date'] }} {{ \Carbon\Carbon::parse($event['check_in'])->format('H:i A') }} </p>
+                                                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['drop_off_address'] }}</h6>
+                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $event['date'] }} {{ \Carbon\Carbon::parse($event['drop_off_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <span class="timeline-step" style="margin-top: -25px;">
                                                     <i class="material-icons text-success text-gradient">location_on</i>
@@ -84,11 +82,6 @@
                                 </td>
                                 <td class="align-middle text-center">
                                     <span class="badge badge-sm bg-gradient-success">Waiting</span>
-                                </td>
-                                <td class="align-middle">
-                                    <a wire:click="selectItem({{ $event['id'] }}, 'seeMap')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See map">
-                                        <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See map">location_on</i> See map
-                                    </a>
                                 </td>
                                 <td class="align-middle">
                                     <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">

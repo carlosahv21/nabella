@@ -15,26 +15,10 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('patient_id');
             $table->unsignedInteger('hospital_id');
-            $table->unsignedInteger('driver_id');
-            $table->unsignedInteger('driver_return_id'); // Nuevo campo para el conductor del viaje de vuelta
-            $table->string('distance');
-            $table->string('duration');
+            $table->integer('wait_time');
             $table->date('date');
-            $table->string('check_in');
-            $table->string('pick_up');
-            $table->string('pick_up_time');
-            $table->string('status')->default('Waiting');
-            $table->boolean('wheelchair')->default(false);
-            $table->boolean('ambulatory')->default(false);
-            $table->boolean('out_of_hours')->default(false);
-            $table->boolean('saturdays')->default(false);
-            $table->boolean('sundays_holidays')->default(false);
-            $table->boolean('companion')->default(false);
-            $table->boolean('aditional_waiting')->default(false);
-            $table->boolean('fast_track')->default(false);
-            $table->boolean('if_not_cancel')->default(false);
-            $table->boolean('overcharge')->default(false);
             $table->boolean('auto_agend')->default(false);
+            $table->string('status')->default('Waiting');
             $table->timestamps();
         });
     }

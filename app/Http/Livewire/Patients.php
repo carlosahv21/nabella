@@ -22,6 +22,7 @@ class Patients extends Component
     public $state = [];
     public $zipcode = [];
     public $inputs_view = [];
+    public $type = 'Patient';
 
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
@@ -78,7 +79,7 @@ class Patients extends Component
         $this->date_end = $model->date_end;
         $this->observations = $model->observations;
 
-        $this->inputs_view = Address::where('user_id', $this->modelId)->get();
+        $this->inputs_view = Address::where('patient_id', $this->modelId)->get();
 
     }
 
@@ -132,8 +133,9 @@ class Patients extends Component
         for ($i=0; $i < count($this->inputs); $i++) { 
             $address = new Address;
 
-            $address->user_id = $patient->id;
+            $address->patient_id = $patient->id;
             $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
+            $address->entity_type = $this->type;
 
             $address->save();
         }

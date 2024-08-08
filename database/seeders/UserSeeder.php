@@ -22,13 +22,13 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Laura ',
-            'email' => 'laura@nabella.com',
+            'email' => 'laura@material.com',
             'password' => ('secret')
         ])->assignRole('Admin');
 
         User::factory()->create([
             'name' => 'Cony',
-            'email' => 'cony@nabella.com',
+            'email' => 'cony@material.com',
             'password' => ('secret')
         ])->assignRole('Admin');
 

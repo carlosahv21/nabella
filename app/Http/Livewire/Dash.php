@@ -86,7 +86,6 @@ class Dash extends Component
         $this->reset(['modelId', 'patient_id', 'hospital_name', 'hospital_address', 'driver_name', 'distance', 'duration', 'date', 'check_in', 'pick_up', 'pick_up_time', 'wheelchair', 'ambulatory', 'saturdays', 'sundays_holidays', 'companion', 'fast_track', 'out_of_hours']);
     }
 
-
     public function forcedCloseModal()
     {
         sleep(2);
@@ -118,7 +117,7 @@ class Dash extends Component
         $events = DB::table('schedulings')
             ->where('id', '=', $event)
             ->get();
-            
+
         $routes = [];
 
         foreach ($events as $event) {
@@ -143,7 +142,7 @@ class Dash extends Component
             }
             $routes[] = $route;
         }
-        
+
         $this->dispatchBrowserEvent('showMap', ['routes' => $routes]);
     }
 
@@ -155,14 +154,17 @@ class Dash extends Component
 
         if (auth()->user()->roles->first()->name == 'Driver') {
             $events = DB::table('schedulings')
+                ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
+                ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
                 ->where('driver_id', '=', auth()->user()->id)
-                ->where('date', '=', Carbon::now()->format('Y-m-d'))
                 ->get();
             $cars = DB::table('vehicles')
                 ->where('user_id', '=', auth()->user()->id)
                 ->get();
         } else {
             $events = DB::table('schedulings')
+                ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
+                ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
                 ->get();
 
             $cars = DB::table('vehicles')
@@ -170,13 +172,13 @@ class Dash extends Component
         }
 
         foreach ($events as $event) {
-            $pick_up = DB::table('addresses')
-                ->where('id', '=', $event->pick_up)
-                ->get();
-        
+            $pick_up_address = $event->pick_up_address;
+
             $hospital = DB::table('facilities')
                 ->where('id', '=', $event->hospital_id)
                 ->get();
+
+            $drop_off_address = $event->drop_off_address;
 
             $patient = DB::table('patients')
                 ->where('id', '=', $event->patient_id)
@@ -186,19 +188,16 @@ class Dash extends Component
                 ->where('id', '=', $event->driver_id)
                 ->get();
 
-            $hospital_address = $hospital->first()->address;
-            $picl_up_address = ($pick_up->first()) ? $pick_up->first()->address : '';
-
             $all_events[] = [
                 'id' => $event->id,
                 'distance' => $event->distance,
-                'pick_up' => $picl_up_address,
+                'pick_up_address' => $pick_up_address,
+                'drop_off_address' => $drop_off_address,
                 'hospital_name' => $hospital->first()->name,
-                'hospital_address' => $hospital_address,
                 'driver_name' => $driver->first()->name,
                 'date' => $event->date,
-                'check_in' => $event->check_in,
-                'pick_up_time' => $event->pick_up_time,
+                'pick_up_hour' => $event->pick_up_hour,
+                'drop_off_hour' => $event->drop_off_hour,
                 'patient_name' => $patient->first()->first_name . ' ' . $patient->first()->last_name,
                 'observations' => $patient->first()->observations,
                 'wheelchair' => $event->wheelchair ? true : false,
@@ -209,7 +208,7 @@ class Dash extends Component
                 'sundays_holidays' => $event->sundays_holidays ? true : false,
                 'out_of_hours' => $event->out_of_hours ? true : false,
             ];
-        } 
+        }
 
 
         return view(

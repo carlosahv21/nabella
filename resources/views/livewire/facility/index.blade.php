@@ -1,3 +1,7 @@
+@php
+use App\Models\Address;
+@endphp
+
 @section('title','Usuario')
 
 <div>
@@ -69,7 +73,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($facilities as $facility)
+                    @foreach ($facilities as $_facility)
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
@@ -80,19 +84,28 @@
                         </th>
                         <th>
                             <div class="d-block">
-                                <span class="fw-bold">{{ $facility->name }}</span>
+                                <span class="fw-bold">{{ $_facility->name }}</span>
                             </div>
                         </th>
-                        <th>{{ $facility->address }}, {{ $facility->city }}, {{ $facility->state }}</th>
+                        <th>
+                            @php
+                                $address = Address::where('facility_id', $_facility->id)->first();
+                            @endphp
+                            @if ($address)
+                                {{ $address->address }}
+                            @else
+                                No address found
+                            @endif
+                        </th>
                         <th>
                             <span class="my-2 text-xs">
-                                @can('facilities.update')
-                                <a wire:click="selectItem({{ $facility->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
+                                @can('facility.update')
+                                <a wire:click="selectItem({{ $_facility->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
-                                @can('facilities.delete')
-                                <a wire:click="selectItem({{ $facilities->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                @can('facility.delete')
+                                <a wire:click="selectItem({{ $_facility->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
                         </th>
@@ -122,7 +135,7 @@
                         <div class="card-body p-0">
                             <form>
                                 <div class="row">
-                                    <div class="mb-3 col-md-6">
+                                    <div class="mb-3 col-md-12">
                                         <label class="form-label">Name of the Facility <span class="text-danger">*</span></label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
@@ -131,32 +144,30 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Address of the Facility <span class="text-danger">*</span></label>
-                                        <input wire:model="address" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('address'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('address') }}
+                                    <div class="mb-3 col-md-12">
+                                        <label class="form-label">Address</label>
+                                        <button type="button" wire:click="addInput" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add address">
+                                            <i class="material-icons">add</i>
+                                        </button>
+                                        <!-- Add new address -->
+                                        @foreach($inputs as $index => $input)
+                                        <div class="row mb-3 me-3">
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="inputs.{{ $index }}" placeholder="Address and city">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="state.{{ $index }}" placeholder="State">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control border border-2 p-2" wire:model="zipcode.{{ $index }}" placeholder="Zipcode">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeInput({{ $index }})">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+                                            </div>
                                         </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">City <span class="text-danger">*</span></label>
-                                        <input wire:model="city" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('city'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('city') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">State <span class="text-danger">*</span></label>
-                                        <input wire:model="state" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
-                                        @if ($errors->has('state'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('state') }}
-                                        </div>
-                                        @endif
+                                        @endforeach
                                     </div>
                                 </div>
                             </form>

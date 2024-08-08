@@ -80,7 +80,7 @@ class Vehicles extends Component
         $this->vin = $model->vin;
         $this->number_vehicle = $model->number_vehicle;
         $this->user_id = $model->user_id;
-        $this->driver = User::find($this->user_id)->name;
+        $this->driver = User::find($this->user_id)->name ?? '';
     }
 
     public function save()

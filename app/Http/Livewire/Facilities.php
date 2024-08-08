@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Facility;
+use App\Models\Address;
 
 use Livewire\WithPagination;
 
@@ -17,11 +18,13 @@ class Facilities extends Component
     public $item, $action, $search, $title_modal, $countFacilities = '';
     public $isEdit = false;
 
+    public $inputs = [];
+    public $zipcode = [];
+    public $inputs_view = [];
+    public $type = 'Facility';
+
     protected $rules=[
-        'name' => 'required',
-        'address' => 'required',
-        'city' => 'required',
-        'state' => 'required',
+        'name' => 'required'
     ];
 
     protected $listeners = [
@@ -84,11 +87,17 @@ class Facilities extends Component
         }
         
         $facility->name = $this->name;
-        $facility->address = $this->address;
-        $facility->city = $this->city;
-        $facility->state = $this->state;
-        
         $facility->save();
+
+        for ($i=0; $i < count($this->inputs); $i++) { 
+            $address = new Address;
+
+            $address->facility_id = $facility->id;
+            $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
+            $address->entity_type = $this->type;
+
+            $address->save();
+        }
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createFacility']);
 
@@ -139,6 +148,17 @@ class Facilities extends Component
         ];
         $this->sessionAlert($data);
 
+    }
+
+    public function addInput()
+    {
+        $this->inputs[] = '';
+    }
+
+    public function removeInput($index)
+    {
+        unset($this->inputs[$index]);
+        $this->inputs = array_values($this->inputs); // Reindex array
     }
 
     function sessionAlert($data) {

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         Seeder::call(RoleSeeder::class);
         Seeder::call(UserSeeder::class);
         Seeder::call(VehicleSeeader::class);
+        Seeder::call(ContractServiceSeeder::class);
 
     }
 }

@@ -6,13 +6,29 @@ use Livewire\Component;
 use App\Models\Scheduling;
 use App\Models\Patient;
 use App\Models\Facility;
-use App\Models\Address;
+
+use App\Models\SchedulingAddress;
+use App\Models\SchedulingCharge;
+use App\Models\ApisGoogle;
+use App\Models\ApiHoliday;
+use Illuminate\Support\Carbon;
+
 use Illuminate\Support\Facades\DB;
 
 class Schedulings extends Component
 {
-    public $distance, $duration, $patient_id, $hospital_id, $driver_id, $address_hospital, $date, $check_in, $pick_up, $pick_up_time, $modelId = '';
+    // Campos de la tabla scheduling
+    public $patient_id, $hospital_id, $wait_time, $date,$check_in, $pick_up_time = '';
+    public $auto_agend = false;
+    public $weekdays = [];
+    public $ends_schedule;
+    public $ends_date;
+    public $google;
+    
+    // Campos de la tabla scheduling_address
+    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance = '';
 
+    // Campos de la tabla scheduling_charge
     public $wheelchair = false;
     public $ambulatory = false;
     public $saturdays = false;
@@ -20,25 +36,17 @@ class Schedulings extends Component
     public $fast_track = false;
     public $sundays_holidays = false;
     public $out_of_hours = false;
-    public $auto_agend = false;
-    public $type_of_trip;
+    public $aditional_waiting = false;
+    public $if_not_cancel = false;
+    public $type_of_trip = '';
 
-    public $item, $action, $search, $title_modal, $countSchedulings = '';
+    public $item, $action, $search, $title_modal, $countSchedulings, $modelId = '';
     public $isEdit = false;
 
-    public $weekdays = [];
-    public $ends_schedule;
-    public $ends_date;
-
-    // Variables para la API Holidays
-    public $url = 'https://holidays.abstractapi.com/v1/';
-    public $api_key = '0a20ae64f61d46a583956c86895843ff';
-    public $country = 'US';
-
-    // variables para la API Google Maps
-    public $map_api_key = 'AIzaSyBOx8agvT4F1RjSW4IS_zgkINQzdFZevik';
-    public $url_map = 'https://maps.googleapis.com/maps/api/';
-
+    public $prediction_pick_up = [];
+    public $prediction_drop_off = [];
+    public $stops = [];
+    public $distances = [];
     public $addresses = [];
 
     // Array de colores predefinidos
@@ -58,14 +66,16 @@ class Schedulings extends Component
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
-        'updatePatientId',
         'checkDate',
-        'updateHospitalAddress',
-        'getDistance',
         'editEvent',
         'updateEventDate',
         'updateEventsCalendar'
     ];
+
+    public function __construct()
+    {
+        $this->google = new ApisGoogle();
+    }
 
     public function selectItem($item, $action)
     {
@@ -96,32 +106,35 @@ class Schedulings extends Component
     public function getModelId($modelId)
     {
         $this->modelId = $modelId;
-        $model = Scheduling::find($this->modelId);
+        $model_scheduling = Scheduling::find($this->modelId);
+        $model_scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->first();
+        $model_scheduling_charge = SchedulingCharge::where('scheduling_id', $model_scheduling->id)->first();
 
-        $this->fill([
-            'patient_id' => $model->patient_id,
-            'hospital_id' => $model->hospital_id,
-            'driver_id' => $model->driver_id,
-            'distance' => $model->distance,
-            'duration' => $model->duration,
-            'date' => $model->date,
-            'check_in' => $model->check_in,
-            'pick_up' => $model->pick_up,
-            'pick_up_time' => $model->pick_up_time,
-            'wheelchair' => $model->wheelchair,
-            'ambulatory' => $model->ambulatory,
-            'saturdays' => $model->saturdays,
-            'sundays_holidays' => $model->sundays_holidays,
-            'companion' => $model->companion,
-            'fast_track' => $model->fast_track,
-            'out_of_hours' => $model->out_of_hours,
-            'auto_agend' => $model->auto_agend,
-        ]);
+        $this->patient_id = $model_scheduling->patient_id;
+        $this->hospital_id = $model_scheduling->hospital_id;
+        $this->wait_time = $model_scheduling->wait_time;
+        $this->date = $model_scheduling->date;
+        $this->check_in = $model_scheduling->check_in;
+        $this->pick_up_address = $model_scheduling_address->pick_up_address;
+        $this->drop_off_address = $model_scheduling_address->drop_off_address;
+        $this->pick_up_hour = $model_scheduling_address->pick_up_hour;
+        $this->drop_off_hour = $model_scheduling_address->drop_off_hour;
+        $this->distance = $model_scheduling_address->distance;
+        $this->type_of_trip = $model_scheduling_charge->type_of_trip;
+        $this->wheelchair = $model_scheduling_charge->wheelchair;
+        $this->ambulatory = $model_scheduling_charge->ambulatory;
+        $this->saturdays = $model_scheduling_charge->saturdays;
+        $this->sundays_holidays = $model_scheduling_charge->sundays_holidays;
+        $this->companion = $model_scheduling_charge->companion;
+        $this->fast_track = $model_scheduling_charge->fast_track;
+        $this->out_of_hours = $model_scheduling_charge->out_of_hours;
+        $this->auto_agend = $model_scheduling_charge->auto_agend;
     }
 
     private function clearForm()
     {
-        $this->reset(['modelId', 'patient_id', 'hospital_id', 'driver_id', 'distance', 'duration', 'date', 'check_in', 'pick_up', 'pick_up_time', 'wheelchair', 'ambulatory', 'saturdays', 'sundays_holidays', 'companion', 'fast_track', 'out_of_hours', 'auto_agend']);
+        $this->reset(['modelId', 'patient_id', 'hospital_id', 'pick_up_address', 'drop_off_address', 'date', 'check_in', 'drop_off_hour', 'wait_time', 'wheelchair', 'ambulatory', 'saturdays', 'sundays_holidays', 'companion', 'fast_track', 'out_of_hours', 'auto_agend']);
+
         $this->isEdit = false;
         $this->addresses = [];
     }
@@ -133,49 +146,78 @@ class Schedulings extends Component
         if ($this->modelId) {
             $scheduling = Scheduling::findOrFail($this->modelId);
             $this->isEdit = true;
-
-            $minutes = explode(' ', $this->duration)[0];
-            $date = $this->date . ' ' . $this->customHourTo;
-            $endTimestamp = strtotime("+$minutes minutes", strtotime($date));
-            $this->pick_up_time = date('H:i', $endTimestamp);
         } else {
             $scheduling = new Scheduling;
         }
 
+        // Guardamos los datos de la tabla scheduling
         $scheduling->patient_id = $this->patient_id;
         $scheduling->hospital_id = $this->hospital_id;
-        $scheduling->driver_id = $this->driver_id;
-        $scheduling->driver_return_id = $this->driver_id;
-        $scheduling->distance = $this->distance;
-        $scheduling->duration = $this->duration;
+        $scheduling->wait_time = $this->wait_time;
         $scheduling->date = $this->date;
-        $scheduling->check_in = $this->check_in;
-        $scheduling->pick_up = $this->pick_up;
-        $scheduling->pick_up_time = $this->pick_up_time;
-        $scheduling->wheelchair = $this->wheelchair;
-        $scheduling->ambulatory = $this->ambulatory;
-        $scheduling->saturdays = $this->saturdays;
-        $scheduling->sundays_holidays = $this->sundays_holidays;
-        $scheduling->companion = $this->companion;
         $scheduling->auto_agend = $this->auto_agend;
+        $scheduling->status = 'Waiting';
 
         $scheduling->save();
+
+        // Guardamos los datos de la tabla scheduling_charge
+        $scheduling_charge = new SchedulingCharge;
+        $scheduling_charge->scheduling_id = $scheduling->id;
+        $scheduling_charge->type_of_trip = $this->type_of_trip;
+        $scheduling_charge->wheelchair = $this->wheelchair;
+        $scheduling_charge->ambulatory = $this->ambulatory;
+        $scheduling_charge->out_of_hours = $this->out_of_hours;
+        $scheduling_charge->saturdays = $this->saturdays;
+        $scheduling_charge->sundays_holidays = $this->sundays_holidays;
+        $scheduling_charge->companion = $this->companion;
+        $scheduling_charge->aditional_waiting = $this->aditional_waiting;
+        $scheduling_charge->fast_track = $this->fast_track;
+        $scheduling_charge->if_not_cancel = $this->if_not_cancel;
+
+        $scheduling_charge->save();
+
+        // Guardamos los datos de la tabla scheduling_address
+        $newStop = [
+            "address" => $this->pick_up_address,
+            "addresses" => [],
+            "distance" => "0",
+            "duration" => "0"
+        ];
+        array_unshift($this->stops, $newStop);
+
+        for ($i = 0; $i < count($this->stops) - 1; $i++) {
+            $scheduling_address = new SchedulingAddress;
+
+            $check_in = ($i == 0) ? $this->check_in : $this->sumWaitTime($this->check_in, $this->wait_time, $this->stops[$i]['duration']);
+            $drop_off = ($i == 0) ? $this->sumWaitTime($this->check_in, false, $this->stops[$i]['duration']) : $this->sumWaitTime($this->check_in, $this->wait_time, $this->stops[$i]['duration']);
+
+            $scheduling_address->scheduling_id = $scheduling->id;
+            $scheduling_address->driver_id = ($i == 0) ? $this->pick_up_driver_id : $this->drop_off_driver_id;
+            $scheduling_address->pick_up_address = $this->stops[$i]['address'];
+            $scheduling_address->drop_off_address = $this->stops[$i + 1]['address'];
+            $scheduling_address->pick_up_hour = $check_in;
+            $scheduling_address->drop_off_hour = $drop_off;
+            $scheduling_address->distance = $this->stops[$i + 1]['distance'];
+            $scheduling_address->duration = $this->stops[$i + 1]['duration'];
+
+            $scheduling_address->save();
+        }
 
         $patient = Patient::find($scheduling->patient_id);
 
         $driverColors = [];
 
-        if (!isset($driverColors[$scheduling->driver_id])) {
-            $driverColors[$scheduling->driver_id] = $this->colors[$scheduling->driver_id - 1];
+        if (!isset($driverColors[$scheduling_address->driver_id])) {
+            $driverColors[$scheduling_address->driver_id] = $this->colors[$scheduling_address->driver_id - 1];
         }
 
-        $color = $driverColors[$scheduling->driver_id];
+        $color = $driverColors[$scheduling_address->driver_id];
 
         $new_event = [
             'id' => $scheduling->id,
             'title' => $patient->first_name . " " . $patient->last_name,
-            'start' => $scheduling->date . " " . $scheduling->check_in,
-            'end' => $scheduling->date . " " . $scheduling->pick_up_time,
+            'start' => $scheduling->date . " " . $scheduling_address->pick_up_hour,
+            'end' => $scheduling->date . " " . $scheduling_address->drop_off_hour,
             'color' => $color
         ];
 
@@ -190,6 +232,23 @@ class Schedulings extends Component
         session()->flash('alert', $data);
 
         $this->clearForm();
+    }
+
+    public function sumWaitTime($pick_up_hour, $wait_time, $duration)
+    {
+        $hora = $pick_up_hour;
+        $minutosASumar = $duration + 10;
+
+        
+        if($wait_time){
+            $minutosASumar = $wait_time + $duration;
+        }
+
+        $dateTime = Carbon::createFromFormat('H:i', $hora);
+        $dateTime->addMinutes($minutosASumar);
+        $horaResultado = $dateTime->format('H:i');
+
+        return $horaResultado;
     }
 
     public function forcedCloseModal()
@@ -209,147 +268,26 @@ class Schedulings extends Component
         session()->flash('alert', ['message' => 'Scheduling deleted successfully!', 'type' => 'danger', 'icon' => 'delete']);
     }
 
-    public function updateHospitalAddress($hospitalId)
+    // Funciones que validan la actualización de algun campo
+    public function updatedPickUpAddress()
     {
-        $hospital = Facility::findOrFail($hospitalId);
-        $this->address_hospital = $hospital->address;
-    }
-
-    public function updatePatientId($patientId)
-    {
-        $this->addresses = [['value' => '', 'text' => 'Select a address']];
-        $this->patient_id = $patientId;
-        $patientAddresses = Address::where('user_id', $this->patient_id)->get()->map(function ($address) {
-            return ['value' => $address->id, 'text' => $address->address];
-        })->toArray();
-        $this->addresses = array_merge($this->addresses, $patientAddresses);
-    }
-
-    public function checkDate($date)
-    {
-        $timestamp = strtotime($date);
-        $weekday = date('w', $timestamp);
-
-        switch ($weekday) {
-            case 0:
-                $this->sundays_holidays = true;
-                $this->saturdays = false;
-                break;
-            case 6:
-                $this->sundays_holidays = false;
-                $this->saturdays = true;
-                break;
-            default:
-                $is_holiday = json_decode($this->checkHolydays($date));
-                $this->sundays_holidays = is_array($is_holiday) && collect($is_holiday)->contains('type', 'National');
-                $this->saturdays = false;
-                break;
-        }
-    }
-
-    public function checkHolydays($date)
-    {
-        $date = explode('-', $date);
-        $year = $date[0];
-        $month = $date[1];
-        $day = $date[2];
-
-        $url = "{$this->url}?api_key={$this->api_key}&country={$this->country}&year={$year}&month={$month}&day={$day}";
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        $data = curl_exec($ch);
-        curl_close($ch);
-
-        return $data;
-    }
-
-    public function getCoordinates($address)
-    {
-        $address = urlencode($address);
-        $url = "{$this->url_map}geocode/json?address={$address}&key={$this->map_api_key}";
-
-        $response = file_get_contents($url);
-        $data = json_decode($response);
-
-        if ($data->status == 'OK') {
-            return ['lat' => $data->results[0]->geometry->location->lat, 'lng' => $data->results[0]->geometry->location->lng];
+        if (strlen($this->pick_up_address) >= 3) {
+            $this->prediction_pick_up = $this->google->getPlacePredictions($this->pick_up_address);
         } else {
-            return false;
+            $this->prediction_pick_up = [];
         }
     }
 
-    public function getDistance($origin, $destination, $arrivalTime)
+    public function updateDropOffAddress($dropOffId)
     {
-        $arrivalTimestamp = strtotime($arrivalTime);
-        $originCoords = $this->getCoordinates($origin);
-        $destinationCoords = $this->getCoordinates($destination);
-
-        if (!$originCoords || !$destinationCoords) {
-            return false;
-        }
-
-        $origins = "{$originCoords['lat']},{$originCoords['lng']}";
-        $destinations = "{$destinationCoords['lat']},{$destinationCoords['lng']}";
-        $url = "{$this->url_map}distancematrix/json?origins={$origins}&destinations={$destinations}&key={$this->map_api_key}&units=imperial&arrival_time={$arrivalTimestamp}";
-
-        $response = file_get_contents($url);
-        $data = json_decode($response);
-
-        if ($data->status == 'OK' && $data->rows[0]->elements[0]->status == 'OK') {
-            $distance = $data->rows[0]->elements[0]->distance->text;
-            $duration = $data->rows[0]->elements[0]->duration->text;
-
-            $this->distance = $distance;
-            $this->duration = $duration;
-            $this->pick_up_time = $this->getTime($duration, $arrivalTime);
-        } else {
-            return false;
-        }
+        $this->drop_off_address = $dropOffId;
+        $this->validateAddresses('drop_off');
     }
 
-    public function getTime($duration, $arrivalTime)
+    public function updatePickUpAddress($pickUpId)
     {
-        $minutesToSubtract = $this->convertToMinutes($duration);
-        $totalMinutesToSubtract = $minutesToSubtract + 10;
-
-        list($date, $time) = explode(' ', $arrivalTime);
-        list($year, $month, $day) = explode('-', $date);
-        list($hour, $minute) = explode(':', $time);
-
-        $arrivalTimestamp = mktime($hour, $minute, 0, $month, $day, $year);
-        $newTimestamp = $arrivalTimestamp - ($totalMinutesToSubtract * 60);
-
-        return date('H:i', $newTimestamp);
-    }
-
-    public function convertToMinutes($timeString) {
-        $totalMinutes = 0;
-        preg_match_all('/(\d+)\s*(hours?|mins?)/', $timeString, $matches, PREG_SET_ORDER);
-        
-        foreach ($matches as $match) {
-            $value = intval($match[1]);
-            $unit = $match[2];
-            
-            if (strpos($unit, 'hour') !== false) {
-                $totalMinutes += $value * 60;
-            } elseif (strpos($unit, 'min') !== false) {
-                $totalMinutes += $value;
-            }
-        }
-        
-        return $totalMinutes;
-    }
-
-
-
-    public function editEvent($id)
-    {
-        $this->title_modal = 'Edit Scheduling';
-        $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
-        $this->emit('getModelId', $id);
+        $this->pick_up_address = $pickUpId;
+        $this->validateAddresses('pick_up');
     }
 
     public function updateEventDate($id, $start, $end)
@@ -366,9 +304,9 @@ class Schedulings extends Component
 
     public function updateEventsCalendar($driverIds)
     {
-        $scheduling = !empty($driverIds) 
-        ? Scheduling::whereIn('driver_id', $driverIds)->get()
-        : Scheduling::all();
+        $scheduling = !empty($driverIds)
+            ? Scheduling::whereIn('driver_id', $driverIds)->get()
+            : Scheduling::all();
         $new_events = [];
         $driverColors = [];
 
@@ -398,27 +336,6 @@ class Schedulings extends Component
         $this->validateFields();
     }
 
-    public function updatedPickUp($value)
-    {
-        $this->validateFields();
-    }
-
-    public function updatedDate($value)
-    {
-        $this->validateFields();
-    }
-
-    public function validateFields()
-    {
-        if($this->patient_id && $this->hospital_id && $this->date && $this->check_in){
-            $origin = Address::find($this->pick_up)->address;
-            $destination = $this->address_hospital;
-            $arrivalTime = $this->date . ' ' . $this->check_in;
-
-            $this->getDistance($origin, $destination, $arrivalTime);
-        }
-    }
-
     public function updatedEndsSchedule($value)
     {
         if ($value == 'ends_check') {
@@ -428,9 +345,165 @@ class Schedulings extends Component
         }
     }
 
+    public function addPickUp($address)
+    {
+        $this->pick_up_address = $address;
+        $this->validateAddresses('pick_up');
+        $this->prediction_pick_up = [];
+    }
+
+    public function addDropOff($address)
+    {
+        $this->drop_off_address = $address;
+        $this->validateAddresses('drop_off');
+        $this->prediction_drop_off = [];
+    }
+
+    public function addStop()
+    {
+        $this->stops[] = ['address' => '', 'addresses' => []];
+    }
+
+    public function removeStop($index)
+    {
+        unset($this->stops[$index]);
+        $this->stops = array_values($this->stops);
+    }
+
+    public function updateStopQuery($index, $query)
+    {
+        $this->stops[$index]['address'] = $query;
+
+        if (strlen($query) >= 3) {
+            $this->stops[$index]['addresses'] = $this->google->getPlacePredictions($query);
+        } else {
+            $this->stops[$index]['addresses'] = [];
+        }
+    }
+
+    public function selectStopAddress($index, $address)
+    {
+        $this->stops[$index]['address'] = $address;
+        $this->stops[$index]['addresses'] = [];
+    }
+
+    public function validateAddresses($inptu)
+    {
+        if (!$this->pick_up_address || !$this->drop_off_address) {
+            return false;
+        }
+        if ($this->pick_up_address == $this->drop_off_address) {
+            if ($inptu == 'pick_up') {
+                $this->pick_up_address = null;
+            } else {
+                $this->drop_off_address = null;
+            }
+            $this->sessionAlert([
+                'message' => 'Pick up and drop off addresses cannot be the same!',
+                'type' => 'danger',
+                'icon' => 'error',
+            ]);
+        }
+    }
+
+    function sessionAlert($data)
+    {
+        session()->flash('alert', $data);
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
+    }
+
+    public function checkDate($date)
+    {
+        $timestamp = strtotime($date);
+        $weekday = date('w', $timestamp);
+
+        switch ($weekday) {
+            case 0:
+                $this->sundays_holidays = true;
+                $this->saturdays = false;
+                break;
+            case 6:
+                $this->sundays_holidays = false;
+                $this->saturdays = true;
+                break;
+            default:
+                $holidays = new ApiHoliday();
+                $is_holiday = json_decode($holidays->getHolidays($date));
+                $this->sundays_holidays = is_array($is_holiday) && collect($is_holiday)->contains('type', 'National');
+                $this->saturdays = false;
+                break;
+        }
+    }
+
+    public function getDistance($addresses, $arrivalTime)
+    {
+        $arrivalTimestamp = strtotime($arrivalTime);
+
+        for ($i = 0; $i < count($addresses) - 1; $i++) {
+            $origin = $this->google->getCoordinates($addresses[$i]);
+            $destination = $this->google->getCoordinates($addresses[$i + 1]);
+            
+            if (!$origin || !$destination) {
+                return false;
+            }
+
+            $data = $this->google->getDistance($origin, $destination, $arrivalTimestamp);
+
+            if ($data['distance']) {
+                $this->stops[$i]['distance'] = $data['distance'];
+            }
+            if ($data['duration']) {
+                if($i == 0){
+                    $this->pick_up_time = $this->getTime($data['duration'], $arrivalTime);
+                }
+                $this->stops[$i]['duration'] = $data['duration'];
+            }
+        }
+    }
+
+    public function getTime($duration, $arrivalTime)
+    {
+        $totalMinutesToSubtract = $duration + 10;
+
+        list($date, $time) = explode(' ', $arrivalTime);
+        list($year, $month, $day) = explode('-', $date);
+        list($hour, $minute) = explode(':', $time);
+
+        $arrivalTimestamp = mktime($hour, $minute, 0, $month, $day, $year);
+        $newTimestamp = $arrivalTimestamp - ($totalMinutesToSubtract * 60);
+
+        return date('H:i', $newTimestamp);
+    }
+
+    public function editEvent($id)
+    {
+        $this->title_modal = 'Edit Scheduling';
+        $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
+        $this->emit('getModelId', $id);
+    }
+
+    public function validateFields()
+    {
+        if ($this->patient_id && $this->hospital_id && $this->date && $this->check_in) {
+            $addresses = [];
+            $addresses[] = $this->pick_up_address;
+            foreach ($this->stops as $stop) {
+                $addresses[] = $stop['address'];
+            }
+
+            $arrivalTime = $this->date . ' ' . $this->check_in;
+
+            $this->getDistance($addresses, $arrivalTime);
+        }
+    }
+
     public function render()
     {
-        $scheduling = Scheduling::all();
+        $scheduling = DB::table('schedulings')
+            ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
+            ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
+            ->get();
         $events = [];
         $driverColors = [];
 
@@ -446,8 +519,8 @@ class Schedulings extends Component
                 'id' => $event->id,
                 'driver_id' => $event->driver_id,
                 'title' => $patient->first_name . " " . $patient->last_name,
-                'start' => $event->date . " " . $event->check_in,
-                'end' => $event->date . " " . $event->pick_up_time,
+                'start' => $event->date . " " . $event->pick_up_hour,
+                'end' => $event->date . " " . $event->drop_off_hour,
                 'color' => $color,
             ];
         }
