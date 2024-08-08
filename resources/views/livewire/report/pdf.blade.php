@@ -71,11 +71,11 @@
                 <tbody>
                     @foreach($data as $item)
                     <tr>
-                        <td class="px-4 text-gray-700" style="font-size: 10px;">{{ $item->id }}.</td>
-                        <td class="px-4 text-gray-700" style="font-size: 10px;">{{ Carbon\Carbon::parse($item->date)->format('m/d/Y') }}</td>
-                        <td class="px-4 text-gray-700 font-bold" style="font-size: 10px;">{{ $item->patient_name }}</td>
-                        <td class="px-4" style="font-size: 10px;">{{ $item->description }}</td>
-                        <td class="px-4 text-gray-700" style="text-align: end; font-size: 10px;">${{ $item->amount }}</td>
+                        <td class="px-4 text-gray-700" style="font-size: 10px;">{{ $item['id'] }}.</td>
+                        <td class="px-4 text-gray-700" style="font-size: 10px;">{{ Carbon\Carbon::parse($item['date'])->format('m/d/Y') }}</td>
+                        <td class="px-4 text-gray-700 font-bold" style="font-size: 10px;">{{ $item['patient_name'] }}</td>
+                        <td class="px-4" style="font-size: 10px;">{{ $item['description'] }}</td>
+                        <td class="px-4 text-gray-700" style="text-align: end; font-size: 10px;">${{ $item['amount'] }}</td>
                     </tr>
                     @endforeach
                     <tr class="total-row">

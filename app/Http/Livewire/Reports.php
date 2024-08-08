@@ -14,6 +14,7 @@ class Reports extends Component
     public $conditions = [];
     public $data_report = [];
     public $loading = false;
+    public $total = 0;
 
     public $date_ranges = [
         'Today',
@@ -52,31 +53,22 @@ class Reports extends Component
 
         $range = $this->rangeDates();
 
-        $sql = "SELECT * FROM schedulings inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND date BETWEEN '" . $range['start'] . "' AND '" . $range['end'] . "'";
+        $sql = "SELECT schedulings.* FROM schedulings inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND date BETWEEN '" . $range['start'] . "' AND '" . $range['end'] . "'";
 
         $schedulings = DB::select($sql);
 
         $service_contract = DB::table('service_contracts')->where('id', $this->service_contract_id)->get()->first();
 
-        $total = 0;
-        $i = 1;
         foreach ($schedulings as $scheduling) {
-            $scheduling->id = $i;
-            $patient = DB::table('patients')->where('id', $scheduling->patient_id)->get()->first();
-            $scheduling->patient_name = $patient->first_name . ' ' . $patient->last_name;
-            $scheduling->description = getDescription($scheduling);
-            $scheduling->amount = explode(' ', $scheduling->distance)[0] * $service_contract->rate_per_mile;
-
-            $total = $total + $scheduling->amount;
-            $i++;
+            $data[] = $this->getData($scheduling,  $service_contract);
         }
 
         $filePath = 'pdfs/'.time().'invoice.pdf';
 
         Pdf::view('livewire.report.pdf', [
-            'data' => $schedulings,
+            'data' => $data,
             'service_contract' => $service_contract,
-            'total' => $total
+            'total' => array_sum(array_column($data, 'amount'))
         ])
         ->save($filePath);
 
@@ -125,53 +117,110 @@ class Reports extends Component
         return $range;
     }
 
-    function getDescription($scheduling)
+    public function getData($scheduling, $service_contract){
+        
+        $data = [];
+        $data['id'] = $scheduling->id;
+
+        $patient = DB::table('patients')->where('id', $scheduling->patient_id)->get()->first();
+
+        $data['date'] = $scheduling->date;
+        $data['patient_name'] = $patient->first_name . ' ' . $patient->last_name;
+        $data['description'] = $this->getDescription($scheduling);
+        $data['amount'] = $this->getAmount($scheduling, $service_contract);
+
+        return $data;
+    }
+
+    public function getAmount($scheduling, $service_contract){
+
+        $scheduling_address = DB::table('scheduling_address')->where('scheduling_id', $scheduling->id)->get()->first();
+        $scheduling_charge = DB::table('scheduling_charge')->where('scheduling_id', $scheduling->id)->get()->first();
+
+        if ($scheduling_charge->wheelchair) {
+            $base_amount = $service_contract->wheelchair;
+        }
+
+        if ($scheduling_charge->ambulatory) {
+            $base_amount = $service_contract->ambulatory;
+        }
+        
+        $amount = $scheduling_address->distance * $service_contract->rate_per_mile;
+
+        if ($scheduling_charge->type_of_trip == 'round_trip') {
+            $amount = $amount * 2;
+        }
+
+        if ($scheduling_charge->sundays_holidays) {
+            $amount = $amount + $service_contract->sundays_holidays;
+        }
+
+        if ($scheduling_charge->companion) {
+            $amount = $amount + $service_contract->companion;
+        }
+
+        if ($scheduling_charge->fast_track) {
+            $amount = $amount + $service_contract->fast_track;
+        }
+
+        if ($scheduling_charge->out_of_hours) {
+            $amount = $amount + $service_contract->out_of_hours;
+        }
+
+        if ($scheduling_charge->aditional_waiting) {
+            $amount = $amount + $service_contract->aditional_waiting;
+        }
+
+        $amount = $amount + $base_amount;
+
+        return $amount;
+    }
+
+    public function getDescription($scheduling)
     {
         $description = '';
+        $scheduling_address = DB::table('scheduling_address')->where('scheduling_id', $scheduling->id)->get()->first();
+        $scheduling_charge = DB::table('scheduling_charge')->where('scheduling_id', $scheduling->id)->get()->first();
 
-        if ($scheduling->wheelchair) {
+        if ($scheduling_charge->wheelchair) {
             $description .= 'WHEELCHAIR. ';
         }
 
-        if ($scheduling->ambulatory) {
+        if ($scheduling_charge->ambulatory) {
             $description .= 'AMBULATORY. ';
         }
 
-        $facility = DB::table('facilities')->where('id', $scheduling->hospital_id)->get()->first();
-
-        $address = DB::table('addresses')->where('id', $scheduling->pick_up)->get()->first();
-
-        $description .= 'Pick up: ' . $address->address . '. Drop off: ' . $facility->address . '.';
+        $description .= 'Pick up: ' . $scheduling_address->pick_up_address . '. Drop off: ' . $scheduling_address->drop_off_address . '. ';
 
         $charges = '';
-        if ($scheduling->saturdays) {
+        if ($scheduling_charge->saturdays) {
             $charges .= ($charges) ? 'and Saturday ' : 'Saturdays ';
         }
 
-        if ($scheduling->sundays_holidays) {
+        if ($scheduling_charge->sundays_holidays) {
             $charges .= ($charges) ? 'and Sunday/Holiday ' : 'Sundays/Holidays ';
         }
 
-        if ($scheduling->companion) {
+        if ($scheduling_charge->companion) {
             $charges .= ($charges) ? 'and Accompanist ' : 'Accompanist ';
         }
 
-        if ($scheduling->fast_track) {
+        if ($scheduling_charge->fast_track) {
             $charges .= ($charges) ? 'and Fast Track ' : 'Fast Track ';
         }
 
-        if ($scheduling->out_of_hours) {
+        if ($scheduling_charge->out_of_hours) {
             $charges .= ($charges) ? 'and Out of Hours ' : 'Out of Hours ';
         }
 
-        if ($scheduling->aditional_waiting) {
+        if ($scheduling_charge->aditional_waiting) {
             $charges .= ($charges) ? 'and Aditional Waiting ' : 'Aditional Waiting ';
         }
 
         $description .= $charges . 'charge applied. ';
 
-        $distance_number = explode('mi', $scheduling->distance)[0];
-        $description .= $distance_number . 'miles ';
+        $distance_number = $scheduling_address->distance;
+        $description .= ($scheduling_charge->type_of_trip == 'round_trip') ? $distance_number * 2 . ' miles round trip.' : $distance_number . 'miles.';
 
         $description .= 'round trip.';
 
