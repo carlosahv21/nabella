@@ -107,7 +107,6 @@ Route::get('pdf_d', function () {
         'invoiceNumber' => '1234',
         'customerName' => 'Grumpy Cat',  
     ])
-    ->setOption('args', ['--no-sandbox', '--disable-crash-reporter'])
     ->save($name);
 
     return 'Success!';
