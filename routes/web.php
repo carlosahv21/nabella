@@ -24,7 +24,7 @@ use App\Http\Livewire\Calendar;
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
 use Illuminate\Support\Facades\DB;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,44 +72,15 @@ Route::get('calendar', Calendar::class)->middleware('auth')->name('calendar');
 
 Route::get('reports', Reports::class)->middleware('auth')->name('reports');
 
-
-Route::get('pdf', function () {
-    $schedulings = DB::table('schedulings')->get();
-    $service_contract = DB::table('service_contracts')->get()->first();
-
-    $total = 0;
-    foreach ($schedulings as $scheduling) {
-        $patient = DB::table('patients')->where('id', $scheduling->patient_id)->get()->first();
-        $scheduling->patient_name = $patient->first_name . ' ' . $patient->last_name;
-        $scheduling->description = getDescription($scheduling);
-
-        $service_contract = DB::table('service_contracts')->get()->first();
-        $scheduling->amount = explode(' ', $scheduling->distance)[0] * $service_contract->rate_per_mile;
-
-        $total = $total + $scheduling->amount;
-    }
-    return view('livewire.report.pdf', [
-        'data' => $schedulings,
-        'service_contract' => $service_contract,
-        'total' => $total
-    ]);
-
-        // Pdf::view('livewire.report.pdf', [
-        //     'data' => $schedulings,
-        //     'service_contract' => $service_contract,
-        //     'total' => $total
-        // ])->save('new.pdf');
-});
-
 Route::get('pdf_d', function () {
-    $name = 'pdfs/' . time() . 'invoice.pdf';
-    Pdf::view('livewire.report.pdf_d', [
+    $data = [
         'invoiceNumber' => '1234',
-        'customerName' => 'Grumpy Cat',  
-    ])
-    ->save($name);
+        'customerName' => 'Grumpy Cat'
+    ];
 
-    return 'Success!';
+    $pdf = Pdf::loadView('livewire.report.pdf_d', $data);
+
+    return $pdf->download('invoice.pdf');
 });
 
 
