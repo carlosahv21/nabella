@@ -18,15 +18,15 @@ use Illuminate\Support\Facades\DB;
 class Schedulings extends Component
 {
     // Campos de la tabla scheduling
-    public $patient_id, $hospital_id, $wait_time, $date,$check_in, $pick_up_time = '';
+    public $patient_id, $hospital_id, $wait_time, $date, $check_in, $pick_up_time = '';
     public $auto_agend = false;
     public $weekdays = [];
     public $ends_schedule;
     public $ends_date;
     public $google;
-    
+
     // Campos de la tabla scheduling_address
-    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance = '';
+    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive = '';
 
     // Campos de la tabla scheduling_charge
     public $wheelchair = false;
@@ -45,15 +45,49 @@ class Schedulings extends Component
 
     public $prediction_pick_up = [];
     public $prediction_drop_off = [];
-    public $stops = [];
+
+    public $prediction_location_driver = [];
+    public $prediction_return_pick_up_address = [];
+
+    public $stops = [
+        [
+            'address' => '',
+            'addresses' => []
+        ]
+    ];
+    public $r_stops = [
+        [
+            'address' => '',
+            'addresses' => []
+        ]
+    ];
+
     public $distances = [];
     public $addresses = [];
 
     // Array de colores predefinidos
     public $colors = [
-        '#D6EEEB', '#C1E9FC', '#ADACCE', '#C7E4D9', '#95DAEE', '#9990BA', '#86D0C6',
-        '#6ACDE5', '#D498C6', '#74CDD1', '#00B6D3', '#C679B4', '#00BCAD', '#0085BD',
-        '#7D4497', '#1294A7', '#2A348E', '#671D67', '#11686B', '#102444', '#401E5B'
+        '#D6EEEB',
+        '#C1E9FC',
+        '#ADACCE',
+        '#C7E4D9',
+        '#95DAEE',
+        '#9990BA',
+        '#86D0C6',
+        '#6ACDE5',
+        '#D498C6',
+        '#74CDD1',
+        '#00B6D3',
+        '#C679B4',
+        '#00BCAD',
+        '#0085BD',
+        '#7D4497',
+        '#1294A7',
+        '#2A348E',
+        '#671D67',
+        '#11686B',
+        '#102444',
+        '#401E5B'
     ];
 
     protected $rules = [
@@ -239,8 +273,8 @@ class Schedulings extends Component
         $hora = $pick_up_hour;
         $minutosASumar = $duration + 10;
 
-        
-        if($wait_time){
+
+        if ($wait_time) {
             $minutosASumar = $wait_time + $duration;
         }
 
@@ -278,16 +312,28 @@ class Schedulings extends Component
         }
     }
 
+    public function updatedReturnPickUpAddress()
+    {
+        if (strlen($this->return_pick_up_address) >= 3) {
+            $this->prediction_return_pick_up_address = $this->google->getPlacePredictions($this->return_pick_up_address);
+        } else {
+            $this->prediction_return_pick_up_address = [];
+        }
+    }
+
     public function updateDropOffAddress($dropOffId)
     {
         $this->drop_off_address = $dropOffId;
         $this->validateAddresses('drop_off');
     }
 
-    public function updatePickUpAddress($pickUpId)
+    public function updatedLocationDriver()
     {
-        $this->pick_up_address = $pickUpId;
-        $this->validateAddresses('pick_up');
+        if (strlen($this->location_driver) >= 3) {
+            $this->prediction_location_driver = $this->google->getPlacePredictions($this->location_driver);
+        } else {
+            $this->prediction_location_driver = [];
+        }
     }
 
     public function updateEventDate($id, $start, $end)
@@ -352,6 +398,20 @@ class Schedulings extends Component
         $this->prediction_pick_up = [];
     }
 
+    public function addLocationDriver($address)
+    {
+        $this->location_driver = $address;
+        $this->validateAddresses('location_driver');
+        $this->prediction_location_driver = [];
+    }
+
+    public function addReturnPickUp($address)
+    {
+        $this->return_pick_up_address = $address;
+        $this->validateAddresses('return_pick_up');
+        $this->prediction_return_pick_up_address = [];
+    }
+
     public function addDropOff($address)
     {
         $this->drop_off_address = $address;
@@ -364,10 +424,21 @@ class Schedulings extends Component
         $this->stops[] = ['address' => '', 'addresses' => []];
     }
 
+    public function addStopReturn()
+    {
+        $this->r_stops[] = ['address' => '', 'addresses' => []];
+    }
+
     public function removeStop($index)
     {
         unset($this->stops[$index]);
         $this->stops = array_values($this->stops);
+    }
+
+    public function removeStopReturn($index)
+    {
+        unset($this->r_stops[$index]);
+        $this->r_stops = array_values($this->r_stops);
     }
 
     public function updateStopQuery($index, $query)
@@ -443,7 +514,7 @@ class Schedulings extends Component
         for ($i = 0; $i < count($addresses) - 1; $i++) {
             $origin = $this->google->getCoordinates($addresses[$i]);
             $destination = $this->google->getCoordinates($addresses[$i + 1]);
-            
+
             if (!$origin || !$destination) {
                 return false;
             }
@@ -454,7 +525,7 @@ class Schedulings extends Component
                 $this->stops[$i]['distance'] = $data['distance'];
             }
             if ($data['duration']) {
-                if($i == 0){
+                if ($i == 0) {
                     $this->pick_up_time = $this->getTime($data['duration'], $arrivalTime);
                 }
                 $this->stops[$i]['duration'] = $data['duration'];
