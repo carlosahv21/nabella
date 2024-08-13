@@ -3,16 +3,16 @@
 <div>
     <div class="table-settings mx-3 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
-            <div class="col-3 col-lg-3 d-md-flex">
-                <div class="input-group ms-5">
+            <div class="col-12 col-lg-3 d-md-flex">
+                <div class="input-group mt-2">
                     <span class="input-group-text">
                         <i class="material-icons">search</i>
                     </span>
                     <input wire:model="search" type="text" class="form-control" placeholder="Search vehicle...">
                 </div>
             </div>
-            <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
-                <div class="dropdown px-2">
+            <div class="col-12 col-lg-5 d-flex mt-3 me-4">
+                <div class="dropdown px-4">
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons">expand_more</i>
                     </button>
@@ -83,7 +83,7 @@
                         </th>
                         <th>{{ $vehicle->make }}</th>
                         <th>{{ $vehicle->model }}</th>
-                        <th>{{ ($vehicle->user) ? $vehicle->user->name : '' }}</th>
+                        <th>{{ ($vehicle->user) ? $vehicle->user->name : 'No assigned' }}</th>
                         <th>
                             <span class="my-2 text-xs">
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">

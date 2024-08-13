@@ -3,16 +3,16 @@
 <div>
     <div class="table-settings mx-3 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
-            <div class="col-3 col-lg-3 d-md-flex">
-                <div class="input-group ms-5">
+            <div class="col-12 col-lg-3 d-md-flex">
+                <div class="input-group mt-2">
                     <span class="input-group-text">
                         <i class="material-icons">search</i>
                     </span>
                     <input wire:model="search" type="text" class="form-control" placeholder="Search service contract...">
                 </div>
             </div>
-            <div class="col-5 col-lg-5 d-flex justify-content-end mt-3 me-4">
-                <div class="dropdown px-2">
+            <div class="col-12 col-lg-5 d-flex mt-3 me-4">
+                <div class="dropdown">
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons">expand_more</i>
                     </button>
@@ -160,7 +160,7 @@
                                     <hr class="dark horizontal">
                                     <label class="form-label mb-3">Rate config</label>
                                     <hr class="dark horizontal">
-                                    <div class="my-3 col-md-3">
+                                    <div class="my-3 col-md-3 col-3">
                                         <div  class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Wheelchair</label>
                                             <input wire:model="wheelchair" type="text" class="form-control" min="0" placeholder="0" >
@@ -171,7 +171,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="my-3 col-md-3">
+                                    <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Ambulatory</label>
                                             <input wire:model="ambulatory" type="text" class="form-control" min="0" placeholder="0">
@@ -182,7 +182,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="my-3 col-md-3">
+                                    <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Out of hours</label>
                                             <input wire:model="out_of_hours" type="text" min="0" placeholder="0" class="form-control" >
@@ -193,7 +193,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="my-3 col-md-3">
+                                    <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled"> 
                                             <label class="form-label">Saturdays</label>
                                             <input wire:model="saturdays" type="text" min="0" placeholder="0" class="form-control" >
@@ -204,7 +204,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Sundays/Holidays</label>
                                             <input wire:model="sundays_holidays" type="text" min="0" placeholder="0" class="form-control" >
@@ -215,7 +215,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Companion</label>
                                             <input wire:model="companion" type="text" min="0" placeholder="0" class="form-control" >
@@ -226,7 +226,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Additional waiting</label>
                                             <input wire:model="additional_waiting" type="text" min="0" placeholder="0" class="form-control" >
@@ -237,7 +237,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">After</label>
                                             <span class="input-group-text">Min</span>
@@ -249,7 +249,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled"> 
                                             <label class="form-label">Fast track</label>
                                             <input wire:model="fast_track" type="text" class="form-control" min="0" placeholder="0" >
@@ -260,7 +260,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled"> 
                                             <label class="form-label">If not cancel</label>
                                             <input wire:model="if_not_cancel" type="text"  class="form-control" min="0" placeholder="0" >
@@ -272,7 +272,7 @@
                                         @endif
                                     </div>
 
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled"> 
                                             <label class="form-label">Rate Per Mile</label>
                                             <input wire:model="rate_per_mile" type="text" class="form-control" min="0" placeholder="0" >
@@ -283,7 +283,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="mb-3 col-md-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled"> 
                                             <label class="form-label">Overcharge</label>
                                             <input wire:model="overcharge" type="text" class="form-control" min="0" placeholder="0" >

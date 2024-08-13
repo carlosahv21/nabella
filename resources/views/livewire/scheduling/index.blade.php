@@ -1,16 +1,14 @@
-<div>
-    <div class="table-settings mx-4 my-4">
-        <div class="row justify-content-between align-items-center bg-white rounded-3">
-            <div class="col-8 col-lg-8 row mt-3">
-                @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-3 col-lg-3">
+<div class="card table-settings my-4 mx-4">
+    <div class="row align-items-center bg-white rounded-3">
+        <div class="col-12 col-lg-8 row mt-3">
+            @for($i = 0; $i < count($drivers); $i++)
+                <div class="form-check form-check-inline col-6 col-lg-3" style="padding-left: 1rem; margin-right: 0;">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
-                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }};">
-                        <b class="text-white"> {{ $drivers[$i]->name }} </b>
-                    </label>
-            </div>
+                    <label class="form-check-label text-white text-bold" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }}; padding: 0 1px;"> {{ $drivers[$i]->name }} </label>
+                </div>
             @endfor
         </div>
-        <div class="col-4 col-lg-4 d-flex justify-content-end mt-3">
+        <div class="col-12 col-lg-4 d-flex justify-content-center mt-3">
             <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                 <i class="material-icons">add</i> Add scheduling
             </button>
@@ -35,8 +33,8 @@
 </div>
 <!-- end notifications -->
 <div class="card card-calendar mx-2">
-    <div class="card-body p-3">
-        <div wire:ignore class="calendar" data-bs-toggle="calendar" id="calendar" style="max-height: 735px;"></div>
+    <div class="card-body px-2 pt-3">
+        <div wire:ignore class="calendar px-1" data-bs-toggle="calendar" id="calendar" style="max-height: 735px;"></div>
     </div>
 </div>
 <!-- Modal Add-->
@@ -292,8 +290,7 @@
     let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
         // initialView: "dayGridYear",
         headerToolbar: {
-            start: 'title', // will normally be on the left. if RTL, will be on the right
-            center: 'dayGridMonth,timeGridWeek,timeGridDay',
+            start: 'dayGridMonth,timeGridWeek,timeGridDay',
             end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
         },
         events: @json($events),

@@ -18,13 +18,13 @@
     <!-- end notifications -->
     <div class="table-settings mx-3 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
-            <div class="col-7 col-lg-7 d-md-flex">
+            <div class="col-12 col-lg-7 d-md-flex mt-2">
                 <!-- Selector de fechas -->
-                <div class="input-group me-3 w-50">
+                <div class="input-group me-3 mb-2">
                     <input type="text" class="form-control date-input-range" placeholder="Select a date range" wire:model="date_range" style="border: 1px solid #d2d6da">
                 </div>
                 <!-- Selector de servicios -->
-                <div class="input-group me-3 w-50">
+                <div class="input-group me-3 mb-2">
                     <select wire:model="service_contract_id" class="form-select" id="service_contract_id">
                         <option value="">Select a service</option>
                         @foreach($service_contracts as $service_contract)
@@ -32,7 +32,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="input-group w-50">
+                <div class="input-group mb-2">
                     <select wire:model="terms" class="form-select" id="terms">
                         <option value="">Select a term</option>
                         <option value="15">15</option>
@@ -40,7 +40,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-4 col-lg-4 d-flex justify-content-end mt-3 me-4">
+            <div class="col-12 col-lg-4 d-flex justify-content-end mt-3 me-4">
                 <button class="btn bg-gradient-dark" wire:click="generateReport" wire:loading.attr="disabled">
                     <i class="material-icons">picture_as_pdf</i> Generate Report
                 </button>
