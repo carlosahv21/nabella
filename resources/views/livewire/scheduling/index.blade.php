@@ -118,7 +118,7 @@
                                 <div class="mb-3 col-md-6">
                                     <div class="input-group input-group-static">
                                         <label>Start Date</label>
-                                        <input type="date" class="form-control" id="date" wire:model="date">
+                                        <input class="form-control date-input" wire:model="date" placeholder="YYYY/MM/DD">
                                     </div>
                                 </div>
                                 <div class="form-check mb-3 col-md-6 mt-4">
@@ -181,13 +181,13 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check In</label>
-                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
+                                        <input wire.ignore.self wire:model="check_in" class="form-control date-input-time" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" placeholder="HH:MM">
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time">
+                                        <input wire.ignore.self wire:model="pick_up_time" class="form-control date-input-time" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" placeholder="HH:MM">
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">

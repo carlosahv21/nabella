@@ -20,21 +20,23 @@
         <div class="row justify-content-between align-items-center bg-white rounded-3">
             <div class="col-7 col-lg-7 d-md-flex">
                 <!-- Selector de fechas -->
-                <div class="input-group me-3">
-                    <select wire:model="date_range" class="form-select" id="date_range">
-                        <option value="">Select a date</option>
-                        @foreach($date_ranges as $date_range)
-                        <option value="{{ $date_range }}">{{ $date_range }}</option>
-                        @endforeach
-                    </select>
+                <div class="input-group me-3 w-50">
+                    <input type="text" class="form-control date-input-range" placeholder="Select a date range" wire:model="date_range" style="border: 1px solid #d2d6da">
                 </div>
                 <!-- Selector de servicios -->
-                <div class="input-group me-3">
+                <div class="input-group me-3 w-50">
                     <select wire:model="service_contract_id" class="form-select" id="service_contract_id">
-                        <option value="">Seleccione un servicio</option>
+                        <option value="">Select a service</option>
                         @foreach($service_contracts as $service_contract)
                         <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
                         @endforeach
+                    </select>
+                </div>
+                <div class="input-group w-50">
+                    <select wire:model="terms" class="form-select" id="terms">
+                        <option value="">Select a term</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
                     </select>
                 </div>
             </div>

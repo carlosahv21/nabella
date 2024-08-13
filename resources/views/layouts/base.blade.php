@@ -33,6 +33,8 @@
     <link href="{{ asset('assets') }}/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" charset="UTF-8"></script>
     <!-- CSS Files -->
@@ -79,10 +81,29 @@
                     livewire.emit('forcedCloseModal');
                 });
             });
+
+            flatpickr(".date-input", {
+                enableTime: false, // Si quieres habilitar la selección de hora, cámbialo a true
+                dateFormat: "Y-m-d", // Formato de la fecha
+            });
+
+            flatpickr(".date-input-range", {
+                mode: "range",  // Habilita el modo de rango
+                dateFormat: "Y-m-d",  // Formato de la fecha
+            });
+
+            flatpickr(".date-input-time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true
+            });
         });
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets') }}/js/material-dashboard.min.js?v=3.0.0"></script>
     @livewireScripts

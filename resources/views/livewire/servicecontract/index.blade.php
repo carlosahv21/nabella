@@ -304,7 +304,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Date Start</label>
-                                        <input wire:model="date_start" type="date" class="form-control border border-2 p-2">
+                                        <input wire:model="date_start" class="form-control border border-2 p-2 date-input" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('date_start'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('date_start') }}
@@ -313,7 +313,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Date End</label>
-                                        <input wire:model="date_end" type="date" class="form-control border border-2 p-2">
+                                        <input wire:model="date_end" class="form-control border border-2 p-2 date-input" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('date_end'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('date_end') }}

@@ -6,11 +6,11 @@ use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use App\Models\ServiceContract;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Reports extends Component
 {
-    public $date_range, $service_contract_id, $invoice;
+    public $date_range, $service_contract_id, $invoice, $terms;
     public $conditions = [];
     public $data_report = [];
     public $loading = false;
@@ -29,7 +29,7 @@ class Reports extends Component
 
     public function generateReport()
     {
-        $this->loading = true;
+        $this->invoice = null;
 
         if ($this->date_range == '') {
             $this->sessionAlert([
@@ -37,7 +37,7 @@ class Reports extends Component
                 'type' => 'danger',
                 'icon' => 'error',
             ]);
-            $this->loading = false;
+
             return;
         }
 
@@ -51,11 +51,20 @@ class Reports extends Component
             return;
         }
 
-        $range = $this->rangeDates();
+        $range = explode(' to', $this->date_range);
 
-        $sql = "SELECT schedulings.* FROM schedulings inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND date BETWEEN '" . $range['start'] . "' AND '" . $range['end'] . "'";
+        $sql = "SELECT schedulings.* FROM schedulings inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND date BETWEEN '" . $range[0] . "' AND '" . $range[1] . "'";
 
         $schedulings = DB::select($sql);
+
+        if(count($schedulings) == 0) {
+            $this->sessionAlert([
+                'message' => 'No schedulings found for the selected date range!',
+                'type' => 'danger',
+                'icon' => 'info',
+            ]);
+            return;
+        }
 
         $service_contract = DB::table('service_contracts')->where('id', $this->service_contract_id)->get()->first();
 
@@ -63,58 +72,18 @@ class Reports extends Component
             $data[] = $this->getData($scheduling,  $service_contract);
         }
 
-        $filePath = 'pdfs/'.time().'invoice.pdf';
+        $filePath = 'pdfs/'.time().'-invoice.pdf';
 
-        Pdf::view('livewire.report.pdf', [
+        $pdf = Pdf::loadView('livewire.report.pdf', [
             'data' => $data,
             'service_contract' => $service_contract,
-            'total' => array_sum(array_column($data, 'amount'))
-        ])
-        ->save($filePath);
-
+            'total' => array_sum(array_column($data, 'amount')),
+            'terms' => $this->terms
+        ]);
+    
+        $pdf->save($filePath);
         $this->invoice = $filePath;
 
-    }
-
-    public function rangeDates()
-    {
-        $range = [];
-
-        switch ($this->date_range) {
-            case 'Today':
-                $range['start'] = date('Y-m-d');
-                $range['end'] = date('Y-m-d');
-                break;
-            case 'Yesterday':
-                $range['start'] = date('Y-m-d', strtotime('-1 day'));
-                $range['end'] = date('Y-m-d', strtotime('-1 day'));
-                break;
-            case 'Last 7 Days':
-                $range['start'] = date('Y-m-d', strtotime('-7 day'));
-                $range['end'] = date('Y-m-d');
-                break;
-            case 'Last 14 Days':
-                $range['start'] = date('Y-m-d', strtotime('-14 day'));
-                $range['end'] = date('Y-m-d');
-                break;
-            case 'Last 3 Months':
-                $range['start'] = date('Y-m-d', strtotime('-3 month'));
-                $range['end'] = date('Y-m-d');
-                break;
-            case 'This Week':
-                $range['start'] = date('Y-m-d', strtotime('-1 week'));
-                $range['end'] = date('Y-m-d');
-                break;
-            case 'This Month':
-                $range['start'] = date('Y-m-d', strtotime('-1 month'));
-                $range['end'] = date('Y-m-d');
-                break;
-            case 'This Year':
-                $range['start'] = date('Y-m-d', strtotime('-1 year'));
-                $range['end'] = date('Y-m-d');
-                break;
-        }
-        return $range;
     }
 
     public function getData($scheduling, $service_contract){
@@ -221,8 +190,6 @@ class Reports extends Component
 
         $distance_number = $scheduling_address->distance;
         $description .= ($scheduling_charge->type_of_trip == 'round_trip') ? $distance_number * 2 . ' miles round trip.' : $distance_number . 'miles.';
-
-        $description .= 'round trip.';
 
         return $description;
     }

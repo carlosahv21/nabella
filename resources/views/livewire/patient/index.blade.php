@@ -162,7 +162,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Birth Date</label>
-                                        <input wire:model="birth_date" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="birth_date" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('birth_date'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('birth_date') }}
@@ -263,7 +263,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Date start</label>
-                                        <input wire:model="date_start" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="date_start" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('date_start'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('date_start') }}
@@ -272,7 +272,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Date end</label>
-                                        <input wire:model="date_end" type="date" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="date_end" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('date_end'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('date_end') }}
