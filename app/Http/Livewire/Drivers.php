@@ -8,7 +8,8 @@ use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
-// /Users/carloshernandez/Sites/nabella_app/app/Http/Livewire/ExampleLaravel/UserProfile.php
+use App\Mail\WelcomeEmail;
+use Illuminate\Support\Facades\Mail;
 
 class Drivers extends Component
 {
@@ -134,7 +135,10 @@ class Drivers extends Component
                 'type' => 'info',
                 'icon' => 'check',
             ];
+
         }
+
+        Mail::to($user->email)->send(new WelcomeEmail($user));
 
         if ($data) {
             $this->sessionAlert($data);
