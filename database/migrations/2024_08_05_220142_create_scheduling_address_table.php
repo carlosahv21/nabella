@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('scheduling_address', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('scheduling_id');
-            $table->unsignedInteger('driver_id');
-            $table->string('pick_up_address');
-            $table->string('drop_off_address');
-            $table->string('pick_up_hour');
-            $table->string('drop_off_hour');
-            $table->string('distance');
-            $table->string('duration');
+            $table->unsignedInteger('scheduling_id')->nullable();
+            $table->unsignedInteger('driver_id')->nullable();
+            $table->string('pick_up_address')->nullable();
+            $table->string('drop_off_address')->nullable();
+            $table->string('pick_up_hour')->nullable();
+            $table->string('drop_off_hour')->nullable();
+            $table->string('distance')->nullable();
+            $table->string('duration')->nullable();
 
             $table->timestamps();
         });

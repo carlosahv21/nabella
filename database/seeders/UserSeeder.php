@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
             ["name" => "Ger Yang", "dob" => "1994-05-27", "dl_state" => "NC", "dl_number" => "33975298", "date_of_hire" => "2023-07-28"],
             ["name" => "Freddy Nieto", "dob" => "1970-08-17", "dl_state" => "NC", "dl_number" => "29050340", "date_of_hire" => "2023-08-25"],
             ["name" => "Wilmar Jimenez", "dob" => "1982-07-10", "dl_state" => "NC", "dl_number" => "35825495", "date_of_hire" => "2023-11-25"],
-            ["name" => "Omar Figueroa Rodriguez", "dob" => "1986-07-22", "dl_state" => "NC", "dl_number" => "42514740", "date_of_hire" => "2024-01-22"],
+            ["name" => "Omar Rodriguez", "dob" => "1986-07-22", "dl_state" => "NC", "dl_number" => "42514740", "date_of_hire" => "2024-01-22"],
             ["name" => "Judy Hemric", "dob" => "1959-10-31", "dl_state" => "NC", "dl_number" => "24998006", "date_of_hire" => "2024-03-13"]
         ];
         

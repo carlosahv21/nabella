@@ -15,11 +15,11 @@ class CreateVehiclesTable extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->string('year');
-            $table->string('make');
-            $table->string('model');
-            $table->string('vin');
-            $table->integer('number_vehicle');
+            $table->string('year')->nullable();
+            $table->string('make')->nullable();
+            $table->string('model')->nullable();
+            $table->string('vin')->nullable();
+            $table->integer('number_vehicle')->nullable();
             $table->integer('user_id')->unsigned()->references('id')->on('users')->nullable();
             $table->timestamp('created_at');
             $table->timestamp('updated_at');

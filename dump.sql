@@ -25,17 +25,17 @@ DROP TABLE IF EXISTS `patients`;
 CREATE TABLE `patients` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `service_contract_id` int unsigned DEFAULT NULL,
-  `first_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `birth_date` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `medicalid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `billing_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `emergency_contact` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `date_start` date NOT NULL,
-  `date_end` date NOT NULL,
-  `observations` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `first_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `birth_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `medicalid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `billing_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `emergency_contact` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date_start` date DEFAULT NULL,
+  `date_end` date DEFAULT NULL,
+  `observations` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `facilities`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `facilities` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -87,10 +87,10 @@ DROP TABLE IF EXISTS `vehicles`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vehicles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `year` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `make` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vin` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `year` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `make` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `model` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `number_vehicle` int DEFAULT NULL,
   `user_id` int unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,

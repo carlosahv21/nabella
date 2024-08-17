@@ -19,8 +19,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Definir las llaves foráneas manualmente con nombres únicos
-            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
-            $table->foreign('facility_id')->references('id')->on('facilities')->onDelete('cascade');
+            $table->foreign('patient_id')->references('id')->on('patients');
+            $table->foreign('facility_id')->references('id')->on('facilities');
 
         });
     }

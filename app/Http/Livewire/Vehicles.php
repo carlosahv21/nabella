@@ -85,8 +85,10 @@ class Vehicles extends Component
 
     public function save()
     {
-        if($this->checkIfUserHasVehicle()){
-            return;
+        if($this->user_id){
+            if($this->checkIfUserHasVehicle()){
+                return;
+            }
         }
 
         $this->validate();
