@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Notifications\ResetPassword;
 use App\Models\User;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ForgotPasswordEmail;
 
 class ForgotPassword extends Component
 {
@@ -42,7 +44,7 @@ class ForgotPassword extends Component
         if($user){
 
     
-            $this->notify(new ResetPassword($user->id));
+            Mail::to($user->email)->send(new ForgotPasswordEmail($user));
 
             return back()->with('status', "We have emailed your password reset link!");
 

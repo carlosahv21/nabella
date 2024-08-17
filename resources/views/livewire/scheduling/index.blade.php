@@ -44,7 +44,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{$title_modal}}</h2>
+                <h5 class="modal-title">{{$title_modal}}</h5>
             </div>
             <div class="modal-body">
                 <div class="card card-plain h-100">
@@ -128,7 +128,7 @@
                                 <!-- GOING -->
                                 <hr class="dark horizontal">
                                 @endif
-                                <h4 class="text-center">GOING</h4>
+                                <h6 class="text-center">GOING</h6>
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" placeholder="Pick up address">
                                     @if (!empty($prediction_pick_up))
@@ -192,7 +192,7 @@
                                 </div>
 
                                 <!-- RETURN -->
-                                <h4 class="text-center">RETURN</h4>
+                                <h6 class="text-center">RETURN</h6>
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" placeholder="Location Driver">
                                     @if (!empty($prediction_location_driver))
@@ -240,13 +240,13 @@
                                 @endforeach
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
-                                        <label>Check In</label>
+                                        <label>Check Out</label>
                                         <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in">
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
-                                        <label>Start drive</label>
+                                        <label>Pick up time</label>
                                         <input type="time" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive">
                                     </div>
                                 </div>
@@ -265,7 +265,7 @@
                                     @endif
                                 </div>
                                 <!-- CHARGES -->
-                                <h4 class="text-center">CHARGES</h4>
+                                <h6 class="text-center">CHARGES</h6>
                                 <div class="row">
                                     <div class="col-md-2">
                                     </div>
@@ -316,9 +316,21 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                <div class="d-flex justify-content-between w-100">
+                    <!-- Botón en el inicio/izquierda -->
+                    @if($isEdit && !$if_not_cancel)
+                        <button type="button" class="btn" data-bs-dismiss="modal" wire:click="cancelScheduling">Cancel Scheduling</button>
+                    @else
+                        <p>&nbsp;</p>
+                    @endif
+
+                    <div>
+                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                        <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -348,20 +360,17 @@
     document.addEventListener('livewire:load', function() {
         Livewire.on('updateEvents', events => {
             const calendarEl = document.getElementById('calendar');
+
             if (calendar) {
                 calendar.destroy();
             }
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: "timeGridWeek",
                 headerToolbar: {
-                    start: 'title', // will normally be on the left. if RTL, will be on the right
-                    center: '',
-                    end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
+                    start: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    end: 'today prev,next'
                 },
                 events: events,
-                slotMinTime: '09:00:00',
-                slotMaxTime: '20:00:00',
                 editable: true,
                 selectable: true,
                 eventClick: function(info) {

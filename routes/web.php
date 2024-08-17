@@ -37,22 +37,21 @@ use Barryvdh\DomPDF\Facade\Pdf;
 |
 */
 
+Route::get('reset', function(){
+    return 'hola mundo';
+})->middleware('signed')->name('reset');
+
 Route::get('/', function () {
     return redirect('sign-in');
 });
 
 Route::get('forgot-password', ForgotPassword::class)->middleware('guest')->name('password.forgot');
-Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->name('reset-password');
-
-
 
 Route::get('sign-up', Register::class)->middleware('guest')->name('register');
 Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
 Route::get('user-profile', UserProfile::class)->middleware('can:user.view')->name('user-profile');
-
 Route::get('role', Roles::class)->middleware('can:role.view')->name('role');
-Route::get('show', [Roles::class, 'show']);
 
 Route::get('driver', Drivers::class)->middleware('can:driver.view')->name('driver');
 
@@ -66,28 +65,12 @@ Route::get('facility', Facilities::class)->middleware('auth')->name('facility');
 
 Route::get('scheduling', Schedulings::class)->middleware('auth')->name('scheduling');
 
-Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
-
-Route::get('calendar', Calendar::class)->middleware('auth')->name('calendar');
-
 Route::get('reports', Reports::class)->middleware('auth')->name('reports');
-
-Route::get('pdf_d', function () {
-    $data = [
-        'invoiceNumber' => '1234',
-        'customerName' => 'Grumpy Cat'
-    ];
-
-    $pdf = Pdf::loadView('livewire.report.pdf_d', $data);
-
-    return $pdf->download('invoice.pdf');
-});
-
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dash::class)->name('dashboard');
     Route::get('billing', Billing::class)->name('billing');
-    Route::get('profile', Profile::class)->name('profile');
+    Route::get('profile/{id}', Profile::class)->name('profile');
     Route::get('tables', Tables::class)->name('tables');
     Route::get('notifications', Notifications::class)->name("notifications");
 });

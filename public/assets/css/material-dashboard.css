@@ -455,6 +455,10 @@ progress {
   display: none !important;
 }
 
+.cancelled-event {
+  text-decoration: line-through !important;
+}
+
 .lead {
   font-size: 1.25rem;
   font-weight: 400; }

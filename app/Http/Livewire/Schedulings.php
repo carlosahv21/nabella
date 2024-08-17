@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class Schedulings extends Component
 {
     // Campos de la tabla scheduling
-    public $patient_id, $hospital_id, $wait_time, $date, $check_in, $pick_up_time = '';
+    public $patient_id, $hospital_id, $wait_time, $date, $check_in, $pick_up_time, $status = '';
     public $auto_agend = false;
     public $weekdays = [];
     public $ends_schedule;
@@ -148,11 +148,15 @@ class Schedulings extends Component
         $this->hospital_id = $model_scheduling->hospital_id;
         $this->wait_time = $model_scheduling->wait_time;
         $this->date = $model_scheduling->date;
-        $this->check_in = $model_scheduling->check_in;
+        $this->auto_agend = $model_scheduling->auto_agend;
+        $this->status = $model_scheduling->status;
+
+
         $this->pick_up_address = $model_scheduling_address->pick_up_address;
         $this->drop_off_address = $model_scheduling_address->drop_off_address;
-        $this->pick_up_hour = $model_scheduling_address->pick_up_hour;
-        $this->drop_off_hour = $model_scheduling_address->drop_off_hour;
+        $this->check_in = $model_scheduling_address->pick_up_hour;
+        $this->pick_up_driver_id = $model_scheduling_address->pick_up_driver_id;
+        $this->pick_up_time = $model_scheduling_address->drop_off_hour;
         $this->distance = $model_scheduling_address->distance;
         $this->type_of_trip = $model_scheduling_charge->type_of_trip;
         $this->wheelchair = $model_scheduling_charge->wheelchair;
@@ -163,6 +167,17 @@ class Schedulings extends Component
         $this->fast_track = $model_scheduling_charge->fast_track;
         $this->out_of_hours = $model_scheduling_charge->out_of_hours;
         $this->auto_agend = $model_scheduling_charge->auto_agend;
+
+        $this->type_of_trip = $model_scheduling_charge->type_of_trip;
+        $this->wheelchair = $model_scheduling_charge->wheelchair;
+        $this->ambulatory = $model_scheduling_charge->ambulatory;
+        $this->out_of_hours = $model_scheduling_charge->out_of_hours;
+        $this->saturdays = $model_scheduling_charge->saturdays;
+        $this->sundays_holidays = $model_scheduling_charge->sundays_holidays;
+        $this->companion = $model_scheduling_charge->companion;
+        $this->aditional_waiting = $model_scheduling_charge->aditional_waiting;
+        $this->fast_track = $model_scheduling_charge->fast_track;
+        $this->if_not_cancel = $model_scheduling_charge->if_not_cancel;
     }
 
     private function clearForm()
@@ -257,7 +272,7 @@ class Schedulings extends Component
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
-        $data = $this->isEdit
+        $data = ($this->isEdit)
             ? ['message' => 'Scheduling updated successfully!', 'type' => 'success', 'icon' => 'edit']
             : ['message' => 'Scheduling created successfully!', 'type' => 'info', 'icon' => 'check'];
 
@@ -351,25 +366,28 @@ class Schedulings extends Component
     public function updateEventsCalendar($driverIds)
     {
         $scheduling = !empty($driverIds)
-            ? Scheduling::whereIn('driver_id', $driverIds)->get()
+            ? DB::select('SELECT * FROM schedulings INNER JOIN scheduling_address ON schedulings.id = scheduling_address.scheduling_id INNER JOIN scheduling_charge ON schedulings.id = scheduling_charge.scheduling_id WHERE scheduling_address.driver_id IN (' . implode(',', $driverIds) . ')')
             : Scheduling::all();
+        
         $new_events = [];
         $driverColors = [];
 
         foreach ($scheduling as $event) {
+            $scheduling_address = SchedulingAddress::find($event->id);
+
             $patient = Patient::find($event->patient_id);
 
-            if (!isset($driverColors[$event->driver_id])) {
-                $driverColors[$event->driver_id] = $this->colors[$event->driver_id - 1];
+            if (!isset($driverColors[$scheduling_address->driver_id])) {
+                $driverColors[$scheduling_address->driver_id] = $this->colors[$scheduling_address->driver_id - 1];
             }
 
-            $color = $driverColors[$event->driver_id];
+            $color = $driverColors[$scheduling_address->driver_id];
             $new_events[] = [
                 'id' => $event->id,
-                'driver_id' => $event->driver_id,
+                'driver_id' => $scheduling_address->driver_id,
                 'title' => $patient->first_name . " " . $patient->last_name,
-                'start' => $event->date . " " . $event->check_in,
-                'end' => $event->date . " " . $event->pick_up_time,
+                'start' => $event->date . " " . $scheduling_address->pick_up_hour,
+                'end' => $event->date . " " . $scheduling_address->drop_off_hour,
                 'color' => $color,
             ];
         }
@@ -551,7 +569,60 @@ class Schedulings extends Component
     {
         $this->title_modal = 'Edit Scheduling';
         $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
+        $this->isEdit = true;
         $this->emit('getModelId', $id);
+    }
+
+    public function cancelScheduling()
+    {
+        $scheduling = Scheduling::findOrFail($this->modelId);
+        $scheduling->status = 'Canceled';
+        $scheduling->save();
+
+        $scheduling_charge = SchedulingCharge::findOrFail($scheduling->id);
+        $scheduling_charge->if_not_cancel = true;
+        $scheduling_charge->save();
+
+
+        $events = $this->getEventsCalendar();
+
+        $this->emit('updateEvents', $events);
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
+
+        $this->sessionAlert([
+            'message' => 'Scheduling canceled successfully!',
+            'type' => 'success',
+            'icon' => 'check',
+        ]);
+    }
+
+    public function getEventsCalendar()
+    {
+        $scheduling = Scheduling::all();
+        $events = [];
+        $driverColors = [];
+
+        foreach ($scheduling as $event) {
+            $scheduling_address = SchedulingAddress::find($event->id);
+            $patient = Patient::find($event->patient_id);
+
+            if (!isset($driverColors[$scheduling_address->driver_id])) {
+                $driverColors[$scheduling_address->driver_id] = $this->colors[$scheduling_address->driver_id - 1];
+            }
+
+            $color = $driverColors[$scheduling_address->driver_id];
+            $events[] = [
+                'id' => $event->id,
+                'driver_id' => $scheduling_address->driver_id,
+                'title' => $patient->first_name . " " . $patient->last_name,
+                'start' => $event->date . " " . $scheduling_address->pick_up_hour,
+                'end' => $event->date . " " . $scheduling_address->drop_off_hour,
+                'color' => $color,
+                'className' => ($event->status == 'Canceled') ? 'cancelled-event' : '',
+            ];
+        }
+
+        return $events;
     }
 
     public function validateFields()
@@ -571,30 +642,7 @@ class Schedulings extends Component
 
     public function render()
     {
-        $scheduling = DB::table('schedulings')
-            ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
-            ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
-            ->get();
-        $events = [];
-        $driverColors = [];
-
-        foreach ($scheduling as $event) {
-            $patient = Patient::find($event->patient_id);
-
-            if (!isset($driverColors[$event->driver_id])) {
-                $driverColors[$event->driver_id] = $this->colors[$event->driver_id - 1];
-            }
-
-            $color = $driverColors[$event->driver_id];
-            $events[] = [
-                'id' => $event->id,
-                'driver_id' => $event->driver_id,
-                'title' => $patient->first_name . " " . $patient->last_name,
-                'start' => $event->date . " " . $event->pick_up_hour,
-                'end' => $event->date . " " . $event->drop_off_hour,
-                'color' => $color,
-            ];
-        }
+        $events = $this->getEventsCalendar();
 
         $driver = DB::table('users')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
