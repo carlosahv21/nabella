@@ -13,8 +13,8 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id(); // Esto crea una columna 'id' con auto_increment
             $table->enum('entity_type', ['Patient', 'Facility']);
-            $table->unsignedBigInteger('patient_id');
-            $table->unsignedBigInteger('facility_id');
+            $table->unsignedBigInteger('patient_id')->nullable();
+            $table->unsignedBigInteger('facility_id')->nullable();
             $table->string('address');
             $table->timestamps();
 

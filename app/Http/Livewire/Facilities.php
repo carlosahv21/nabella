@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Facility;
 use App\Models\Address;
+use App\Models\ServiceContract;
 
 use Livewire\WithPagination;
 
@@ -14,7 +15,7 @@ class Facilities extends Component
     
     protected $paginationTheme = 'bootstrap';
 
-    public $name, $address, $city, $state, $modelId = '';
+    public $name, $service_contract_id, $address, $city, $state, $modelId = '';
     public $item, $action, $search, $title_modal, $countFacilities = '';
     public $isEdit = false;
 
@@ -61,6 +62,7 @@ class Facilities extends Component
 
         $model = Facility::find($this->modelId);
         $this->name = $model->name;
+        $this->service_contract_id = $model->service_contract_id;
         $this->address = $model->address;
         $this->city = $model->city;
         $this->state = $model->state;
@@ -70,10 +72,12 @@ class Facilities extends Component
     {
         $this->modelId = null;
         $this->name = null;
+        $this->service_contract_id = null;
         $this->address = null;
         $this->city = null;
         $this->state = null;
         $this->isEdit = false;
+        $this->inputs = [];
     }
 
     public function save()
@@ -87,6 +91,7 @@ class Facilities extends Component
         }
         
         $facility->name = $this->name;
+        $facility->service_contract_id = $this->service_contract_id;
         $facility->save();
 
         for ($i=0; $i < count($this->inputs); $i++) { 
@@ -171,7 +176,8 @@ class Facilities extends Component
     {
         return view('livewire.facility.index', 
         [
-            'facilities' => Facility::search('name', $this->search)->paginate(10)
+            'facilities' => Facility::search('name', $this->search)->paginate(10),
+            'service_contracts' => ServiceContract::all()
         ],
     );
     }

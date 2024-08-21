@@ -135,7 +135,7 @@ use App\Models\Address;
                         <div class="card-body p-0">
                             <form>
                                 <div class="row">
-                                    <div class="mb-3 col-md-12">
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Name of the Facility <span class="text-danger">*</span></label>
                                         <input wire:model="name" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('name'))
@@ -143,6 +143,15 @@ use App\Models\Address;
                                             {{ $errors->first('name') }}
                                         </div>
                                         @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6 col-lg-6">
+                                        <label class="form-label">Service Contract</label>
+                                        <select wire:model="service_contract_id" class="form-control border border-2 p-2">
+                                            <option value="">Select a service contract</option>
+                                            @foreach ($service_contracts as $service_contract)
+                                            <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="mb-3 col-md-12">
                                         <label class="form-label">Address</label>

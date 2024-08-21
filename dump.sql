@@ -62,6 +62,7 @@ DROP TABLE IF EXISTS `facilities`;
 CREATE TABLE `facilities` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `service_contract_id` int NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -74,7 +75,7 @@ CREATE TABLE `facilities` (
 
 LOCK TABLES `facilities` WRITE;
 /*!40000 ALTER TABLE `facilities` DISABLE KEYS */;
-INSERT INTO `facilities` VALUES (1,'Burke County Dept Social Services','2024-08-02 03:57:46','2024-08-02 03:57:46'),(3,'Novant Health Rowan Medical Center','2024-08-03 21:40:51','2024-08-03 21:40:51');
+INSERT INTO `facilities` VALUES (1,'Burke County Dept Social Services','2','2024-08-02 03:57:46','2024-08-02 03:57:46'),(3,'Novant Health Rowan Medical Center','3','2024-08-03 21:40:51','2024-08-03 21:40:51');
 /*!40000 ALTER TABLE `facilities` ENABLE KEYS */;
 UNLOCK TABLES;
 

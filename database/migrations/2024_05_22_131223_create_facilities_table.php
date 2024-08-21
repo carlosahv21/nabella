@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('facilities', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->integer('service_contract_id')->nullable();
             $table->timestamps();
         });
     }

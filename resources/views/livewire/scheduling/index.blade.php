@@ -54,7 +54,7 @@
                                 <!-- PATIENT -->
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label">Patient</label>
-                                    <select wire.ignore.self wire:model="patient_id" class="form-select" id="patientId">
+                                    <select wire.ignore.self wire:model="patient_id" class="form-select" id="patientId" @if($if_not_cancel) disabled @endif>
                                         <option value="">Select a patient</option>
                                         @foreach($patients as $patient)
                                         <option value="{{ $patient->id }}">{{ $patient->first_name }} {{ $patient->last_name }}</option>
@@ -68,10 +68,10 @@
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <label class="form-label">Start Date</label>
-                                    <input wire:model="date" class="form-control border border-1 p-2 date-input active" placeholder="YYYY/MM/DD">
+                                    <input wire:model="date" class="form-control border border-1 p-2 date-input active" placeholder="YYYY/MM/DD" @if($if_not_cancel) disabled @endif>
                                 </div>
                                 <div class="form-check mb-3 col-md-4 " style="margin-top: 2.4rem !important;">
-                                    <input wire.ignore.self wire:model="auto_agend" class="form-check-input" type="checkbox" id="auto_agend">
+                                    <input wire.ignore.self wire:model="auto_agend" class="form-check-input" type="checkbox" id="auto_agend" @if($if_not_cancel) disabled @endif>
                                     <label class="custom-control-label" for="auto_agend">Auto Agend</label>
                                 </div>
                                 @if($auto_agend)
@@ -130,7 +130,7 @@
                                 @endif
                                 <h6 class="text-center">GOING</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" placeholder="Pick up address">
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_pick_up))
                                     <ul class="list-group">
                                         @foreach ($prediction_pick_up as $address_pick_up)
@@ -142,7 +142,7 @@
                                 @foreach ($stops as $index => $stop)
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value)">
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value)" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($stops[$index]['addresses']))
                                         <ul class="list-group">
                                             @foreach ($stops[$index]['addresses'] as $address)
@@ -154,11 +154,11 @@
                                     <div class="col-md-2 d-flex">
                                         @if ($index == count($stops) - 1)
                                         <button type="button" wire:click="addStop" class="btn btn-link text-dark text-gradient px-3 mb-0"
-                                            data-bs-toggle="tooltip" data-bs-original-title="Add stops">
+                                            data-bs-toggle="tooltip" data-bs-original-title="Add stops" @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons">add</i>
                                         </button>
                                         @endif
-                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }})">
+                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }})" @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons">delete</i>
                                         </button>
                                     </div>
@@ -167,18 +167,18 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check In</label>
-                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in">
+                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time">
+                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Pick up driver</label>
-                                    <select wire.ignore.self wire:model="pick_up_driver_id" class="form-select" id="pick_up_driver_id">
+                                    <select wire.ignore.self wire:model="pick_up_driver_id" class="form-select" id="pick_up_driver_id" @if($if_not_cancel) disabled @endif>
                                         <option value="">Select a Driver</option>
                                         @foreach($drivers as $drive)
                                         <option value="{{ $drive->id }}">{{ $drive->name }}</option>
@@ -194,7 +194,7 @@
                                 <!-- RETURN -->
                                 <h6 class="text-center">RETURN</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" placeholder="Location Driver">
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" placeholder="Location Driver" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_location_driver))
                                     <ul class="list-group">
                                         @foreach ($prediction_location_driver as $address_location_driver)
@@ -204,7 +204,7 @@
                                     @endif
                                 </div>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" placeholder="Pick up address">
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_return_pick_up_address))
                                     <ul class="list-group">
                                         @foreach ($prediction_return_pick_up_address as $p_address_pick_up)
@@ -216,11 +216,11 @@
                                 @foreach ($r_stops as $r_index => $r_stop)
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQueryReturn({{ $r_index }}, $event.target.value)">
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQueryReturn({{ $r_index }}, $event.target.value)" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($r_stops[$r_index]['addresses']))
                                         <ul class="list-group">
                                             @foreach ($r_stops[$r_index]['addresses'] as $r_address)
-                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddressReturn({{ $r_index }}, '{{ $r_address }}')">{{ $address }}</li>
+                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddressReturn({{ $r_index }}, '{{ $r_address }}')">{{ $r_address }}</li>
                                             @endforeach
                                         </ul>
                                         @endif
@@ -228,7 +228,7 @@
                                     <div class="col-md-2 d-flex">
                                         @if ($r_index == count($r_stops) - 1)
                                         <button type="button" wire:click="addStopReturn" class="btn btn-link text-dark text-gradient px-3 mb-0"
-                                            data-bs-toggle="tooltip" data-bs-original-title="Add stops">
+                                            data-bs-toggle="tooltip" data-bs-original-title="Add stops" @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons">add</i>
                                         </button>
                                         @endif
@@ -241,18 +241,23 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check Out</label>
-                                        <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in">
+                                        <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in" @if($if_not_cancel) disabled @endif>
                                     </div>
+                                    @if ($errors_r_check_in)
+                                        <div class="text-danger inputerror">
+                                            {{ $errors_r_check_in }}
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive">
+                                        <input type="time" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Drop off driver</label>
-                                    <select wire.ignore.self wire:model="drop_off_driver_id" class="form-select" id="drop_off_driver_id">
+                                    <select wire.ignore.self wire:model="drop_off_driver_id" class="form-select" id="drop_off_driver_id" @if($if_not_cancel) disabled @endif>
                                         <option value="">Select a Driver</option>
                                         @foreach($drivers as $drive)
                                         <option value="{{ $drive->id }}">{{ $drive->name }}</option>
@@ -271,39 +276,39 @@
                                     </div>
                                     <div class="col-md-8 row text-center">
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input class="form-check-input" type="radio" value="one_way" wire.ignore_self wire:model="type_of_trip">
+                                            <input class="form-check-input" type="radio" value="one_way" wire.ignore_self wire:model="type_of_trip" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="one_way">One way</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self wire:model="type_of_trip">
+                                            <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self wire:model="type_of_trip" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="round_trip">Round trip</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
+                                            <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customWheelchair">Wheelchair</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
+                                            <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customAmbulatory">Ambulatory</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
+                                            <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customSaturdays">Saturdays</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
+                                            <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customCompanion">Companion</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
+                                            <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customFastTrack">Fast Track</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
+                                            <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customSundaysHolidays">Sund / Holid</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
+                                            <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours" @if($if_not_cancel) disabled @endif>
                                             <label class="custom-control-label text-10" for="customOutOfHours">After hours</label>
                                         </div>
                                     </div>
@@ -326,7 +331,11 @@
 
                     <div>
                         <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                        <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                        @if(!$if_not_cancel)
+                            <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                        @else
+                            <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
+                        @endif
                     </div>
                 </div>
             </div>
