@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 class Schedulings extends Component
 {
     // Campos de la tabla scheduling
-    public $patient_id, $hospital_id, $wait_time, $date, $check_in, $pick_up_time, $status = '';
+    public $patient_id, $date, $check_in, $pick_up_time, $status = '';
     public $auto_agend = false;
     public $weekdays = [];
     public $ends_schedule;
@@ -124,8 +124,6 @@ class Schedulings extends Component
         $model_scheduling = Scheduling::find($this->modelId);
 
         $this->patient_id = $model_scheduling->patient_id;
-        $this->hospital_id = $model_scheduling->hospital_id;
-        $this->wait_time = $model_scheduling->wait_time;
         $this->date = $model_scheduling->date;
         $this->auto_agend = $model_scheduling->auto_agend;
         $this->status = $model_scheduling->status;
@@ -153,7 +151,7 @@ class Schedulings extends Component
 
     private function clearForm()
     {
-        $this->reset(['modelId', 'patient_id', 'hospital_id', 'pick_up_address', 'drop_off_address', 'date', 'check_in', 'drop_off_hour', 'wait_time', 'wheelchair', 'ambulatory', 'saturdays', 'sundays_holidays', 'companion', 'fast_track', 'out_of_hours', 'auto_agend']);
+        $this->reset(['modelId', 'patient_id', 'pick_up_address', 'drop_off_address', 'date', 'check_in', 'drop_off_hour', 'wheelchair', 'ambulatory', 'saturdays', 'sundays_holidays', 'companion', 'fast_track', 'out_of_hours', 'auto_agend']);
 
         $this->isEdit = false;
         $this->addresses = [];
@@ -172,8 +170,6 @@ class Schedulings extends Component
 
         // Guardamos los datos de la tabla scheduling
         $scheduling->patient_id = $this->patient_id;
-        $scheduling->hospital_id = $this->hospital_id ?? 1;
-        $scheduling->wait_time = $this->wait_time ?? 0;
         $scheduling->date = $this->date;
         $scheduling->auto_agend = $this->auto_agend;
         $scheduling->status = 'Waiting';
@@ -254,11 +250,16 @@ class Schedulings extends Component
         for ($i = 0; $i < count($addresses) - 1; $i++) {
             $scheduling_address = new SchedulingAddress;
 
-            $check_in = ($i == 0) ? $this->check_in : $this->sumWaitTime($this->check_in, $this->wait_time, $addresses[$i]['duration']);
-            $drop_off = ($i == 0) ? $this->sumWaitTime($this->check_in, false, $addresses[$i]['duration']) : $this->sumWaitTime($this->check_in, $this->wait_time, $addresses[$i]['duration']);
+            if($type == 'pick_up'){
+                $check_in = ($i == 0) ? $this->check_in : $this->sumWaitTime($this->check_in, $addresses[$i]['duration']);
+                $drop_off = $this->sumWaitTime($this->check_in, $addresses[$i]['duration']);
+            }else{
+                $check_in = ($i == 0) ? $this->r_check_in : $this->sumWaitTime($this->r_check_in, $addresses[$i]['duration']);
+                $drop_off = $this->sumWaitTime($this->r_check_in, $addresses[$i]['duration']);
+            }
 
             $scheduling_address->scheduling_id = $scheduling->id;
-            $scheduling_address->driver_id = ($i == 0) ? $this->pick_up_driver_id : $this->drop_off_driver_id;
+            $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
             $scheduling_address->pick_up_address = $addresses[$i]['address'];
             $scheduling_address->drop_off_address = $addresses[$i + 1]['address'];
             $scheduling_address->pick_up_hour = $check_in;
@@ -271,21 +272,12 @@ class Schedulings extends Component
         }
     }
 
-    public function sumWaitTime($pick_up_hour, $wait_time, $duration)
+    public function sumWaitTime($pick_up_hour, $duration)
     {
         $hora = $pick_up_hour;
         $minutosASumar = $duration + 10;
 
-
-        if ($wait_time) {
-            $minutosASumar = $wait_time + $duration;
-        }
-
-        $dateTime = Carbon::createFromFormat('H:i', $hora);
-        $dateTime->addMinutes($minutosASumar);
-        $horaResultado = $dateTime->format('H:i');
-
-        return $horaResultado;
+        return Carbon::createFromFormat('H:i', $hora)->addMinutes($minutosASumar)->format('H:i');
     }
 
     public function forcedCloseModal()
@@ -757,7 +749,6 @@ class Schedulings extends Component
 
         return view('livewire.scheduling.index', [
             'patients' => Patient::all(),
-            'hospitals' => Facility::all(),
             'drivers' => $driver,
             'events' => $events
         ]);

@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Scheduling;
+use App\Models\SchedulingAddress;
+use App\Models\SchedulingCharge;
 use App\Models\Patient;
 use App\Models\Facility;
 use App\Models\Driver;
@@ -20,7 +22,7 @@ class Dash extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $modelId = '';
+    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $modelId = '';
 
     public $item, $action, $search, $title_modal, $countDrivers = '';
 
@@ -39,9 +41,10 @@ class Dash extends Component
         $this->item = $item;
 
         if ($action == 'seeDetails') {
+            $this->emit('getModelId', $this->item);
+
             $this->title_modal = 'See Event Details';
             $this->dispatchBrowserEvent('openModal', ['name' => 'seeEventDetails']);
-            $this->emit('getModelId', $this->item);
         } else if ($action == 'seeMap') {
             $this->title_modal = 'See Map';
             $this->dispatchBrowserEvent('openModal', ['name' => 'seeMap']);
@@ -53,32 +56,37 @@ class Dash extends Component
     {
         $this->modelId = $modelId;
 
-        $model = Scheduling::find($this->modelId);
+        $scheduling = Scheduling::find($this->modelId);
+        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $this->modelId)->first();
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $this->modelId)->first();
 
-        $patient = Patient::find($model->patient_id);
-        $hospital = Facility::find($model->hospital_id);
-        $driver = Driver::find($model->driver_id);
-        $address = Address::find($model->pick_up);
+        $patient = Patient::find($scheduling->patient_id);
+        $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
+        $facility_address = Address::where('facility_id', '=', $facility->id)->first();
+
+        $driver = Driver::find($scheduling_address->driver_id);
 
         $this->patient_id = $patient->first_name . ' ' . $patient->last_name;
-        $this->hospital_name = $hospital->name;
-        $this->hospital_address = $hospital->address;
+        $this->hospital_name = $facility->name;
+        $this->hospital_address = $facility_address->address;
         $this->driver_name = $driver->name;
-        $this->distance = $model->distance;
-        $this->duration = $model->duration;
-        $this->date = $model->date;
-        $this->check_in = $model->check_in;
-        $this->pick_up = $address->address;
-        $this->pick_up_time = $model->pick_up_time;
-        $this->wheelchair = $model->wheelchair;
-        $this->ambulatory = $model->ambulatory;
-        $this->saturdays = $model->saturdays;
-        $this->sundays_holidays = $model->sundays_holidays;
-        $this->companion = $model->companion;
-        $this->fast_track = $model->fast_track;
-        $this->out_of_hours = $model->out_of_hours;
-        $this->aditional_waiting = $model->aditional_waiting;
-        $this->if_not_cancel = $model->if_not_cancel;
+
+        $this->distance = $scheduling_address->distance;
+        $this->duration = $scheduling_address->duration;
+        $this->date = $scheduling->date;
+        $this->check_in = $scheduling_address->pick_up_hour;
+        $this->pick_up = $scheduling_address->pick_up_address;
+        $this->drop_off = $scheduling_address->drop_off_address;
+        
+        $this->wheelchair = $scheduling_charge->wheelchair;
+        $this->ambulatory = $scheduling_charge->ambulatory;
+        $this->saturdays = $scheduling_charge->saturdays;
+        $this->sundays_holidays = $scheduling_charge->sundays_holidays;
+        $this->companion = $scheduling_charge->companion;
+        $this->fast_track = $scheduling_charge->fast_track;
+        $this->out_of_hours = $scheduling_charge->out_of_hours;
+        $this->aditional_waiting = $scheduling_charge->aditional_waiting;
+        $this->if_not_cancel = $scheduling_charge->if_not_cancel;
     }
 
     private function clearForm()
@@ -146,6 +154,34 @@ class Dash extends Component
         $this->dispatchBrowserEvent('showMap', ['routes' => $routes]);
     }
 
+    function startDriving($event)
+    {
+        $scheduling = Scheduling::find($event);
+        $scheduling->status = 'In Progress';
+        $scheduling->save();
+        
+    }
+
+    function finishDriving($event)
+    {
+        $scheduling = Scheduling::find($event);
+        $scheduling->status = 'Completed';
+        $scheduling->save();
+    }
+
+    private function statusColor($status)
+    {
+        if ($status == 'Waiting') {
+            return 'bg-gradient-success';
+        } else if ($status == 'Canceled') {
+            return 'bg-gradient-danger';
+        } else if ($status == 'Completed') {
+            return 'bg-gradient-warning';
+        } else if ($status == 'In Progress') {
+            return 'bg-gradient-info';
+        }
+    }
+
     public function render()
     {
         $routes = [];
@@ -156,7 +192,8 @@ class Dash extends Component
             $events = DB::table('schedulings')
                 ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
                 ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
-                ->where('driver_id', '=', auth()->user()->id)
+                ->where('scheduling_address.driver_id', '=', auth()->user()->id)
+                ->orderBy('pick_up_hour')
                 ->get();
             $cars = DB::table('vehicles')
                 ->where('user_id', '=', auth()->user()->id)
@@ -174,32 +211,26 @@ class Dash extends Component
         foreach ($events as $event) {
             $pick_up_address = $event->pick_up_address;
 
-            $hospital = DB::table('facilities')
-                ->where('id', '=', $event->hospital_id)
-                ->get();
-
             $drop_off_address = $event->drop_off_address;
 
-            $patient = DB::table('patients')
-                ->where('id', '=', $event->patient_id)
-                ->get();
-
-            $driver = DB::table('users')
-                ->where('id', '=', $event->driver_id)
-                ->get();
+            $patient = Patient::where('id', '=', $event->patient_id)->first();
+            $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
+            $driver = Driver::where('id', '=', $event->driver_id)->first();
 
             $all_events[] = [
                 'id' => $event->id,
                 'distance' => $event->distance,
                 'pick_up_address' => $pick_up_address,
                 'drop_off_address' => $drop_off_address,
-                'hospital_name' => $hospital->first()->name,
-                'driver_name' => $driver->first()->name,
+                'hospital_name' => $facility->name,
+                'driver_name' => $driver->name,
+                'status' => $event->status,
+                'status_color' => $this->statusColor($event->status), 
                 'date' => $event->date,
                 'pick_up_hour' => $event->pick_up_hour,
                 'drop_off_hour' => $event->drop_off_hour,
-                'patient_name' => $patient->first()->first_name . ' ' . $patient->first()->last_name,
-                'observations' => $patient->first()->observations,
+                'patient_name' => $patient->first_name . ' ' . $patient->last_name,
+                'observations' => $patient->observations,
                 'wheelchair' => $event->wheelchair ? true : false,
                 'ambulatory' => $event->ambulatory ? true : false,
                 'saturdays' => $event->saturdays ? true : false,

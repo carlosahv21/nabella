@@ -343,6 +343,33 @@
         </div>
     </div>
 </div>
+<!-- Modal Add-->
+<div wire:ignore.self class="modal fade" id="confirmCancel" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Scheduling</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card card-plain h-100">
+                    <div class="card-body p-0">
+                        <form>
+                            <div class="row">
+                                <div class="mb-3 col-md-12">
+                                    <p>Are you sure you want to cancel this scheduling?</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Botón en el inicio/izquierda -->
+                <button type="button" class="btn" data-bs-dismiss="modal" wire:click="confirmCancel">Cancel Scheduling</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.13/index.global.min.js'></script>
 

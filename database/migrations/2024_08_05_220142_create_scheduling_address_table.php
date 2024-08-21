@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('drop_off_hour')->nullable();
             $table->string('distance')->nullable();
             $table->string('duration')->nullable();
+            $table->string('type_of_trip')->nullable();
+            $table->string('status')->nullable();
+            $table->string('observations')->nullable();
 
             $table->timestamps();
         });

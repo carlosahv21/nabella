@@ -50,6 +50,8 @@
                                     Status</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     Details</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,12 +83,25 @@
                                     {{ $event['patient_name'] }}
                                 </td>
                                 <td class="align-middle text-center">
-                                    <span class="badge badge-sm bg-gradient-success">Waiting</span>
+                                    <span class="badge badge-sm {{ $event['status_color'] }}">
+                                        {{ $event['status'] }}
+                                    </span>
                                 </td>
                                 <td class="align-middle">
                                     <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">
                                         <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See details">visibility</i> See details
                                     </a>
+                                </td>
+                                <td class="align-middle">
+                                    @if($event['status'] == 'Waiting')
+                                    <a wire:click="startDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
+                                        <i class="material-icons text-sm me-2">directions_car</i> Start driving
+                                    </a>
+                                    @elseif($event['status'] == 'In Progress')
+                                    <a wire:click="finishDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving">
+                                        <i class="material-icons text-sm me-2">directions_car</i> Finish driving
+                                    </a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -136,13 +151,7 @@
                                             {{ $date }}
                                         </span>
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label>Facility Check In</label><br>
-                                        <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">schedule</i>
-                                            {{ \Carbon\Carbon::parse($check_in)->format('H:i A') }}
-                                        </span>
-                                    </div>
+                                    
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Pick Up Address</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
@@ -150,51 +159,112 @@
                                             {{ $pick_up }}
                                         </span>
                                     </div>
+                                    <div class="mb-3 col-md-6">                                    
+                                        <label class="form-label">Drop Off Address</label><br>
+                                        <span class="text-dark text-sm font-weight-bolder ms-sm-2">
+                                            <i class="material-icons text-sm me-1">location_on</i>
+                                            {{ $drop_off }}
+                                        </span>
+                                    </div>
                                     <div class="mb-3 col-md-6">
-                                        <label>Suggested pick up time</label><br>
+                                        <label>Facility Check In</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons text-sm me-1">schedule</i>
-                                            {{ \Carbon\Carbon::parse($pick_up_time)->format('H:i A') }}
+                                            {{ \Carbon\Carbon::parse($check_in)->format('H:i A') }}
                                         </span>
                                     </div>
                                     <div class="row">
                                         <hr class="dark horizontal">
-                                        <h6>Option of schedule</h6>
+                                        <h6>Charges</h6>
                                         <hr class="dark horizontal">
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair" {{ $wheelchair ? 'disabled' : '' }}>
+                                            @if($wheelchair)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
+                                            @endif
                                             <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory" {{ $ambulatory ? 'disabled' : '' }}>
+                                            @if($ambulatory)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
+                                            @endif
                                             <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours" {{ $out_of_hours ? 'disabled' : '' }}>
+                                            @if($out_of_hours)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
+                                            @endif
                                             <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays" {{ $saturdays ? 'disabled' : '' }}>
+                                            @if($saturdays)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
+                                            @endif
                                             <label class="custom-control-label" for="customSaturdays">Saturdays</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays" {{ $sundays_holidays ? 'disabled' : '' }}>
+                                            @if($sundays_holidays)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
+                                            @endif
                                             <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion" {{ $companion ? 'disabled' : '' }}>
+                                            @if($companion)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
+                                            @endif
                                             <label class="custom-control-label" for="customCompanion">Companion</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="aditional_waiting" class="form-check-input" type="checkbox" id="customAditionalWaiting" {{ $aditional_waiting ? 'disabled' : '' }}>
+                                            @if($aditional_waiting)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="aditional_waiting" class="form-check-input" type="checkbox" id="customAditionalWaiting">
+                                            @endif
                                             <label class="custom-control-label" for="customAditionalWaiting">Aditional Waiting</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack" {{ $fast_track ? 'disabled' : '' }}>
+                                            @if($fast_track)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
+                                            @endif
                                             <label class="custom-control-label" for="customFastTrack">Fast Track</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
-                                            <input wire.ignore.self wire:model="if_not_cancel" class="form-check-input" type="checkbox" id="customIfNotCancel" {{ $if_not_cancel ? 'disabled' : '' }}>
+                                            @if($if_not_cancel)
+                                            <span>
+                                                <i class="material-icons text-sm me-1">check</i>
+                                            </span>
+                                            @else
+                                                <input wire.ignore.self wire:model="if_not_cancel" class="form-check-input" type="checkbox" id="customIfNotCancel">
+                                            @endif
                                             <label class="custom-control-label" for="customIfNotCancel">If not cancel</label>
                                         </div>
                                     </div>
