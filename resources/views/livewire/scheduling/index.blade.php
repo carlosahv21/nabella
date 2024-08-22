@@ -130,7 +130,7 @@
                                 @endif
                                 <h6 class="text-center">GOING</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up')"  placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_pick_up))
                                     <ul class="list-group">
                                         @foreach ($prediction_pick_up as $address_pick_up)
@@ -194,7 +194,7 @@
                                 <!-- RETURN -->
                                 <h6 class="text-center">RETURN</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" placeholder="Location Driver" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Location Driver" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_location_driver))
                                     <ul class="list-group">
                                         @foreach ($prediction_location_driver as $address_location_driver)
@@ -204,7 +204,7 @@
                                     @endif
                                 </div>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_return_pick_up_address))
                                     <ul class="list-group">
                                         @foreach ($prediction_return_pick_up_address as $p_address_pick_up)
@@ -315,6 +315,10 @@
                                     <div class="col-md-2">
                                     </div>
                                 </div>
+                                <div class="mb-3 col-md-12">
+                                    <label class="form-label">Request by</label>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="request_by" placeholder="Jhon Doe" @if($if_not_cancel) disabled @endif>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -377,7 +381,8 @@
     let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
         headerToolbar: {
             start: 'dayGridMonth,timeGridWeek,timeGridDay',
-            end: 'today prev,next'
+            center: 'title',
+            end: 'today prev,next',
         },
         events: @json($events),
         editable: true,
@@ -404,7 +409,8 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 headerToolbar: {
                     start: 'dayGridMonth,timeGridWeek,timeGridDay',
-                    end: 'today prev,next'
+                    center: 'title',
+                    end: 'today prev,next',
                 },
                 events: events,
                 editable: true,

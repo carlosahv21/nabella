@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('distance')->nullable();
             $table->string('duration')->nullable();
             $table->string('type_of_trip')->nullable();
+            $table->string('request_by')->nullable();
             $table->string('status')->nullable();
             $table->string('observations')->nullable();
 

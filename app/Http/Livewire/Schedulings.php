@@ -27,7 +27,7 @@ class Schedulings extends Component
     public $google;
 
     // Campos de la tabla scheduling_address
-    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $errors_r_check_in = '';
+    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $request_by, $errors_r_check_in = '';
 
     // Campos de la tabla scheduling_charge
     public $wheelchair = false;
@@ -189,6 +189,7 @@ class Schedulings extends Component
         $scheduling_charge->aditional_waiting = $this->aditional_waiting;
         $scheduling_charge->fast_track = $this->fast_track;
         $scheduling_charge->if_not_cancel = $this->if_not_cancel;
+        $scheduling_charge->request_by = $this->request_by;
 
         $scheduling_charge->save();
 
@@ -267,6 +268,8 @@ class Schedulings extends Component
             $scheduling_address->distance = $addresses[$i + 1]['distance'];
             $scheduling_address->duration = $addresses[$i + 1]['duration'];
             $scheduling_address->type_of_trip = $type;
+            $scheduling_address->request_by = $this->request_by;
+            $scheduling_address->status = 'Waiting';
 
             $scheduling_address->save();
         }
@@ -295,6 +298,16 @@ class Schedulings extends Component
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteScheduling']);
         session()->flash('alert', ['message' => 'Scheduling deleted successfully!', 'type' => 'danger', 'icon' => 'delete']);
+    }
+
+    // Click en el input para obtener las direcciones guardadas
+    public function getAddresses($input)
+    {
+        if ($this->saved_addresses) {
+            if (!$this->$input) {
+                $this->$input = $this->saved_addresses;
+            }
+        }
     }
 
     // Funciones que validan la actualización de algun campo

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedInteger('patient_id');
             $table->date('date');
             $table->boolean('auto_agend')->default(false);
-            $table->string('status')->default('Waiting');
             $table->timestamps();
         });
     }

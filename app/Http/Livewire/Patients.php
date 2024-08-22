@@ -31,7 +31,7 @@ class Patients extends Component
         'first_name' => 'required',
         'last_name' => 'required',
         'phone1' => 'required',
-        'observations' => 'required'
+        'medicalid' => 'required|unique:patients,medicalid',
     ];
 
     protected $listeners = [
@@ -130,14 +130,20 @@ class Patients extends Component
 
         $patient->save();
 
-        for ($i=0; $i < count($this->inputs); $i++) { 
-            $address = new Address;
+        if ($this->inputs) {
+            for ($i=0; $i < count($this->inputs); $i++) { 
+                if (empty($this->inputs[$i]) || empty($this->state[$i]) || empty($this->zipcode[$i])) {
+                    continue;
+                }
 
-            $address->patient_id = $patient->id;
-            $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
-            $address->entity_type = $this->type;
+                $address = new Address;
 
-            $address->save();
+                $address->patient_id = $patient->id;
+                $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
+                $address->entity_type = $this->type;
+
+                $address->save();
+            }
         }
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createPatient']);

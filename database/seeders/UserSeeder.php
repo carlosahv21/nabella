@@ -57,7 +57,7 @@ class UserSeeder extends Seeder
                 'dl_number' => $user['dl_number'],
                 'date_of_hire' => $user['date_of_hire'],
                 'email' => $email,
-                'password' => bcrypt('password'), // Asignar una contraseña por defecto
+                'password' => '123456', // Asignar una contraseña por defecto
                 'created_at' => now(),
                 'updated_at' => now(),
             ])->assignRole('Driver');
