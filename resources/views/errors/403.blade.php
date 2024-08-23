@@ -95,7 +95,7 @@
             <h2 class="text-light">Forbidden </h2>
             <h4 class="text-light">It seems like you're trying to get into a place you can't!</h4>
             <a class="btn btn-outline-secondary text-white" href="{{ url()->previous() }}">
-              <i class="material-icons opacity-10">arrow_back</i>
+              <i class="material-icons notranslate opacity-10">arrow_back</i>
                 Return
               </a>
           </div>

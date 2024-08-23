@@ -6,7 +6,7 @@
             <div class="col-12 col-lg-3 d-md-flex">
                 <div class="input-group mt-2">
                     <span class="input-group-text">
-                        <i class="material-icons">search</i>
+                        <i class="material-icons notranslate">search</i>
                     </span>
                     <input wire:model="search" type="text" class="form-control" placeholder="Search service contract...">
                 </div>
@@ -14,15 +14,15 @@
             <div class="col-12 col-lg-5 d-flex mt-3 me-4">
                 <div class="dropdown">
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Mass action <i class="material-icons">expand_more</i>
+                        Mass action <i class="material-icons notranslate">expand_more</i>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
+                            <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons notranslate">download</i> Export</button>
                         </li>
                         @can('servicecontract.delete')
                         <li>
-                            <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
+                            <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons notranslate">delete</i> Delete</button>
                         </li>
                         @endcan
                     </ul>
@@ -30,7 +30,7 @@
 
                 @can('servicecontract.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <i class="material-icons">add</i> Add Service Contract
+                    <i class="material-icons notranslate">add</i> Add Service Contract
                 </button>
                 @endcan
             </div>
@@ -40,11 +40,11 @@
     <div class="position-fixed top-2 end-2 z-index-2">
         <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
             <div class="toast-header bg-transparent text-white border-0">
-                <i class="material-icons me-2">
+                <i class="material-icons notranslate me-2">
                     {{ session('alert.icon') }}
                 </i>
                 <span class="me-auto font-weight-bold">Notification!</span>
-                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+                <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
             </div>
             <hr class="horizontal light m-0">
             <div class="toast-body text-white ">
@@ -87,11 +87,11 @@
                             <span class="my-2 text-xs">
                                 @can('servicecontract.update')
                                 <a wire:click="selectItem({{ $servicecontract->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
+                                    <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
                                 @can('servicecontract.delete')
-                                <a wire:click="selectItem({{ $servicecontract->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                <a wire:click="selectItem({{ $servicecontract->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons notranslate text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
                         </th>

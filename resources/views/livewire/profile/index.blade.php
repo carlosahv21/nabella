@@ -3,11 +3,11 @@
     <div class="position-fixed top-2 end-2 z-index-2">
         <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
             <div class="toast-header bg-transparent text-white border-0">
-                <i class="material-icons me-2">
+                <i class="material-icons notranslate me-2">
                     {{ session('alert.icon') }}
                 </i>
                 <span class="me-auto font-weight-bold">Notification!</span>
-                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+                <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
             </div>
             <hr class="horizontal light m-0">
             <div class="toast-body text-white ">
@@ -58,7 +58,7 @@
                                         </div>
                                         <div class="col-md-4 text-end">
                                             <a href="javascript:;">
-                                                <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
+                                                <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>
                                             </a>
                                         </div>
                                     </div>
@@ -85,7 +85,7 @@
                                         <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                             <div class="d-flex align-items-center">
                                                 <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                                                    <i class="material-icons opacity-10 ">launch</i>
+                                                    <i class="material-icons notranslate opacity-10 ">launch</i>
                                                 </div>
                                                 <div class="d-flex flex-column">
                                                     <h6 class="mb-1 text-dark text-sm">Devices</h6>
@@ -100,7 +100,7 @@
                                         <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                             <div class="d-flex align-items-center">
                                                 <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                                                    <i class="material-icons opacity-10 ">book_online</i>
+                                                    <i class="material-icons notranslate opacity-10 ">book_online</i>
                                                 </div>
                                                 <div class="d-flex flex-column">
                                                     <h6 class="mb-1 text-dark text-sm">Tickets</h6>
@@ -115,7 +115,7 @@
                                         <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                             <div class="d-flex align-items-center">
                                                 <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                                                    <i class="material-icons opacity-10 ">priority_high</i>
+                                                    <i class="material-icons notranslate opacity-10 ">priority_high</i>
                                                 </div>
                                                 <div class="d-flex flex-column">
                                                     <h6 class="mb-1 text-dark text-sm">Error logs</h6>
@@ -130,7 +130,7 @@
                                         <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
                                             <div class="d-flex align-items-center">
                                                 <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                                                    <i class="material-icons opacity-10 ">insert_emoticon</i>
+                                                    <i class="material-icons notranslate opacity-10 ">insert_emoticon</i>
                                                 </div>
                                                 <div class="d-flex flex-column">
                                                     <h6 class="mb-1 text-dark text-sm">Happy users</h6>

@@ -6,7 +6,7 @@
                 <div class="col-12">
                     <div class="card my-4">
                         <div class="my-3 mx-3 text-end">
-                            <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i class="material-icons text-sm">add</i>&nbsp;Add User</a>
+                            <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i class="material-icons notranslate text-sm">add</i>&nbsp;Add User</a>
                         </div>
                         <div class="d-flex flex-row justify-content-between mx-4">
                             <div class="d-flex mt-3 align-items-center justify-content-center">
@@ -90,13 +90,13 @@
                                                 <a rel="tooltip" class="btn btn-success btn-link"
                                                     href="" data-original-title=""
                                                     title="">
-                                                    <i class="material-icons">edit</i>
+                                                    <i class="material-icons notranslate">edit</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
                                                 
                                                 <button type="button" class="btn btn-danger btn-link"
                                                 data-original-title="" title="">
-                                                <i class="material-icons">close</i>
+                                                <i class="material-icons notranslate">close</i>
                                                 <div class="ripple-container"></div>
                                             </button>
                                             </td>
@@ -138,12 +138,12 @@
                                                 <a rel="tooltip" class="btn btn-success btn-link"
                                                 href="" data-original-title=""
                                                 title="">
-                                                <i class="material-icons">edit</i>
+                                                <i class="material-icons notranslate">edit</i>
                                                 <div class="ripple-container"></div>
                                             </a>
                                              <button type="button" class="btn btn-danger btn-link"
                                                     data-original-title="" title="">
-                                                    <i class="material-icons">close</i>
+                                                    <i class="material-icons notranslate">close</i>
                                                     <div class="ripple-container"></div>
                                                 </button>
                                             </td>
@@ -185,12 +185,12 @@
                                                 <a rel="tooltip" class="btn btn-success btn-link"
                                                     href="" data-original-title=""
                                                     title="">
-                                                    <i class="material-icons">edit</i>
+                                                    <i class="material-icons notranslate">edit</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-link"
                                                 data-original-title="" title="">
-                                                <i class="material-icons">close</i>
+                                                <i class="material-icons notranslate">close</i>
                                                 <div class="ripple-container"></div>
                                             </button>
                                             </td>
@@ -231,12 +231,12 @@
                                                 <a rel="tooltip" class="btn btn-success btn-link"
                                                     href="" data-original-title=""
                                                     title="">
-                                                    <i class="material-icons">edit</i>
+                                                    <i class="material-icons notranslate">edit</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-link"
                                                 data-original-title="" title="">
-                                                <i class="material-icons">close</i>
+                                                <i class="material-icons notranslate">close</i>
                                                 <div class="ripple-container"></div>
                                             </button>
                                             </td>
@@ -277,12 +277,12 @@
                                                 <a rel="tooltip" class="btn btn-success btn-link"
                                                     href="" data-original-title=""
                                                     title="">
-                                                    <i class="material-icons">edit</i>
+                                                    <i class="material-icons notranslate">edit</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-link"
                                                 data-original-title="" title="">
-                                                <i class="material-icons">close</i>
+                                                <i class="material-icons notranslate">close</i>
                                                 <div class="ripple-container"></div>
                                             </button>
                                             </td>
@@ -322,12 +322,12 @@
                                                 <a rel="tooltip" class="btn btn-success btn-link"
                                                     href="" data-original-title=""
                                                     title="">
-                                                    <i class="material-icons">edit</i>
+                                                    <i class="material-icons notranslate">edit</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-link"
                                                     data-original-title="" title="">
-                                                    <i class="material-icons">close</i>
+                                                    <i class="material-icons notranslate">close</i>
                                                     <div class="ripple-container"></div>
                                                 </button>
                                             </td>

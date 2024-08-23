@@ -172,7 +172,6 @@ class Schedulings extends Component
         $scheduling->patient_id = $this->patient_id;
         $scheduling->date = $this->date;
         $scheduling->auto_agend = $this->auto_agend;
-        $scheduling->status = 'Waiting';
 
         $scheduling->save();
 
@@ -189,7 +188,6 @@ class Schedulings extends Component
         $scheduling_charge->aditional_waiting = $this->aditional_waiting;
         $scheduling_charge->fast_track = $this->fast_track;
         $scheduling_charge->if_not_cancel = $this->if_not_cancel;
-        $scheduling_charge->request_by = $this->request_by;
 
         $scheduling_charge->save();
 

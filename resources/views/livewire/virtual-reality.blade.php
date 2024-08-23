@@ -11,15 +11,15 @@
                 </a>
                 <button class="btn btn-white border-radius-lg p-2 mt-n4 mt-md-2" type="button" data-bs-toggle="tooltip"
                     data-bs-placement="right" title="Home">
-                    <i class="material-icons p-2">home</i>
+                    <i class="material-icons notranslate p-2">home</i>
                 </button>
                 <button class="btn btn-white border-radius-lg p-2 mt-n4 mt-md-0" type="button" data-bs-toggle="tooltip"
                     data-bs-placement="right" title="Search">
-                    <i class="material-icons p-2">search</i>
+                    <i class="material-icons notranslate p-2">search</i>
                 </button>
                 <button class="btn btn-white border-radius-lg p-2 mt-n4 mt-md-0" type="button" data-bs-toggle="tooltip"
                     data-bs-placement="right" title="Minimize">
-                    <i class="material-icons p-2">more_horiz</i>
+                    <i class="material-icons notranslate p-2">more_horiz</i>
                 </button>
             </div>
             <div class="col-lg-8 col-md-11 ps-md-5 mb-5 mb-md-0">
@@ -61,7 +61,7 @@
                             </div>
                             <a href="javascript:;" class="bg-gray-100 w-100 text-center py-1" data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="Show More">
-                                <i class="material-icons text-primary">expand_more</i>
+                                <i class="material-icons notranslate text-primary">expand_more</i>
                             </a>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                             </div>
                             <a href="javascript:;" class="w-100 text-center py-1" data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="Show More">
-                                <i class="material-icons text-white">expand_more</i>
+                                <i class="material-icons notranslate text-white">expand_more</i>
                             </a>
                         </div>
                         <div class="card move-on-hover mt-4">
@@ -107,15 +107,15 @@
                                     <div class="d-flex mt-5">
                                         <button class="btn btn-outline-white rounded-circle p-2 mb-0" type="button"
                                             data-bs-toggle="tooltip" data-bs-placement="top" title="Prev">
-                                            <i class="material-icons p-2 mt-0">skip_previous</i>
+                                            <i class="material-icons notranslate p-2 mt-0">skip_previous</i>
                                         </button>
                                         <button class="btn btn-outline-white rounded-circle p-2 mx-2 mb-0" type="button"
                                             data-bs-toggle="tooltip" data-bs-placement="top" title="Pause">
-                                            <i class="material-icons p-2 mt-0">play_arrow</i>
+                                            <i class="material-icons notranslate p-2 mt-0">play_arrow</i>
                                         </button>
                                         <button class="btn btn-outline-white rounded-circle p-2 mb-0" type="button"
                                             data-bs-toggle="tooltip" data-bs-placement="top" title="Next">
-                                            <i class="material-icons p-2 mt-0">skip_next</i>
+                                            <i class="material-icons notranslate p-2 mt-0">skip_next</i>
                                         </button>
                                     </div>
                                 </div>

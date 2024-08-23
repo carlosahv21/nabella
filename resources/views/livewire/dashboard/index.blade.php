@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-header p-3 pt-2">
                         <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="material-icons opacity-10">directions_car</i>
+                            <i class="material-icons notranslate opacity-10">directions_car</i>
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-4 text-capitalize">Car assigned today</p>
@@ -19,7 +19,7 @@
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3 text-end">
                         <a wire:click="selectItem({{ $cars->first()->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                            <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
+                            <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
                         </a>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                                                 <div class="timeline timeline-one-side">
                                                     <div class="timeline-block">
                                                         <span class="timeline-step">
-                                                            <i class="material-icons text-success text-gradient">location_on</i>
+                                                            <i class="material-icons notranslate text-success text-gradient">location_on</i>
                                                         </span>
                                                         <div class="timeline-content">
                                                             <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up'] }}</h6>
@@ -75,7 +75,7 @@
                                                             <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $event['date'] }} {{ \Carbon\Carbon::parse($event['check_in'])->format('H:i A') }} </p>
                                                         </div>
                                                         <span class="timeline-step" style="margin-top: -25px;">
-                                                            <i class="material-icons text-success text-gradient">location_on</i>
+                                                            <i class="material-icons notranslate text-success text-gradient">location_on</i>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -89,7 +89,7 @@
                                         </td>
                                         <td class="align-middle">
                                             <a href="javascript:;" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                                <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See map">location_on</i> See map
+                                                <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See map">location_on</i> See map
                                             </a>
                                         </td>
                                         <td class="align-middle">

@@ -14,7 +14,7 @@
                                         alt="pattern-tree">
                                     <span class="mask bg-gradient-dark opacity-10"></span>
                                     <div class="card-body position-relative z-index-1 p-3">
-                                        <i class="material-icons text-white p-2">wifi</i>
+                                        <i class="material-icons notranslate text-white p-2">wifi</i>
                                         <h5 class="text-white mt-4 mb-5 pb-2">
                                             4562&nbsp;&nbsp;&nbsp;1122&nbsp;&nbsp;&nbsp;4594&nbsp;&nbsp;&nbsp;7852
                                         </h5>
@@ -45,7 +45,7 @@
                                         <div class="card-header mx-4 p-3 text-center">
                                             <div
                                                 class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg">
-                                                <i class="material-icons opacity-10">account_balance</i>
+                                                <i class="material-icons notranslate opacity-10">account_balance</i>
                                             </div>
                                         </div>
                                         <div class="card-body pt-0 p-3 text-center">
@@ -61,7 +61,7 @@
                                         <div class="card-header mx-4 p-3 text-center">
                                             <div
                                                 class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg">
-                                                <i class="material-icons opacity-10">account_balance_wallet</i>
+                                                <i class="material-icons notranslate opacity-10">account_balance_wallet</i>
                                             </div>
                                         </div>
                                         <div class="card-body pt-0 p-3 text-center">
@@ -83,7 +83,7 @@
                                         </div>
                                         <div class="col-6 text-end">
                                             <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i
-                                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Add New
+                                                    class="material-icons notranslate text-sm">add</i>&nbsp;&nbsp;Add New
                                                 Card</a>
                                         </div>
                                     </div>
@@ -98,7 +98,7 @@
                                                 <h6 class="mb-0">
                                                     ****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;7852
                                                 </h6>
-                                                <i class="material-icons ms-auto text-dark cursor-pointer"
+                                                <i class="material-icons notranslate ms-auto text-dark cursor-pointer"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="Edit Card">edit</i>
                                             </div>
@@ -111,7 +111,7 @@
                                                 <h6 class="mb-0">
                                                     ****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248
                                                 </h6>
-                                                <i class="material-icons ms-auto text-dark cursor-pointer"
+                                                <i class="material-icons notranslate ms-auto text-dark cursor-pointer"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="Edit Card">edit</i>
                                             </div>
@@ -145,7 +145,7 @@
                                     <div class="d-flex align-items-center text-sm">
                                         $180
                                         <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
-                                                class="material-icons text-lg position-relative me-1">picture_as_pdf</i>
+                                                class="material-icons notranslate text-lg position-relative me-1">picture_as_pdf</i>
                                             PDF</button>
                                     </div>
                                 </li>
@@ -158,7 +158,7 @@
                                     <div class="d-flex align-items-center text-sm">
                                         $250
                                         <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
-                                                class="material-icons text-lg position-relative me-1">picture_as_pdf</i>
+                                                class="material-icons notranslate text-lg position-relative me-1">picture_as_pdf</i>
                                             PDF</button>
                                     </div>
                                 </li>
@@ -171,7 +171,7 @@
                                     <div class="d-flex align-items-center text-sm">
                                         $560
                                         <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
-                                                class="material-icons text-lg position-relative me-1">picture_as_pdf</i>
+                                                class="material-icons notranslate text-lg position-relative me-1">picture_as_pdf</i>
                                             PDF</button>
                                     </div>
                                 </li>
@@ -184,7 +184,7 @@
                                     <div class="d-flex align-items-center text-sm">
                                         $120
                                         <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
-                                                class="material-icons text-lg position-relative me-1">picture_as_pdf</i>
+                                                class="material-icons notranslate text-lg position-relative me-1">picture_as_pdf</i>
                                             PDF</button>
                                     </div>
                                 </li>
@@ -197,7 +197,7 @@
                                     <div class="d-flex align-items-center text-sm">
                                         $300
                                         <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i
-                                                class="material-icons text-lg position-relative me-1">picture_as_pdf</i>
+                                                class="material-icons notranslate text-lg position-relative me-1">picture_as_pdf</i>
                                             PDF</button>
                                     </div>
                                 </li>
@@ -228,9 +228,9 @@
                                     <div class="ms-auto text-end">
                                         <a class="btn btn-link text-danger text-gradient px-3 mb-0"
                                             href="javascript:;"><i
-                                                class="material-icons text-sm me-2">delete</i>Delete</a>
+                                                class="material-icons notranslate text-sm me-2">delete</i>Delete</a>
                                         <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i
-                                                class="material-icons text-sm me-2">edit</i>Edit</a>
+                                                class="material-icons notranslate text-sm me-2">edit</i>Edit</a>
                                     </div>
                                 </li>
                                 <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
@@ -247,9 +247,9 @@
                                     <div class="ms-auto text-end">
                                         <a class="btn btn-link text-danger text-gradient px-3 mb-0"
                                             href="javascript:;"><i
-                                                class="material-icons text-sm me-2">delete</i>Delete</a>
+                                                class="material-icons notranslate text-sm me-2">delete</i>Delete</a>
                                         <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i
-                                                class="material-icons text-sm me-2">edit</i>Edit</a>
+                                                class="material-icons notranslate text-sm me-2">edit</i>Edit</a>
                                     </div>
                                 </li>
                                 <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
@@ -266,9 +266,9 @@
                                     <div class="ms-auto text-end">
                                         <a class="btn btn-link text-danger text-gradient px-3 mb-0"
                                             href="javascript:;"><i
-                                                class="material-icons text-sm me-2">delete</i>Delete</a>
+                                                class="material-icons notranslate text-sm me-2">delete</i>Delete</a>
                                         <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i
-                                                class="material-icons text-sm me-2">edit</i>Edit</a>
+                                                class="material-icons notranslate text-sm me-2">edit</i>Edit</a>
                                     </div>
                                 </li>
                             </ul>
@@ -284,7 +284,7 @@
                                 </div>
                                 <div
                                     class="col-md-6 d-flex justify-content-start justify-content-md-end align-items-center">
-                                    <i class="material-icons me-2 text-lg">date_range</i>
+                                    <i class="material-icons notranslate me-2 text-lg">date_range</i>
                                     <small>23 - 30 March 2020</small>
                                 </div>
                             </div>
@@ -297,7 +297,7 @@
                                     <div class="d-flex align-items-center">
                                         <button
                                             class="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i
-                                                class="material-icons text-lg">expand_more</i></button>
+                                                class="material-icons notranslate text-lg">expand_more</i></button>
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-1 text-dark text-sm">Netflix</h6>
                                             <span class="text-xs">27 March 2020, at 12:30 PM</span>
@@ -313,7 +313,7 @@
                                     <div class="d-flex align-items-center">
                                         <button
                                             class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i
-                                                class="material-icons text-lg">expand_less</i></button>
+                                                class="material-icons notranslate text-lg">expand_less</i></button>
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-1 text-dark text-sm">Apple</h6>
                                             <span class="text-xs">27 March 2020, at 04:30 AM</span>
@@ -332,7 +332,7 @@
                                     <div class="d-flex align-items-center">
                                         <button
                                             class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i
-                                                class="material-icons text-lg">expand_less</i></button>
+                                                class="material-icons notranslate text-lg">expand_less</i></button>
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-1 text-dark text-sm">Stripe</h6>
                                             <span class="text-xs">26 March 2020, at 13:45 PM</span>
@@ -348,7 +348,7 @@
                                     <div class="d-flex align-items-center">
                                         <button
                                             class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i
-                                                class="material-icons text-lg">expand_less</i></button>
+                                                class="material-icons notranslate text-lg">expand_less</i></button>
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-1 text-dark text-sm">HubSpot</h6>
                                             <span class="text-xs">26 March 2020, at 12:30 PM</span>
@@ -364,7 +364,7 @@
                                     <div class="d-flex align-items-center">
                                         <button
                                             class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i
-                                                class="material-icons text-lg">expand_less</i></button>
+                                                class="material-icons notranslate text-lg">expand_less</i></button>
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-1 text-dark text-sm">Creative Tim</h6>
                                             <span class="text-xs">26 March 2020, at 08:30 AM</span>
@@ -380,7 +380,7 @@
                                     <div class="d-flex align-items-center">
                                         <button
                                             class="btn btn-icon-only btn-rounded btn-outline-dark mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i
-                                                class="material-icons text-lg">priority_high</i></button>
+                                                class="material-icons notranslate text-lg">priority_high</i></button>
                                         <div class="d-flex flex-column">
                                             <h6 class="mb-1 text-dark text-sm">Webflow</h6>
                                             <span class="text-xs">26 March 2020, at 05:00 AM</span>

@@ -6,7 +6,7 @@
             <div class="col-12 col-lg-3 d-md-flex">
                 <div class="input-group mt-2">
                     <span class="input-group-text">
-                        <i class="material-icons">search</i>
+                        <i class="material-icons notranslate">search</i>
                     </span>
                     <input wire:model="search" type="text" class="form-control" placeholder="Search patient...">
                 </div>
@@ -14,22 +14,22 @@
             <div class="col-12 col-lg-5 d-flex mt-3 me-4">
                 <div class="dropdown px-4">
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Mass action <i class="material-icons">expand_more</i>
+                        Mass action <i class="material-icons notranslate">expand_more</i>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons">download</i> Export</button>
+                            <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons notranslate">download</i> Export</button>
                         </li>
                         @can('patient.delete')
                         <li>
-                            <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons">delete</i> Delete</button>
+                            <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons notranslate">delete</i> Delete</button>
                         </li>
                         @endcan
                     </ul>
                 </div>
                 @can('patient.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <i class="material-icons">add</i> Add Patient
+                    <i class="material-icons notranslate">add</i> Add Patient
                 </button>
                 @endcan
             </div>
@@ -39,11 +39,11 @@
     <div class="position-fixed top-2 end-2 z-index-2">
         <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
             <div class="toast-header bg-transparent text-white border-0">
-                <i class="material-icons me-2">
+                <i class="material-icons notranslate me-2">
                     {{ session('alert.icon') }}
                 </i>
                 <span class="me-auto font-weight-bold">Notification!</span>
-                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+                <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
             </div>
             <hr class="horizontal light m-0">
             <div class="toast-body text-white ">
@@ -94,11 +94,11 @@
                             <span class="my-2 text-xs">
                                 @can('patient.update')
                                 <a wire:click="selectItem({{ $patient->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                                    <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
+                                    <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
                                 @can('patient.delete')
-                                <a wire:click="selectItem({{ $patient->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                <a wire:click="selectItem({{ $patient->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons notranslate text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
                         </th>
@@ -226,10 +226,10 @@
                                         @foreach($inputs_view as $index => $input)
                                         <div class="col-md-12">
                                             <label class="form-label">
-                                                <i class="material-icons">location_on</i>
+                                                <i class="material-icons notranslate">location_on</i>
                                                 {{ $input->address }} </label>
                                                 <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input->id }})">
-                                                    <i class="material-icons">delete</i>
+                                                    <i class="material-icons notranslate">delete</i>
                                                 </button>
                                         </div>
                                         @endforeach
@@ -239,7 +239,7 @@
                                     <div class="mb-3 col-md-12">
                                         <label class="form-label">Address</label>
                                         <button type="button" wire:click="addInput" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add address">
-                                            <i class="material-icons">add</i>
+                                            <i class="material-icons notranslate">add</i>
                                         </button>
                                         <!-- Add new address -->
                                         @foreach($inputs as $index => $input)
@@ -255,7 +255,7 @@
                                             </div>
                                             <div class="col-md-1">
                                                 <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeInput({{ $index }})">
-                                                    <i class="material-icons">delete</i>
+                                                    <i class="material-icons notranslate">delete</i>
                                                 </button>
                                             </div>
                                         </div>

@@ -3,11 +3,11 @@
     <div class="position-fixed top-2 end-2 z-index-2">
         <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
             <div class="toast-header bg-transparent text-white border-0">
-                <i class="material-icons me-2">
+                <i class="material-icons notranslate me-2">
                     {{ session('alert.icon') }}
                 </i>
                 <span class="me-auto font-weight-bold">Notification!</span>
-                <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+                <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
             </div>
             <hr class="horizontal light m-0">
             <div class="toast-body text-white ">
@@ -42,7 +42,7 @@
             </div>
             <div class="col-12 col-lg-4 d-flex justify-content-end mt-3 me-4">
                 <button class="btn bg-gradient-dark" wire:click="generateReport" wire:loading.attr="disabled">
-                    <i class="material-icons">picture_as_pdf</i> Generate Report
+                    <i class="material-icons notranslate">picture_as_pdf</i> Generate Report
                 </button>
             </div>
         </div>

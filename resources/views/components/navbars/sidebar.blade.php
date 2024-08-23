@@ -20,7 +20,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'driver' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('driver') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">person</i>
+                        <i class="material-icons notranslate">person</i>
                     </div>
                     <span class="nav-link-text ms-1">Drivers</span>
                 </a>
@@ -31,7 +31,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'vehicle' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('vehicle') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">directions_car</i>
+                        <i class="material-icons notranslate">directions_car</i>
                     </div>
                     <span class="nav-link-text ms-1">Vehicles</span>
                 </a>
@@ -42,7 +42,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'servicecontract' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('servicecontract') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">receipt_long</i>
+                        <i class="material-icons notranslate">receipt_long</i>
                     </div>
                     <span class="nav-link-text ms-1">Service Contracts</span>
                 </a>
@@ -53,7 +53,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'patient' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('patient') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">personal_injury</i>
+                        <i class="material-icons notranslate">personal_injury</i>
                     </div>
                     <span class="nav-link-text ms-1">Patient</span>
                 </a>
@@ -64,7 +64,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'facility' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('facility') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">local_hospital</i>
+                        <i class="material-icons notranslate">local_hospital</i>
                     </div>
                     <span class="nav-link-text ms-1">Facility</span>
                 </a>
@@ -75,7 +75,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'scheduling' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('scheduling') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">event_available</i>
+                        <i class="material-icons notranslate">event_available</i>
                     </div>
                     <span class="nav-link-text ms-1">Scheduling</span>
                 </a>
@@ -86,7 +86,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'reports' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('reports') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons">assessment</i>
+                        <i class="material-icons notranslate">assessment</i>
                     </div>
                     <span class="nav-link-text ms-1">Report</span>
                 </a>
@@ -100,7 +100,7 @@
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('dashboard') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">dashboard</i>
+                        <i class="material-icons notranslate opacity-10">dashboard</i>
                     </div>
                     <span class="nav-link-text ms-1">Dashboard</span>
                 </a>

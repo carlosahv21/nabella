@@ -16,7 +16,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('dashboard') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">dashboard</i>
+                            <i class="material-icons notranslate-round opacity-10">dashboard</i>
                         </div>
                         <span class="nav-link-text me-1">لوحة القيادة</span>
                     </a>
@@ -24,7 +24,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('tables') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">table_view</i>
+                            <i class="material-icons notranslate-round opacity-10">table_view</i>
                         </div>
                         <span class="nav-link-text me-1">الجداول</span>
                     </a>
@@ -32,7 +32,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('billing') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">receipt_long</i>
+                            <i class="material-icons notranslate-round opacity-10">receipt_long</i>
                         </div>
                         <span class="nav-link-text me-1">الفواتير</span>
                     </a>
@@ -40,7 +40,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('virtual-reality') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">view_in_ar</i>
+                            <i class="material-icons notranslate-round opacity-10">view_in_ar</i>
                         </div>
                         <span class="nav-link-text me-1">الواقع الافتراضي</span>
                     </a>
@@ -48,7 +48,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" href="{{ route('rtl') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">format_textdirection_r_to_l</i>
+                            <i class="material-icons notranslate-round opacity-10">format_textdirection_r_to_l</i>
                         </div>
                         <span class="nav-link-text me-1">RTL</span>
                     </a>
@@ -56,7 +56,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('notifications') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">notifications</i>
+                            <i class="material-icons notranslate opacity-10">notifications</i>
                         </div>
                         <span class="nav-link-text me-1">إشعارات</span>
                     </a>
@@ -64,7 +64,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('profile') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">person</i>
+                            <i class="material-icons notranslate-round opacity-10">person</i>
                         </div>
                         <span class="nav-link-text me-1">حساب تعريفي</span>
                     </a>
@@ -72,7 +72,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('static-sign-in') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">login</i>
+                            <i class="material-icons notranslate-round opacity-10">login</i>
                         </div>
                         <span class="nav-link-text me-1">تسجيل الدخول</span>
                     </a>
@@ -80,7 +80,7 @@
                 <li class="nav-item">
                     <a class="nav-link " href="{{ route('static-sign-up') }}">
                         <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">assignment</i>
+                            <i class="material-icons notranslate-round opacity-10">assignment</i>
                         </div>
                         <span class="nav-link-text me-1">اشتراك</span>
                     </a>
@@ -232,7 +232,7 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                                <i class="material-icons opacity-10">weekend</i>
+                                <i class="material-icons notranslate opacity-10">weekend</i>
                             </div>
                             <div class="text-start pt-1">
                                 <p class="text-sm mb-0 text-capitalize">أموال اليوم</p>
@@ -251,7 +251,7 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                                <i class="material-icons opacity-10">leaderboard</i>
+                                <i class="material-icons notranslate opacity-10">leaderboard</i>
                             </div>
                             <div class="text-start pt-1">
                                 <p class="text-sm mb-0 text-capitalize">مستخدمو اليوم</p>
@@ -270,7 +270,7 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                                <i class="material-icons opacity-10">store</i>
+                                <i class="material-icons notranslate opacity-10">store</i>
                             </div>
                             <div class="text-start pt-1">
                                 <p class="text-sm mb-0 text-capitalize">عملاء جدد</p>
@@ -292,7 +292,7 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                                <i class="material-icons opacity-10">person_add</i>
+                                <i class="material-icons notranslate opacity-10">person_add</i>
                             </div>
                             <div class="text-start pt-1">
                                 <p class="text-sm mb-0 text-capitalize">مبيعات</p>
@@ -322,7 +322,7 @@
                             <p class="text-sm ">آخر أداء للحملة</p>
                             <hr class="dark horizontal">
                             <div class="d-flex ">
-                                <i class="material-icons text-sm my-auto ms-1">schedule</i>
+                                <i class="material-icons notranslate text-sm my-auto ms-1">schedule</i>
                                 <p class="mb-0 text-sm"> الحملة أرسلت قبل يومين </p>
                             </div>
                         </div>
@@ -343,7 +343,7 @@
                             </p>
                             <hr class="dark horizontal">
                             <div class="d-flex ">
-                                <i class="material-icons text-sm my-auto ms-1">schedule</i>
+                                <i class="material-icons notranslate text-sm my-auto ms-1">schedule</i>
                                 <p class="mb-0 text-sm"> تم التحديث منذ 4 دقائق </p>
                             </div>
                         </div>
@@ -363,7 +363,7 @@
                             <p class="text-sm ">آخر أداء للحملة</p>
                             <hr class="dark horizontal">
                             <div class="d-flex ">
-                                <i class="material-icons text-sm my-auto me-1">schedule</i>
+                                <i class="material-icons notranslate text-sm my-auto me-1">schedule</i>
                                 <p class="mb-0 text-sm">تم تحديثه للتو</p>
                             </div>
                         </div>
@@ -736,7 +736,7 @@
                             <div class="timeline timeline-one-side">
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">
-                                        <i class="material-icons text-success text-gradient">notifications</i>
+                                        <i class="material-icons notranslate text-success text-gradient">notifications</i>
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, تغييرات في التصميم
@@ -746,7 +746,7 @@
                                 </div>
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">
-                                        <i class="material-icons text-danger text-gradient">code</i>
+                                        <i class="material-icons notranslate text-danger text-gradient">code</i>
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">طلب جديد #1832412</h6>
@@ -755,7 +755,7 @@
                                 </div>
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">
-                                        <i class="material-icons text-info text-gradient">shopping_cart</i>
+                                        <i class="material-icons notranslate text-info text-gradient">shopping_cart</i>
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">مدفوعات الخادم لشهر أبريل
@@ -765,7 +765,7 @@
                                 </div>
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">
-                                        <i class="material-icons text-warning text-gradient">credit_card</i>
+                                        <i class="material-icons notranslate text-warning text-gradient">credit_card</i>
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">تمت إضافة بطاقة جديدة للطلب
@@ -775,7 +775,7 @@
                                 </div>
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">
-                                        <i class="material-icons text-primary text-gradient">key</i>
+                                        <i class="material-icons notranslate text-primary text-gradient">key</i>
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">فتح الحزم من أجل التطوير
@@ -785,7 +785,7 @@
                                 </div>
                                 <div class="timeline-block">
                                     <span class="timeline-step">
-                                        <i class="material-icons text-dark text-gradient">payments</i>
+                                        <i class="material-icons notranslate text-dark text-gradient">payments</i>
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">طلب جديد #9583120</h6>
@@ -839,7 +839,7 @@
     </main>
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-            <i class="material-icons py-2">settings</i>
+            <i class="material-icons notranslate py-2">settings</i>
         </a>
         <div class="card shadow-lg">
             <div class="card-header pb-0 pt-3">
@@ -849,7 +849,7 @@
                 </div>
                 <div class="float-start mt-4">
                     <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-                        <i class="material-icons">clear</i>
+                        <i class="material-icons notranslate">clear</i>
                     </button>
                 </div>
                 <!-- End Toggle Button -->

@@ -13,7 +13,7 @@
                 <ul class="navbar-nav justify-content-end align-items-center">
                     <li class="nav-item dropdown pe-2">
                         <a href="javascript:;" class="nav-link p-0 position-relative text-body" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="material-icons cursor-pointer">
+                            <i class="material-icons notranslate cursor-pointer">
                                 manage_accounts
                             </i>
                         </a>
@@ -21,7 +21,7 @@
                             <li class="mb-2">
                                 <a class="dropdown-item border-radius-md" href="{{ route('user-profile') }}">
                                     <div class="d-flex align-items-center py-1">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons notranslate">group</i>
                                         <div class="ms-2">
                                             <h6 class="text-sm font-weight-normal my-auto">
                                                 Users
@@ -33,7 +33,7 @@
                             <li class="mb-2">
                                 <a class="dropdown-item border-radius-md" href="{{ route('role') }}">
                                     <div class="d-flex align-items-center py-1">
-                                        <i class="material-icons">manage_accounts</i>
+                                        <i class="material-icons notranslate">manage_accounts</i>
                                         <div class="ms-2">
                                             <h6 class="text-sm font-weight-normal my-auto">
                                                 Roles
@@ -51,7 +51,7 @@
                 <ul class="navbar-nav justify-content-end align-items-center">
                     <li class="nav-item dropdown pe-2">
                         <a href="{{ route('profile', ['id' => Auth::user()->id]) }}" class="nav-link p-0 position-relative text-body">
-                            <i class="material-icons cursor-pointer">
+                            <i class="material-icons notranslate cursor-pointer">
                                 person
                             </i>
                         </a>

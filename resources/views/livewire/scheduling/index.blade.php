@@ -12,7 +12,7 @@
         </div>
         <div class="col-4 col-lg-4 d-flex justify-content-end mt-3">
             <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                <i class="material-icons">add</i> Add scheduling
+                <i class="material-icons notranslate">add</i> Add scheduling
             </button>
         </div>
     </div>
@@ -21,11 +21,11 @@
 <div class="position-fixed top-2 end-2 z-index-2">
     <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
         <div class="toast-header bg-transparent text-white border-0">
-            <i class="material-icons me-2">
+            <i class="material-icons notranslate me-2">
                 {{ session('alert.icon') }}
             </i>
             <span class="me-auto font-weight-bold">Notification!</span>
-            <i class="material-icons cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
         </div>
         <hr class="horizontal light m-0">
         <div class="toast-body text-white ">
@@ -155,11 +155,11 @@
                                         @if ($index == count($stops) - 1)
                                         <button type="button" wire:click="addStop" class="btn btn-link text-dark text-gradient px-3 mb-0"
                                             data-bs-toggle="tooltip" data-bs-original-title="Add stops" @if($if_not_cancel) disabled @endif>
-                                            <i class="material-icons">add</i>
+                                            <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif
                                         <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }})" @if($if_not_cancel) disabled @endif>
-                                            <i class="material-icons">delete</i>
+                                            <i class="material-icons notranslate">delete</i>
                                         </button>
                                     </div>
                                 </div>
@@ -229,11 +229,11 @@
                                         @if ($r_index == count($r_stops) - 1)
                                         <button type="button" wire:click="addStopReturn" class="btn btn-link text-dark text-gradient px-3 mb-0"
                                             data-bs-toggle="tooltip" data-bs-original-title="Add stops" @if($if_not_cancel) disabled @endif>
-                                            <i class="material-icons">add</i>
+                                            <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif
                                         <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStopReturn({{ $r_index }})">
-                                            <i class="material-icons">delete</i>
+                                            <i class="material-icons notranslate">delete</i>
                                         </button>
                                     </div>
                                 </div>

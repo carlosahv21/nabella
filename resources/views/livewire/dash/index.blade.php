@@ -8,7 +8,7 @@
             <div class="card">
                 <div class="card-header p-3 pt-2">
                     <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">directions_car</i>
+                        <i class="material-icons notranslate opacity-10">directions_car</i>
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-4 text-capitalize">Car assigned today</p>
@@ -18,7 +18,7 @@
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3 text-end">
                     <a wire:click="selectItem({{ $cars->first()->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
-                        <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
+                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
                     </a>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                                         <div class="timeline timeline-one-side">
                                             <div class="timeline-block">
                                                 <span class="timeline-step">
-                                                    <i class="material-icons text-success text-gradient">location_on</i>
+                                                    <i class="material-icons notranslate text-success text-gradient">location_on</i>
                                                 </span>
                                                 <div class="timeline-content">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
@@ -73,7 +73,7 @@
                                                     <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $event['date'] }} {{ \Carbon\Carbon::parse($event['drop_off_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <span class="timeline-step" style="margin-top: -25px;">
-                                                    <i class="material-icons text-success text-gradient">location_on</i>
+                                                    <i class="material-icons notranslate text-success text-gradient">location_on</i>
                                                 </span>
                                             </div>
                                         </div>
@@ -89,17 +89,17 @@
                                 </td>
                                 <td class="align-middle">
                                     <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">
-                                        <i class="material-icons text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See details">visibility</i> See details
+                                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See details">visibility</i> See details
                                     </a>
                                 </td>
                                 <td class="align-middle">
                                     @if($event['status'] == 'Waiting')
                                     <a wire:click="startDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
-                                        <i class="material-icons text-sm me-2">directions_car</i> Start driving
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Start driving
                                     </a>
                                     @elseif($event['status'] == 'In Progress')
                                     <a wire:click="finishDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving">
-                                        <i class="material-icons text-sm me-2">directions_car</i> Finish driving
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Finish driving
                                     </a>
                                     @endif
                                 </td>
@@ -126,28 +126,28 @@
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Patient </label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">person</i>
+                                            <i class="material-icons notranslate text-sm me-1">person</i>
                                             {{ $patient_id }}
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Facility</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">local_hospital</i>
+                                            <i class="material-icons notranslate text-sm me-1">local_hospital</i>
                                             {{ $hospital_name }}
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Driver assigned</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">person</i>
+                                            <i class="material-icons notranslate text-sm me-1">person</i>
                                             {{ $driver_name }}
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label>Date</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">calendar_today</i>
+                                            <i class="material-icons notranslate text-sm me-1">calendar_today</i>
                                             {{ $date }}
                                         </span>
                                     </div>
@@ -155,21 +155,21 @@
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Pick Up Address</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">location_on</i>
+                                            <i class="material-icons notranslate text-sm me-1">location_on</i>
                                             {{ $pick_up }}
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">                                    
                                         <label class="form-label">Drop Off Address</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">location_on</i>
+                                            <i class="material-icons notranslate text-sm me-1">location_on</i>
                                             {{ $drop_off }}
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label>Facility Check In</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons text-sm me-1">schedule</i>
+                                            <i class="material-icons notranslate text-sm me-1">schedule</i>
                                             {{ \Carbon\Carbon::parse($check_in)->format('H:i A') }}
                                         </span>
                                     </div>
@@ -180,7 +180,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($wheelchair)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
@@ -190,7 +190,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($ambulatory)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
@@ -200,7 +200,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($out_of_hours)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
@@ -210,7 +210,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($saturdays)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
@@ -220,7 +220,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($sundays_holidays)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
@@ -230,7 +230,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($companion)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
@@ -240,7 +240,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($aditional_waiting)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="aditional_waiting" class="form-check-input" type="checkbox" id="customAditionalWaiting">
@@ -250,7 +250,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($fast_track)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
@@ -260,7 +260,7 @@
                                         <div class="form-check mb-3 col-md-4">
                                             @if($if_not_cancel)
                                             <span>
-                                                <i class="material-icons text-sm me-1">check</i>
+                                                <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
                                                 <input wire.ignore.self wire:model="if_not_cancel" class="form-check-input" type="checkbox" id="customIfNotCancel">
