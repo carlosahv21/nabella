@@ -54,21 +54,26 @@
                                 <!-- PATIENT -->
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label">Patient</label>
-                                    <select wire.ignore.self wire:model="patient_id" class="form-select" id="patientId" @if($if_not_cancel) disabled @endif>
+                                    <select wire.ignore.self wire:model="patient_id" class="form-select" id="patient_id" @if($if_not_cancel) disabled @endif>
                                         <option value="">Select a patient</option>
                                         @foreach($patients as $patient)
                                         <option value="{{ $patient->id }}">{{ $patient->first_name }} {{ $patient->last_name }}</option>
                                         @endforeach
                                     </select>
-                                    @if ($errors->has('patientId'))
+                                    @if ($errors->has('patient_id'))
                                     <div class="text-danger inputerror">
-                                        {{ $errors->first('patientId') }}
+                                        {{ $errors->first('patient_id') }}
                                     </div>
                                     @endif
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <label class="form-label">Start Date</label>
                                     <input wire:model="date" class="form-control border border-1 p-2 date-input active" placeholder="YYYY/MM/DD" @if($if_not_cancel) disabled @endif>
+                                    @if ($errors->has('date'))
+                                    <div class="text-danger inputerror">
+                                        {{ $errors->first('date') }}
+                                    </div>
+                                    @endif
                                 </div>
                                 <div class="form-check mb-3 col-md-4 " style="margin-top: 2.4rem !important;">
                                     <input wire.ignore.self wire:model="auto_agend" class="form-check-input" type="checkbox" id="auto_agend" @if($if_not_cancel) disabled @endif>
@@ -79,31 +84,31 @@
                                 <label class="form-label">Select Days</label>
                                 <div class="row">
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customMon day" value="1" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customMon day" value="Monday" wire:model="weekdays">
                                         <label class="form-check-label" for="customMonday">Monday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customTuesday" value="2" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customTuesday" value="Tuesday" wire:model="weekdays">
                                         <label class="form-check-label" for="customTuesday">Tuesday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customWednesday" value="3" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customWednesday" value="Wednesday" wire:model="weekdays">
                                         <label class="form-check-label" for="customWednesday">Wednesday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customThursday" value="4" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customThursday" value="Thursday" wire:model="weekdays">
                                         <label class="form-check-label" for="customThursday">Thursday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customFriday" value="5" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customFriday" value="Friday" wire:model="weekdays">
                                         <label class="form-check-label" for="customFriday">Friday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customSaturday" value="6" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customSaturday" value="Saturday" wire:model="weekdays">
                                         <label class="form-check-label" for="customSaturday">Saturday</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customSunday" value="7" wire:model="weekdays">
+                                        <input class="form-check-input" type="checkbox" id="customSunday" value="Sunday" wire:model="weekdays">
                                         <label class="form-check-label" for="customSunday">Sunday</label>
                                     </div>
                                 </div>
@@ -130,7 +135,7 @@
                                 @endif
                                 <h6 class="text-center">GOING</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up')"  placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_pick_up))
                                     <ul class="list-group">
                                         @foreach ($prediction_pick_up as $address_pick_up)
@@ -168,6 +173,11 @@
                                     <div class="input-group input-group-static my-1">
                                         <label>Check In</label>
                                         <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
+                                        @if ($errors->has('check_in'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('check_in') }}
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-3">
@@ -184,6 +194,11 @@
                                         <option value="{{ $drive->id }}">{{ $drive->name }}</option>
                                         @endforeach
                                     </select>
+                                    @if ($errors_driver)
+                                    <div class="text-danger inputerror">
+                                        {{ $errors_driver }}
+                                    </div>
+                                    @endif
                                     @if ($errors->has('pick_up_driver_id'))
                                     <div class="text-danger inputerror">
                                         {{ $errors->first('pick_up_driver_id') }}
@@ -244,15 +259,15 @@
                                         <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in" @if($if_not_cancel) disabled @endif>
                                     </div>
                                     @if ($errors_r_check_in)
-                                        <div class="text-danger inputerror">
-                                            {{ $errors_r_check_in }}
-                                        </div>
+                                    <div class="text-danger inputerror">
+                                        {{ $errors_r_check_in }}
+                                    </div>
                                     @endif
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive" @if($if_not_cancel) disabled @endif>
+                                        <input type="text" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
@@ -271,48 +286,42 @@
                                 </div>
                                 <!-- CHARGES -->
                                 <h6 class="text-center">CHARGES</h6>
-                                <div class="row">
-                                    <div class="col-md-2">
+                                <div class="row col-md-12 text-center mx-1 px-1">
+                                    <div class="form-check mb-3 col-md-2" style="padding-left: 0px;padding-right: 0px;">
+                                        <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip">
+                                        <label class="custom-control-label text-10" for="one_way">One way</label>
                                     </div>
-                                    <div class="col-md-8 row text-center">
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input class="form-check-input" type="radio" value="one_way" wire.ignore_self wire:model="type_of_trip" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="one_way">One way</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self wire:model="type_of_trip" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="round_trip">Round trip</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customWheelchair">Wheelchair</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customAmbulatory">Ambulatory</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customSaturdays">Saturdays</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customCompanion">Companion</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customFastTrack">Fast Track</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customSundaysHolidays">Sund / Holid</label>
-                                        </div>
-                                        <div class="form-check mb-3 col-md-4" style="padding-left: 0px;padding-right: 0px;">
-                                            <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours" @if($if_not_cancel) disabled @endif>
-                                            <label class="custom-control-label text-10" for="customOutOfHours">After hours</label>
-                                        </div>
+                                    <div style="padding-left: 10px;padding-right: 0px;" class="form-check mb-3 col-md-2">
+                                        <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip">
+                                        <label class="custom-control-label text-10" for="round_trip">Round trip</label>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div style="padding-left: 7px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                        <input wire.ignore.self="" wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
+                                        <label class="custom-control-label text-10" for="customWheelchair">Wheelchair</label>
+                                    </div>
+                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                        <input wire.ignore.self="" wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
+                                        <label class="custom-control-label text-10" for="customAmbulatory">Ambulatory</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-2" style="padding-left: 0px;padding-right: 0px;">
+                                        <input wire.ignore.self="" wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
+                                        <label class="custom-control-label text-10" for="customSaturdays">Saturdays</label>
+                                    </div>
+                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                        <input wire.ignore.self="" wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
+                                        <label class="custom-control-label text-10" for="customCompanion">Companion</label>
+                                    </div>
+                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-2">
+                                        <input wire.ignore.self="" wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
+                                        <label class="custom-control-label text-10" for="customFastTrack">Fast Track</label>
+                                    </div>
+                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                        <input wire.ignore.self="" wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
+                                        <label class="custom-control-label text-10" for="customSundaysHolidays">Sund / Holid</label>
+                                    </div>
+                                    <div style="padding-left: 7px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                        <input wire.ignore.self="" wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
+                                        <label class="custom-control-label text-10" for="customOutOfHours">After hours</label>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-12">
@@ -328,17 +337,17 @@
                 <div class="d-flex justify-content-between w-100">
                     <!-- Botón en el inicio/izquierda -->
                     @if($isEdit && !$if_not_cancel)
-                        <button type="button" class="btn" data-bs-dismiss="modal" wire:click="cancelScheduling">Cancel Scheduling</button>
+                    <button type="button" class="btn" data-bs-dismiss="modal" wire:click="cancelScheduling">Cancel Scheduling</button>
                     @else
-                        <p>&nbsp;</p>
+                    <p>&nbsp;</p>
                     @endif
 
                     <div>
                         <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
                         @if(!$if_not_cancel)
-                            <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                        <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
                         @else
-                            <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
+                        <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
                         @endif
                     </div>
                 </div>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedInteger('driver_id')->nullable();
             $table->string('pick_up_address')->nullable();
             $table->string('drop_off_address')->nullable();
+            $table->date('date');
             $table->string('pick_up_hour')->nullable();
             $table->string('drop_off_hour')->nullable();
             $table->string('distance')->nullable();

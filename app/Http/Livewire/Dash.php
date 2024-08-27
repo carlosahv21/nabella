@@ -156,17 +156,17 @@ class Dash extends Component
 
     function startDriving($event)
     {
-        $scheduling = Scheduling::find($event);
-        $scheduling->status = 'In Progress';
-        $scheduling->save();
+        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $event)->first();
+        $scheduling_address->status = 'In Progress';
+        $scheduling_address->save();
         
     }
 
     function finishDriving($event)
     {
-        $scheduling = Scheduling::find($event);
-        $scheduling->status = 'Completed';
-        $scheduling->save();
+        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $event)->first();
+        $scheduling_address->status = 'Completed';
+        $scheduling_address->save();
     }
 
     private function statusColor($status)
@@ -193,6 +193,7 @@ class Dash extends Component
                 ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
                 ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
                 ->where('scheduling_address.driver_id', '=', auth()->user()->id)
+                ->where('date', '=', Carbon::today()->format('Y-m-d'))
                 ->orderBy('pick_up_hour')
                 ->get();
             $cars = DB::table('vehicles')

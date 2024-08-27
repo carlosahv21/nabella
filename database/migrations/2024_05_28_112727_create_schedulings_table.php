@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('schedulings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('patient_id');
-            $table->date('date');
             $table->boolean('auto_agend')->default(false);
             $table->timestamps();
         });
