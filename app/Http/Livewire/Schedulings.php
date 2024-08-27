@@ -529,6 +529,7 @@ class Schedulings extends Component
             return;
         }
 
+        $this->validateFieldsReturn();
         $this->errors_r_check_in = '';
     }
 
@@ -574,8 +575,7 @@ class Schedulings extends Component
         $this->prediction_return_pick_up_address = [];
 
         if($this->location_driver){
-            $this->validateFieldsReturn();
-
+            $this->calculateTimeDriver();
         }
     }
 
@@ -703,7 +703,7 @@ class Schedulings extends Component
         }
     }
 
-    public function getDistance($addresses, $arrivalTime, $type)
+    public function getDistance($addresses, $arrivalTime, $type, $showDistance = false)
     {
         $arrivalTimestamp = strtotime($arrivalTime);
 
@@ -720,15 +720,24 @@ class Schedulings extends Component
             if($type == 'return'){
                 if ($data['distance']) {
                     $this->r_stops[$i]['distance'] = $data['distance'];
+                }else{
+                    $this->r_stops[$i]['distance'] = 0;
                 }
+
                 if ($data['duration']) {
-                    $this->r_start_drive = $data['duration']. "min";
+                    if($showDistance){
+                        $this->r_start_drive = $data['duration']. "min";
+                    }
+                    
                     $this->r_stops[$i]['duration'] = $data['duration'];
                 }
             }else{
                 if ($data['distance']) {
                     $this->stops[$i]['distance'] = $data['distance'];
+                }else{
+                    $this->stops[$i]['distance'] = 0;
                 }
+
                 if ($data['duration']) {
                     if ($i == 0) {
                         $this->pick_up_time = $this->getTime($data['duration'], $arrivalTime);
@@ -840,7 +849,23 @@ class Schedulings extends Component
         $this->getDistance($addresses, $arrivalTime, 'pick_up');
     }
 
-    public function validateFieldsReturn()
+    public function validateFieldsReturn(){
+        if (count($this->r_stops) == 0 && $this->return_pick_up_address == null && $this->r_check_in == null && $this->date == null) {
+            return false;
+        }
+
+        $addresses = [];
+        $addresses[] = $this->return_pick_up_address;
+        foreach ($this->r_stops as $stop) {
+            $addresses[] = $stop['address'];
+        }
+
+        $arrivalTime = $this->date . ' ' . $this->r_check_in;
+
+        $this->getDistance($addresses, $arrivalTime, 'return');
+    }
+
+    public function calculateTimeDriver()
     {
         if ($this->location_driver == null && $this->return_pick_up_address == null && $this->date == null) {
             return false;
@@ -854,7 +879,7 @@ class Schedulings extends Component
 
         $arrivalTime = $this->date . ' ' . date('H:i');
 
-        $this->getDistance($addresses, $arrivalTime, 'return');
+        $this->getDistance($addresses, $arrivalTime, 'return', true);
     }
 
     public function render()
