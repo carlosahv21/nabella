@@ -268,19 +268,19 @@ class Schedulings extends Component
         $scheduling->auto_agend = $this->auto_agend;
         $scheduling->save();
 
-        $scheduling_address = new SchedulingCharge();
-        $scheduling_address->scheduling_id = $scheduling->id;
-        $scheduling_address->type_of_trip = 'pick_up';
-        $scheduling_address->wheelchair = $this->wheelchair;
-        $scheduling_address->ambulatory = $this->ambulatory;
-        $scheduling_address->out_of_hours = $this->out_of_hours;
-        $scheduling_address->saturdays = $this->saturdays;
-        $scheduling_address->sundays_holidays = $this->sundays_holidays;
-        $scheduling_address->companion = $this->companion;
-        $scheduling_address->aditional_waiting = $this->aditional_waiting;
-        $scheduling_address->fast_track = $this->fast_track;
-        $scheduling_address->if_not_cancel = $this->if_not_cancel;
-        $scheduling_address->save();
+        $scheduling_charge = new SchedulingCharge();
+        $scheduling_charge->scheduling_id = $scheduling->id;
+        $scheduling_charge->type_of_trip = $this->type_of_trip;
+        $scheduling_charge->wheelchair = $this->wheelchair;
+        $scheduling_charge->ambulatory = $this->ambulatory;
+        $scheduling_charge->out_of_hours = $this->out_of_hours;
+        $scheduling_charge->saturdays = $this->saturdays;
+        $scheduling_charge->sundays_holidays = $this->sundays_holidays;
+        $scheduling_charge->companion = $this->companion;
+        $scheduling_charge->aditional_waiting = $this->aditional_waiting;
+        $scheduling_charge->fast_track = $this->fast_track;
+        $scheduling_charge->if_not_cancel = $this->if_not_cancel;
+        $scheduling_charge->save();
 
         $newStop = [
             "address" => $this->pick_up_address,
@@ -327,19 +327,19 @@ class Schedulings extends Component
                 $scheduling->auto_agend = $this->auto_agend;
                 $scheduling->save();
 
-                $scheduling_address = new SchedulingCharge();
-                $scheduling_address->scheduling_id = $scheduling->id;
-                $scheduling_address->type_of_trip = 'pick_up';
-                $scheduling_address->wheelchair = $this->wheelchair;
-                $scheduling_address->ambulatory = $this->ambulatory;
-                $scheduling_address->out_of_hours = $this->out_of_hours;
-                $scheduling_address->saturdays = $this->saturdays;
-                $scheduling_address->sundays_holidays = $this->sundays_holidays;
-                $scheduling_address->companion = $this->companion;
-                $scheduling_address->aditional_waiting = $this->aditional_waiting;
-                $scheduling_address->fast_track = $this->fast_track;
-                $scheduling_address->if_not_cancel = $this->if_not_cancel;
-                $scheduling_address->save();
+                $scheduling_charge = new SchedulingCharge();
+                $scheduling_charge->scheduling_id = $scheduling->id;
+                $scheduling_charge->type_of_trip = $this->type_of_trip;
+                $scheduling_charge->wheelchair = $this->wheelchair;
+                $scheduling_charge->ambulatory = $this->ambulatory;
+                $scheduling_charge->out_of_hours = $this->out_of_hours;
+                $scheduling_charge->saturdays = $this->saturdays;
+                $scheduling_charge->sundays_holidays = $this->sundays_holidays;
+                $scheduling_charge->companion = $this->companion;
+                $scheduling_charge->aditional_waiting = $this->aditional_waiting;
+                $scheduling_charge->fast_track = $this->fast_track;
+                $scheduling_charge->if_not_cancel = $this->if_not_cancel;
+                $scheduling_charge->save();
 
                 $newStop = [
                     "address" => $this->pick_up_address,
