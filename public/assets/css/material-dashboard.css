@@ -16166,6 +16166,12 @@ p, .p {
 
   .text-10 {
     font-size: 12px !important; }
+
+    .swal2-title{
+      font-size: 1rem;
+      font-family: var(--bs-body-font-family);
+    }
+    
 p {
   line-height: 1.625;
   font-weight: 300; }

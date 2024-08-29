@@ -107,7 +107,9 @@ class Schedulings extends Component
         'checkDate',
         'editEvent',
         'updateEventDate',
-        'updateEventsCalendar'
+        'updateEventsCalendar',
+        'confirmCollect',
+        'continueScheduling'
     ];
 
     public function __construct()
@@ -128,10 +130,22 @@ class Schedulings extends Component
                 $this->dispatchBrowserEvent('openModal', ['name' => 'deleteSchedulingMasive']);
                 $this->countSchedulings = count($this->selected);
                 break;
-            case 'create':
-                $this->title_modal = 'Create Scheduling';
-                $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
-                $this->emit('clearForm');
+            case 'create':                
+                if(cache()->get('autoagendamiento_form')){
+                    $this->dispatchBrowserEvent('showAlert', 
+                    [
+                        'text' => 'You have unsaved changes! Do you want to continue?',
+                        'icon' => 'info',
+                        'confirmButtonText' => 'Yes',
+                        'denyButtonText' => 'No',
+                        'livewire' => 'continueScheduling',
+                        'id' => false,
+                    ]);
+                }else{
+                    $this->title_modal = 'Create Scheduling';
+                    $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
+                    $this->emit('clearForm');
+                }
                 break;
             default:
                 $this->title_modal = 'Edit Scheduling';
@@ -139,6 +153,21 @@ class Schedulings extends Component
                 $this->emit('getModelId', $this->item);
                 break;
         }
+    }
+
+    function continueScheduling($comfirm){
+        if($comfirm){
+            $data = cache()->get('autoagendamiento_form');
+            foreach ($data as $key => $value) {
+                $this->$key = $value;
+            }
+        }else{
+            cache()->forget('autoagendamiento_form');
+            $this->clearForm();
+        }
+
+        $this->title_modal = 'Create Scheduling';
+        $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
     }
 
     public function getModelId($modelId)
@@ -182,7 +211,7 @@ class Schedulings extends Component
         $this->prediction_drop_off = [];
         $this->prediction_location_driver = [];
         $this->prediction_return_pick_up_address = [];
-    
+
         $this->stops = [
             [
                 'address' => '',
@@ -197,7 +226,6 @@ class Schedulings extends Component
         ];
         $this->addresses = [];
         $this->errors_r_check_in = '';
-
     }
 
     public function save()
@@ -210,10 +238,10 @@ class Schedulings extends Component
 
         if ($this->auto_agend) {
             $this->saveAutoAgend();
-        }else{
+        } else {
             $this->saveManualAgend();
         }
-        
+
         $events = $this->getEventsCalendar();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
@@ -289,7 +317,7 @@ class Schedulings extends Component
             "duration" => "0"
         ];
 
-        if(!in_array($newStop, $this->stops)){
+        if (!in_array($newStop, $this->stops)) {
             array_unshift($this->stops, $newStop);
         }
 
@@ -302,7 +330,7 @@ class Schedulings extends Component
             "duration" => "0"
         ];
 
-        if(!in_array($nerReturnStop, $this->r_stops)){
+        if (!in_array($nerReturnStop, $this->r_stops)) {
             array_unshift($this->r_stops, $nerReturnStop);
         }
 
@@ -311,11 +339,11 @@ class Schedulings extends Component
 
     public function saveAutoAgend()
     {
-        
+
         $start = Carbon::parse($this->date);
-        if($this->ends_schedule == 'ends_check'){
+        if ($this->ends_schedule == 'ends_check') {
             $end = Carbon::parse($this->ends_date);
-        }else{
+        } else {
             $lastDayOfYear = Carbon::now()->endOfYear();
             $end = Carbon::parse($lastDayOfYear->format('Y-m-d'));
         }
@@ -348,12 +376,12 @@ class Schedulings extends Component
                     "duration" => "0"
                 ];
 
-                if(!in_array($newStop, $this->stops)){
+                if (!in_array($newStop, $this->stops)) {
                     array_unshift($this->stops, $newStop);
                 }
-        
+
                 $this->saveAddresses($this->stops, $scheduling, 'pick_up', $start->format('Y-m-d'), $this->auto_agend);
-        
+
                 $nerReturnStop = [
                     "address" => $this->return_pick_up_address,
                     "addresses" => [],
@@ -361,10 +389,10 @@ class Schedulings extends Component
                     "duration" => "0"
                 ];
 
-                if(!in_array($nerReturnStop, $this->r_stops)){
+                if (!in_array($nerReturnStop, $this->r_stops)) {
                     array_unshift($this->r_stops, $nerReturnStop);
                 }
-        
+
                 $this->saveAddresses($this->r_stops, $scheduling, 'return', $start->format('Y-m-d'), $this->auto_agend);
             }
 
@@ -383,6 +411,7 @@ class Schedulings extends Component
     public function forcedCloseModal()
     {
         sleep(2);
+        $this->clearForm();
         $this->resetErrorBag();
         $this->resetValidation();
     }
@@ -407,6 +436,37 @@ class Schedulings extends Component
     }
 
     // Funciones que validan la actualización de algun campo
+
+    public function updated()
+    {
+        $data = [
+            'patient_id' => $this->patient_id,
+            'auto_agend' => $this->auto_agend,
+            'date' => $this->date,
+            'check_in' => $this->check_in,
+            'pick_up_driver_id' => $this->pick_up_driver_id,
+            'drop_off_driver_id' => $this->drop_off_driver_id,
+            'pick_up_address' => $this->pick_up_address,
+            'drop_off_address' => $this->drop_off_address,
+            'pick_up_time' => $this->pick_up_time,
+            'drop_off_hour' => $this->drop_off_hour,
+            'distance' => $this->distance,
+            'type_of_trip' => $this->type_of_trip,
+            'wheelchair' => $this->wheelchair,
+            'ambulatory' => $this->ambulatory,
+            'saturdays' => $this->saturdays,
+            'sundays_holidays' => $this->sundays_holidays,
+            'companion' => $this->companion,
+            'fast_track' => $this->fast_track,
+            'if_not_cancel' => $this->if_not_cancel,
+            'ends_schedule' => $this->ends_schedule,
+            'ends_date' => $this->ends_date,
+            'weekdays' => $this->weekdays,
+        ];
+
+        cache()->put('autoagendamiento_form', $data, now()->addMinutes(30)); // Guardar por 30 minutos
+    }
+
     public function updatedPickUpAddress()
     {
         if (strlen($this->pick_up_address) >= 3) {
@@ -542,14 +602,15 @@ class Schedulings extends Component
         }
     }
 
-    public function updatedPickUpDriverId(){
-        
+    public function updatedPickUpDriverId()
+    {
+
         $sql = "SELECT * FROM scheduling_address WHERE driver_id = '$this->pick_up_driver_id' AND pick_up_hour BETWEEN '$this->pick_up_time' AND '$this->check_in'";
         $validation = DB::select($sql);
 
-        if(count($validation) > 0){
+        if (count($validation) > 0) {
             $this->errors_driver = 'Pick up driver must be available between pick up time and check in time';
-        }else{
+        } else {
             $this->errors_driver = '';
         }
     }
@@ -574,7 +635,7 @@ class Schedulings extends Component
         $this->validateAddresses('return_pick_up');
         $this->prediction_return_pick_up_address = [];
 
-        if($this->location_driver){
+        if ($this->location_driver) {
             $this->calculateTimeDriver();
         }
     }
@@ -717,24 +778,24 @@ class Schedulings extends Component
 
             $data = $this->google->getDistance($origin, $destination, $arrivalTimestamp);
 
-            if($type == 'return'){
+            if ($type == 'return') {
                 if ($data['distance']) {
                     $this->r_stops[$i]['distance'] = $data['distance'];
-                }else{
+                } else {
                     $this->r_stops[$i]['distance'] = 0;
                 }
 
                 if ($data['duration']) {
-                    if($showDistance){
-                        $this->r_start_drive = $data['duration']. "min";
+                    if ($showDistance) {
+                        $this->r_start_drive = $data['duration'] . "min";
                     }
-                    
+
                     $this->r_stops[$i]['duration'] = $data['duration'];
                 }
-            }else{
+            } else {
                 if ($data['distance']) {
                     $this->stops[$i]['distance'] = $data['distance'];
-                }else{
+                } else {
                     $this->stops[$i]['distance'] = 0;
                 }
 
@@ -777,6 +838,21 @@ class Schedulings extends Component
 
     public function cancelScheduling()
     {
+        $this->dispatchBrowserEvent('showAlert', [
+            'text' => "This scheduling will be canceled! Do you want to collect the cancellation?",
+            'icon' => 'warning',
+            'confirmButtonText' => 'Yes',
+            'denyButtonText' => 'No',
+            'livewire' => 'confirmCollect',
+        ]);
+    }
+
+    public function confirmCollect($cancel)
+    {
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', $this->modelId)->first();
+        $scheduling_charge->collect_cancel = ($cancel) ? true : false;
+        $scheduling_charge->save();
+
         $this->saveStatus(true);
     }
 
@@ -849,7 +925,8 @@ class Schedulings extends Component
         $this->getDistance($addresses, $arrivalTime, 'pick_up');
     }
 
-    public function validateFieldsReturn(){
+    public function validateFieldsReturn()
+    {
         if (count($this->r_stops) == 0 && $this->return_pick_up_address == null && $this->r_check_in == null && $this->date == null) {
             return false;
         }

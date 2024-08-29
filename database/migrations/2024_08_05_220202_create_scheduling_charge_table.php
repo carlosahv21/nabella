@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('aditional_waiting')->default(false)->nullable();
             $table->boolean('fast_track')->default(false)->nullable();
             $table->boolean('if_not_cancel')->default(false)->nullable();
+            $table->boolean('collect_cancel')->default(false)->nullable();
             $table->boolean('overcharge')->default(false)->nullable();
             $table->timestamps();
         });

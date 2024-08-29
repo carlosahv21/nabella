@@ -73,6 +73,42 @@
             $('#' + event.detail.name).toast('show');
         })
 
+        window.addEventListener('showAlert', event => {
+            Swal.fire({
+                title: event.detail.text,
+                icon: event.detail.icon,
+                showCloseButton: true,
+                showDenyButton: true,
+                confirmButtonText: event.detail.confirmButtonText,
+                denyButtonText: event.detail.denyButtonText,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if(event.detail.livewire){
+                        Livewire.emit(event.detail.livewire, result.isConfirmed);
+                    }else{
+                        Swal.fire({
+                            title: "Success!",
+                            icon: "success"
+                        });
+                    }
+                }else if(result.isDenied){
+                    if(event.detail.livewire){
+                        Livewire.emit(event.detail.livewire, result.isConfirmed);
+                    }else{
+                        Swal.fire({
+                            title: "Canceled!",
+                            icon: "error"
+                        });
+                    }
+                }else{
+                    Swal.fire({
+                        title: "Canceled!",
+                        icon: "error"
+                    });
+                }
+            });
+        })
+
         $(document).ready(function() {
             var modals = ['createUser', 'createDriver', 'createRole', 'createVehicle', 'createClient', 'createServiceContract', 'createPatient', 'SeeFileVehicle', 'createScheduling', 'seeEventDetails'];
 
@@ -104,6 +140,8 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Flatpickr -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets') }}/js/material-dashboard.min.js?v=3.0.0"></script>
     @livewireScripts
