@@ -44,9 +44,9 @@ class Facilities extends Component
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteFacilityMasive']);
             $this->countFacilities = count($this->selected);
         }else if($action == 'create'){
+            $this->clearForm();
             $this->title_modal = 'Create Facility';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createFacility']);
-            $this->emit('clearForm');
         }else{
             $this->title_modal = 'Edit Facility';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createFacility']);
@@ -66,6 +66,9 @@ class Facilities extends Component
         $this->address = $model->address;
         $this->city = $model->city;
         $this->state = $model->state;
+
+        $this->inputs_view = Address::where('facility_id', $this->modelId)->get();
+
     }
 
     private function clearForm()
@@ -78,6 +81,14 @@ class Facilities extends Component
         $this->state = null;
         $this->isEdit = false;
         $this->inputs = [];
+        $this->inputs_view = [];
+    }
+
+    public function removeAddress($index, $id)
+    {
+        $address = Address::find($id);
+        $address->delete();
+        unset($this->inputs_view[$index]);
     }
 
     public function save()

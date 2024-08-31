@@ -68,7 +68,6 @@ use App\Models\Address;
                             </div>
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Location</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
@@ -86,16 +85,6 @@ use App\Models\Address;
                             <div class="d-block">
                                 <span class="fw-bold">{{ $_facility->name }}</span>
                             </div>
-                        </th>
-                        <th>
-                            @php
-                                $address = Address::where('facility_id', $_facility->id)->first();
-                            @endphp
-                            @if ($address)
-                                {{ $address->address }}
-                            @else
-                                No address found
-                            @endif
                         </th>
                         <th>
                             <span class="my-2 text-xs">
@@ -153,6 +142,23 @@ use App\Models\Address;
                                             @endforeach
                                         </select>
                                     </div>
+                                    @if(count($inputs_view) > 0)
+                                    <div class="row">
+                                        <hr class="dark horizontal">
+                                        <label class="form-label">Created addresses</label>
+                                        @foreach($inputs_view as $index => $input)
+                                        <div class="col-md-12">
+                                            <label class="form-label">
+                                                <i class="material-icons notranslate">location_on</i>
+                                                {{ $input->address }} </label>
+                                            <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input->id }})">
+                                                <i class="material-icons notranslate">delete</i>
+                                            </button>
+                                        </div>
+                                        @endforeach
+                                        <hr class="dark horizontal">
+                                    </div>
+                                    @endif
                                     <div class="mb-3 col-md-12">
                                         <label class="form-label">Address</label>
                                         <button type="button" wire:click="addInput" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add address">

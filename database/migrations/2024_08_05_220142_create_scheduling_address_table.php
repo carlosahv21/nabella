@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('request_by')->nullable();
             $table->string('status')->nullable();
             $table->string('observations')->nullable();
+            $table->float('additional_milles')->nullable();
 
             $table->timestamps();
         });

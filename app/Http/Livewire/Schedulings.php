@@ -254,7 +254,8 @@ class Schedulings extends Component
 
 
         session()->flash('alert', $data);
-
+        cache()->forget('autoagendamiento_form');
+        
         $this->clearForm();
     }
 
@@ -487,17 +488,20 @@ class Schedulings extends Component
         $this->saved_addresses = [];
 
         $patient = Patient::find($patientId);
-        $facility = Facility::findorFail($patient->service_contract_id);
-
         $address_patient = Address::where('patient_id', $patientId)->get();
-        $address_facility = Address::where('facility_id', $facility->id)->get();
 
         foreach ($address_patient as $address) {
             $this->saved_addresses[] = $address->address;
         }
-        foreach ($address_facility as $address) {
-            $this->saved_addresses[] = $address->address;
+
+        $facilities = Facility::where('service_contract_id',$patient->service_contract_id)->get();
+        foreach ($facilities as $facility) {
+            $address_facility = Address::where('facility_id', $facility->id)->get();
+            foreach ($address_facility as $address) {
+                $this->saved_addresses[] = $address->address;
+            }
         }
+
     }
 
     public function updatedReturnPickUpAddress()
@@ -860,6 +864,9 @@ class Schedulings extends Component
     {
         $scheduling_address = SchedulingAddress::where('scheduling_id', $this->modelId)->first();
         $scheduling_address->status = ($cancel) ? 'Canceled' : 'Waiting';
+        if (!$cancel) {
+            $scheduling_address->collect_cancel = false ; 
+        }
         $scheduling_address->save();
 
         $scheduling_charge = SchedulingCharge::findOrFail($scheduling_address->scheduling_id);

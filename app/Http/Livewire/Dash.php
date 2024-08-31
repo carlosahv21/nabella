@@ -24,6 +24,8 @@ class Dash extends Component
 
     public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $modelId = '';
 
+    public $observations, $additional_milles = '';
+
     public $item, $action, $search, $title_modal, $countDrivers = '';
 
     protected $listeners = [
@@ -73,11 +75,11 @@ class Dash extends Component
 
         $this->distance = $scheduling_address->distance;
         $this->duration = $scheduling_address->duration;
-        $this->date = $scheduling->date;
+        $this->date = $scheduling_address->date;
         $this->check_in = $scheduling_address->pick_up_hour;
         $this->pick_up = $scheduling_address->pick_up_address;
         $this->drop_off = $scheduling_address->drop_off_address;
-        
+
         $this->wheelchair = $scheduling_charge->wheelchair;
         $this->ambulatory = $scheduling_charge->ambulatory;
         $this->saturdays = $scheduling_charge->saturdays;
@@ -156,29 +158,83 @@ class Dash extends Component
 
     function startDriving($event)
     {
+        $sql = "SELECT * FROM scheduling_address WHERE status = 'In Progress' AND scheduling_id = '{$event}'";
+        $scheduling_address = DB::select($sql);
+
+        if (count($scheduling_address) > 0) {
+            $this->sessionAlert([
+                'message' => 'You are already driving!',
+                'type' => 'danger',
+                'icon' => 'error',
+            ]);
+
+            return;
+        }
+
         $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $event)->first();
         $scheduling_address->status = 'In Progress';
+
         $scheduling_address->save();
-        
+
+        $this->sessionAlert([
+            'message' => 'You are driving!',
+            'type' => 'info',
+            'icon' => 'info',
+        ]);
     }
 
-    function finishDriving($event)
+    function completeDriving($event)
     {
-        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $event)->first();
+        $this->title_modal = 'Complete Driving';
+        $this->dispatchBrowserEvent('openModal', ['name' => 'CompleteDriving']);
+        $this->emit('getModelId', $event);
+    }
+
+    public function finishDriving()
+    {
+        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $this->modelId)->first();
         $scheduling_address->status = 'Completed';
+        $scheduling_address->observations = $this->observations;
+        $scheduling_address->additional_milles = $this->additional_milles;
         $scheduling_address->save();
+
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $this->modelId)->first();
+        $scheduling_charge->wheelchair = $this->wheelchair;
+        $scheduling_charge->ambulatory = $this->ambulatory;
+        $scheduling_charge->saturdays = $this->saturdays;
+        $scheduling_charge->sundays_holidays = $this->sundays_holidays;
+        $scheduling_charge->companion = $this->companion;
+        $scheduling_charge->fast_track = $this->fast_track;
+        $scheduling_charge->out_of_hours = $this->out_of_hours;
+        $scheduling_charge->aditional_waiting = $this->aditional_waiting;
+        $scheduling_charge->save();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'CompleteDriving']);
+
+        $this->sessionAlert([
+            'message' => 'Finish Driving!',
+            'type' => 'info',
+            'icon' => 'info',
+        ]);
+    }
+
+    function sessionAlert($data)
+    {
+        session()->flash('alert', $data);
+
+        $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
 
     private function statusColor($status)
     {
         if ($status == 'Waiting') {
-            return 'bg-gradient-success';
+            return 'badge-warning';
         } else if ($status == 'Canceled') {
-            return 'bg-gradient-danger';
+            return 'badge-primary';
         } else if ($status == 'Completed') {
-            return 'bg-gradient-warning';
+            return 'badge-success';
         } else if ($status == 'In Progress') {
-            return 'bg-gradient-info';
+            return 'badge-info';
         }
     }
 
@@ -189,13 +245,25 @@ class Dash extends Component
         $all_events = [];
 
         if (auth()->user()->roles->first()->name == 'Driver') {
-            $events = DB::table('schedulings')
-                ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
-                ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
-                ->where('scheduling_address.driver_id', '=', auth()->user()->id)
-                ->where('date', '=', Carbon::today()->format('Y-m-d'))
-                ->orderBy('pick_up_hour')
-                ->get();
+            $sql = "SELECT scheduling_address.*,
+            schedulings.patient_id, 
+            scheduling_charge.wheelchair,
+            scheduling_charge.ambulatory,
+            scheduling_charge.out_of_hours,
+            scheduling_charge.saturdays,
+            scheduling_charge.sundays_holidays,
+            scheduling_charge.companion,
+            scheduling_charge.aditional_waiting,
+            scheduling_charge.fast_track,
+            scheduling_charge.if_not_cancel,
+            scheduling_charge.collect_cancel,
+            scheduling_charge.overcharge FROM scheduling_address 
+            inner join schedulings on schedulings.id = scheduling_address.scheduling_id 
+            inner join scheduling_charge  on schedulings.id = scheduling_charge.scheduling_id 
+            WHERE scheduling_address.driver_id = " . auth()->user()->id . " AND scheduling_address.date = '" . Carbon::today()->format('Y-m-d') . "' ORDER BY scheduling_address.pick_up_hour";
+
+            $events = DB::select($sql);
+
             $cars = DB::table('vehicles')
                 ->where('user_id', '=', auth()->user()->id)
                 ->get();
@@ -226,7 +294,7 @@ class Dash extends Component
                 'hospital_name' => $facility->name,
                 'driver_name' => $driver->name,
                 'status' => $event->status,
-                'status_color' => $this->statusColor($event->status), 
+                'status_color' => $this->statusColor($event->status),
                 'date' => $event->date,
                 'pick_up_hour' => $event->pick_up_hour,
                 'drop_off_hour' => $event->drop_off_hour,

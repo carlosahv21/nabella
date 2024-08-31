@@ -24,6 +24,22 @@
             </div>
         </div>
     </div>
+    <!-- notifications -->
+    <div class="position-fixed top-2 end-2 z-index-2">
+        <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
+            <div class="toast-header bg-transparent text-white border-0">
+                <i class="material-icons notranslate me-2">
+                    {{ session('alert.icon') }}
+                </i>
+                <span class="me-auto font-weight-bold">Notification!</span>
+                <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            </div>
+            <hr class="horizontal light m-0">
+            <div class="toast-body text-white ">
+                {{ session('alert.message') }}
+            </div>
+        </div>
+    </div>
     <div class="card shadow border-0 table-wrapper table-responsive mt-4">
         <div>
             <div class="card-header pb-0">
@@ -51,7 +67,7 @@
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     Details</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    </th>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +99,7 @@
                                     {{ $event['patient_name'] }}
                                 </td>
                                 <td class="align-middle text-center">
-                                    <span class="badge badge-sm {{ $event['status_color'] }}">
+                                    <span class="badge {{ $event['status_color'] }}">
                                         {{ $event['status'] }}
                                     </span>
                                 </td>
@@ -98,7 +114,7 @@
                                         <i class="material-icons notranslate text-sm me-2">directions_car</i> Start driving
                                     </a>
                                     @elseif($event['status'] == 'In Progress')
-                                    <a wire:click="finishDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving">
+                                    <a wire:click="completeDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving">
                                         <i class="material-icons notranslate text-sm me-2">directions_car</i> Finish driving
                                     </a>
                                     @endif
@@ -151,7 +167,7 @@
                                             {{ $date }}
                                         </span>
                                     </div>
-                                    
+
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Pick Up Address</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
@@ -159,7 +175,7 @@
                                             {{ $pick_up }}
                                         </span>
                                     </div>
-                                    <div class="mb-3 col-md-6">                                    
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Drop Off Address</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons notranslate text-sm me-1">location_on</i>
@@ -183,7 +199,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
                                         </div>
@@ -193,7 +211,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
                                         </div>
@@ -203,7 +223,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
                                         </div>
@@ -213,7 +235,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customSaturdays">Saturdays</label>
                                         </div>
@@ -223,7 +247,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
                                         </div>
@@ -233,7 +259,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customCompanion">Companion</label>
                                         </div>
@@ -243,7 +271,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="aditional_waiting" class="form-check-input" type="checkbox" id="customAditionalWaiting">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customAditionalWaiting">Aditional Waiting</label>
                                         </div>
@@ -253,7 +283,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customFastTrack">Fast Track</label>
                                         </div>
@@ -263,7 +295,9 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @else
-                                                <input wire.ignore.self wire:model="if_not_cancel" class="form-check-input" type="checkbox" id="customIfNotCancel">
+                                            <span>
+                                                <i class="material-icons notranslate text-sm me-1">close</i>
+                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customIfNotCancel">If not cancel</label>
                                         </div>
@@ -275,7 +309,85 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                    <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Complete Driving-->
+    <div wire:ignore.self class="modal fade" id="CompleteDriving" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{$title_modal}}</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="card card-plain h-100">
+                        <div class="card-body p-0">
+                            <form>
+                                <div class="row">
+                                    <div class="mb-3 col-md-6 col-6">
+                                        <label class="form-label">Comments</label>
+                                        <textarea wire:model="observations" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="Any additional comments"></textarea>
+                                        @if ($errors->has('observations'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('observations') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6 col-6">
+                                        <label class="form-label">Additional Milles </label>
+                                        <input wire:model="additional_milles" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        @if ($errors->has('additional_milles'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('additional_milles') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="row">
+                                        <hr class="dark horizontal">
+                                        <h6>Additional Charges</h6>
+                                        <hr class="dark horizontal">
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="wheelchair" class="form-check-input" type="checkbox" @if($ambulatory) disabled @endif id="customWheelchair">
+                                            <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="ambulatory" class="form-check-input" type="checkbox" @if($wheelchair) disabled @endif id="customAmbulatory">
+                                            <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
+                                            <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
+                                            <label class="custom-control-label" for="customSaturdays">Saturdays</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
+                                            <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
+                                            <label class="custom-control-label" for="customCompanion">Companion</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="aditional_waiting" class="form-check-input" type="checkbox" id="customAditionalWaiting">
+                                            <label class="custom-control-label" for="customAditionalWaiting">Aditional Waiting</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-4">
+                                            <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
+                                            <label class="custom-control-label" for="customFastTrack">Fast Track</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                    <button wire:click="finishDriving" type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>

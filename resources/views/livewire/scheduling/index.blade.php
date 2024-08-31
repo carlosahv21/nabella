@@ -4,7 +4,7 @@
             <div class="col-8 col-lg-8 row mt-3">
                 @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-3 col-lg-3">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
-                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }};">
+                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }}; min-width: 115px; text-align: center;">
                         <b class="text-white"> {{ $drivers[$i]->name }} </b>
                     </label>
             </div>
@@ -286,40 +286,40 @@
                                 </div>
                                 <!-- CHARGES -->
                                 <h6 class="text-center">CHARGES</h6>
-                                <div class="row col-md-12 text-center mx-1 px-1">
-                                    <div class="form-check mb-3 col-md-2" style="padding-left: 0px;padding-right: 0px;">
+                                <div class="row col-md-12 mx-3 px-2">
+                                    <div class="form-check mb-3 col-md-2 p-1">
                                         <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip">
-                                        <label class="custom-control-label text-10" for="one_way">One way</label>
+                                        <label class="custom-control-label text-10" for="one_way">OW</label>
                                     </div>
-                                    <div style="padding-left: 10px;padding-right: 0px;" class="form-check mb-3 col-md-2">
+                                    <div class="form-check mb-3 col-md-2 p-1">
                                         <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip">
-                                        <label class="custom-control-label text-10" for="round_trip">Round trip</label>
+                                        <label class="custom-control-label text-10" for="round_trip">RT</label>
                                     </div>
-                                    <div style="padding-left: 7px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                    <div class="form-check mb-3 col-md-2 p-1">
                                         <input wire.ignore.self="" wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
                                         <label class="custom-control-label text-10" for="customWheelchair">Wheelchair</label>
                                     </div>
-                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                    <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
                                         <label class="custom-control-label text-10" for="customAmbulatory">Ambulatory</label>
                                     </div>
-                                    <div class="form-check mb-3 col-md-2" style="padding-left: 0px;padding-right: 0px;">
+                                    <div class="form-check mb-4 col-md-2 p-1">
                                         <input wire.ignore.self="" wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
                                         <label class="custom-control-label text-10" for="customSaturdays">Saturdays</label>
                                     </div>
-                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                    <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
                                         <label class="custom-control-label text-10" for="customCompanion">Companion</label>
                                     </div>
-                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-2">
+                                    <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
                                         <label class="custom-control-label text-10" for="customFastTrack">Fast Track</label>
                                     </div>
-                                    <div style="padding-left: 0px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                    <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
                                         <label class="custom-control-label text-10" for="customSundaysHolidays">Sund / Holid</label>
                                     </div>
-                                    <div style="padding-left: 7px;padding-right: 0px;" class="form-check mb-3 col-md-3">
+                                    <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
                                         <label class="custom-control-label text-10" for="customOutOfHours">After hours</label>
                                     </div>
