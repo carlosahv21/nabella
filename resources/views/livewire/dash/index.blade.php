@@ -1,6 +1,256 @@
 @section('title','Usuario')
 @if(auth()->user()->roles->first()->name == 'Admin')
-<h1>Admin</h1>
+<div class="container-fluid py-4 px-3">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body p-3 position-relative">
+                    <div class="row">
+                        <div class="col-7 text-start">
+                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Sales</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                $230,220
+                            </h5>
+                            <span class="text-sm text-end text-success font-weight-bolder mt-auto mb-0">+55%
+                                <span class="font-weight-normal text-secondary">since last month</span></span>
+                        </div>
+                        <div class="col-5">
+                            <div class="dropdown text-end">
+                                <a href="javascript:;" class="cursor-pointer text-secondary" id="dropdownUsers1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="text-xs text-secondary">6 May - 7 May</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end px-2 py-3" aria-labelledby="dropdownUsers1">
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last 7
+                                            days</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last
+                                            week</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last 30
+                                            days</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 mt-sm-0 mt-4">
+            <div class="card">
+                <div class="card-body p-3 position-relative">
+                    <div class="row">
+                        <div class="col-7 text-start">
+                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Customers</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                3.200
+                            </h5>
+                            <span class="text-sm text-end text-success font-weight-bolder mt-auto mb-0">+12%
+                                <span class="font-weight-normal text-secondary">since last month</span></span>
+                        </div>
+                        <div class="col-5">
+                            <div class="dropdown text-end">
+                                <a href="javascript:;" class="cursor-pointer text-secondary" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="text-xs text-secondary">6 May - 7 May</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end px-2 py-3" aria-labelledby="dropdownUsers2">
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last 7
+                                            days</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last
+                                            week</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last 30
+                                            days</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 mt-sm-0 mt-4">
+            <div class="card">
+                <div class="card-body p-3 position-relative">
+                    <div class="row">
+                        <div class="col-7 text-start">
+                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Avg. Revenue</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                $1.200
+                            </h5>
+                            <span class="font-weight-normal text-secondary text-sm"><span class="font-weight-bolder text-success">+$213</span> since last month</span>
+                        </div>
+                        <div class="col-5">
+                            <div class="dropdown text-end">
+                                <a href="javascript:;" class="cursor-pointer text-secondary" id="dropdownUsers3" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="text-xs text-secondary">6 May - 7 May</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end px-2 py-3" aria-labelledby="dropdownUsers3">
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last 7
+                                            days</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last
+                                            week</a></li>
+                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Last 30
+                                            days</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Status of the drivers</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Product</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Value</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Ads Spent</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Refunds</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-3 py-1">
+                                            <div>
+                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/blue-shoe.jpg" class="avatar me-3" alt="image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Nike v22 Running</h6>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">8.232</span> orders</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-normal mb-0">$130.992</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">$9.500</p>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
+                                            <p class="text-sm font-weight-normal mb-0">13</p>
+                                            <i class="ni ni-bold-down text-sm ms-1 text-success"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-3 py-1">
+                                            <div>
+                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/black-mug.jpg" class="avatar me-3" alt="image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Business Kit (Mug + Notebook)</h6>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">12.821</span> orders</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-normal mb-0">$80.250</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">$4.200</p>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
+                                            <p class="text-sm font-weight-normal mb-0">40</p>
+                                            <i class="ni ni-bold-down text-sm ms-1 text-success"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-3 py-1">
+                                            <div>
+                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/black-chair.jpg" class="avatar me-3" alt="image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Black Chair</h6>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">2.421</span> orders</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-normal mb-0">$40.600</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">$9.430</p>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
+                                            <p class="text-sm font-weight-normal mb-0">54</p>
+                                            <i class="ni ni-bold-up text-sm ms-1 text-danger"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-3 py-1">
+                                            <div>
+                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/bang-sound.jpg" class="avatar me-3" alt="image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Wireless Charger</h6>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">5.921</span> orders</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-normal mb-0">$91.300</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">$7.364</p>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
+                                            <p class="text-sm font-weight-normal mb-0">5</p>
+                                            <i class="ni ni-bold-down text-sm ms-1 text-success"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-3 py-1">
+                                            <div>
+                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/photo-tools.jpg" class="avatar me-3" alt="image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Mountain Trip Kit (Camera + Backpack)
+                                                </h6>
+                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">921</span> orders</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-normal mb-0">$140.925</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <p class="text-sm font-weight-normal mb-0">$20.531</p>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
+                                            <p class="text-sm font-weight-normal mb-0">121</p>
+                                            <i class="ni ni-bold-up text-sm ms-1 text-danger"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @elseif(auth()->user()->roles->first()->name == 'Driver')
 <div class="mx-3">
     <div class="row mt-4">

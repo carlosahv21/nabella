@@ -267,57 +267,74 @@ class Dash extends Component
             $cars = DB::table('vehicles')
                 ->where('user_id', '=', auth()->user()->id)
                 ->get();
+            foreach ($events as $event) {
+                $pick_up_address = $event->pick_up_address;
+
+                $drop_off_address = $event->drop_off_address;
+
+                $patient = Patient::where('id', '=', $event->patient_id)->first();
+                $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
+                $driver = Driver::where('id', '=', $event->driver_id)->first();
+
+                $all_events[] = [
+                    'id' => $event->id,
+                    'distance' => $event->distance,
+                    'pick_up_address' => $pick_up_address,
+                    'drop_off_address' => $drop_off_address,
+                    'hospital_name' => $facility->name,
+                    'driver_name' => $driver->name,
+                    'status' => $event->status,
+                    'status_color' => $this->statusColor($event->status),
+                    'date' => $event->date,
+                    'pick_up_hour' => $event->pick_up_hour,
+                    'drop_off_hour' => $event->drop_off_hour,
+                    'patient_name' => $patient->first_name . ' ' . $patient->last_name,
+                    'observations' => $patient->observations,
+                    'wheelchair' => $event->wheelchair ? true : false,
+                    'ambulatory' => $event->ambulatory ? true : false,
+                    'saturdays' => $event->saturdays ? true : false,
+                    'companion' => $event->companion ? true : false,
+                    'fast_track' => $event->fast_track ? true : false,
+                    'sundays_holidays' => $event->sundays_holidays ? true : false,
+                    'out_of_hours' => $event->out_of_hours ? true : false,
+                ];
+            }
+
+
+            return view(
+                'livewire.dash.index',
+                [
+                    'events' => $all_events,
+                    'cars' => $cars,
+                    'routes' => $routes
+                ]
+            );
         } else {
+
             $events = DB::table('schedulings')
                 ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
                 ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
+                ->select('schedulings.id', 'scheduling_address.*', 'scheduling_charge.*')
+                ->where('scheduling_address.status', '=', 'Completed')
                 ->get();
 
-            $cars = DB::table('vehicles')
+            $drive = DB::table('users')
+                ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->leftJoin('scheduling_address', 'users.id', '=', 'scheduling_address.driver_id')
+                ->select('users.*', 'scheduling_address.*')
+                ->where('roles.name', '=', 'Driver')
+                ->where('scheduling_address.date', '=', Carbon::today()->format('Y-m-d'))
                 ->get();
+
+
+            return view(
+                'livewire.dash.index',
+                [
+                    'events' => $events,
+                    'cars' => $drive
+                ]
+            );
         }
-
-        foreach ($events as $event) {
-            $pick_up_address = $event->pick_up_address;
-
-            $drop_off_address = $event->drop_off_address;
-
-            $patient = Patient::where('id', '=', $event->patient_id)->first();
-            $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
-            $driver = Driver::where('id', '=', $event->driver_id)->first();
-
-            $all_events[] = [
-                'id' => $event->id,
-                'distance' => $event->distance,
-                'pick_up_address' => $pick_up_address,
-                'drop_off_address' => $drop_off_address,
-                'hospital_name' => $facility->name,
-                'driver_name' => $driver->name,
-                'status' => $event->status,
-                'status_color' => $this->statusColor($event->status),
-                'date' => $event->date,
-                'pick_up_hour' => $event->pick_up_hour,
-                'drop_off_hour' => $event->drop_off_hour,
-                'patient_name' => $patient->first_name . ' ' . $patient->last_name,
-                'observations' => $patient->observations,
-                'wheelchair' => $event->wheelchair ? true : false,
-                'ambulatory' => $event->ambulatory ? true : false,
-                'saturdays' => $event->saturdays ? true : false,
-                'companion' => $event->companion ? true : false,
-                'fast_track' => $event->fast_track ? true : false,
-                'sundays_holidays' => $event->sundays_holidays ? true : false,
-                'out_of_hours' => $event->out_of_hours ? true : false,
-            ];
-        }
-
-
-        return view(
-            'livewire.dash.index',
-            [
-                'events' => $all_events,
-                'cars' => $cars,
-                'routes' => $routes
-            ]
-        );
     }
 }
