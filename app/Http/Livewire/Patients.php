@@ -107,12 +107,13 @@ class Patients extends Component
 
     public function save()
     {
+        $this->validate();
+
         if($this->modelId){
             $patient = Patient::findOrFail($this->modelId);
             $this->isEdit = true;
         }else{
             $patient = new Patient;
-            $this->validate();
         }
         
         $patient->service_contract_id = $this->service_contract_id;

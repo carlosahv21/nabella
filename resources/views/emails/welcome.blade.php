@@ -60,7 +60,7 @@
             display: inline-block;
             background: #bf2b62;
             border-radius: 20px;
-            color: #ffffff;
+            color: #ffffff !important;
             font-family: 'Roboto', 'Arial', sans-serif;
             font-size: 17px;
             text-align: center;
@@ -156,7 +156,7 @@
                         <tr>
                             <td align="left" style="padding: 10px 20px;">
                                 <p>Hi {{ $user->name }}, welcome to Nabella!<br>
-                                   We’re excited to have you onboard. Start exploring our features and make the most out of your experience. Discover new possibilities and take full advantage of what Nabella has to offer.</p>
+                                We’re excited to have you onboard. Start exploring our features and make the most out of your experience. Discover new possibilities and take full advantage of what Nabella has to offer.</p>
                             </td>
                         </tr>
                         <tr>
@@ -169,7 +169,7 @@
                                     </tr>
                                     <tr>
                                         <td align="center">
-                                            <p style="color: #64434a;">Password: 123456</p>
+                                            <p style="color: #64434a;">Password: secret</p>
                                             <p style="color: #64434a;">Email: {{ $user->email }}</p>
                                         </td>
                                     </tr>

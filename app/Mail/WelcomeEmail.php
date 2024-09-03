@@ -29,7 +29,8 @@ class WelcomeEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.welcome')
+        return $this->from(env('MAIL_FROM_ADDRESS', env('MAIL_FROM_NAME')))
+                    ->view('emails.welcome')
                     ->subject('Bienvenido a la Aplicación')
                     ->with([
                         'user' => $this->user,

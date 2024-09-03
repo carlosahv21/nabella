@@ -15,8 +15,8 @@ use App\Models\Address;
                     <input wire:model="search" type="text" class="form-control" placeholder="Search facilities...">
                 </div>
             </div>
-            <div class="col-12 col-lg-5 d-flex mt-3 me-4">
-                <div class="dropdown px-4">
+            <div class="col-12 col-lg-5 d-flex mt-3 me-4 justify-content-end">
+                <!-- <div class="dropdown px-4">
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons notranslate">expand_more</i>
                     </button>
@@ -30,7 +30,7 @@ use App\Models\Address;
                         </li>
                         @endcan
                     </ul>
-                </div>
+                </div> -->
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons notranslate">add</i> Add Facility
                 </button>
