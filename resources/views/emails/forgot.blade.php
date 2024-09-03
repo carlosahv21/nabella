@@ -164,11 +164,11 @@
                                 <table width="100%" style="background-color: #ffffff; border: 1px solid #efefef; border-radius: 3px;">
                                     <tr>
                                         <td align="center" style="padding: 20px 15px;">
-                                            <p>For resetting your password, please click the button below:</p>
+                                            <h3>For resetting your password, please click the button below:</h3>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td align="center" style="padding: 20px;">
+                                        <td align="center">
                                             <a href="{{ route('reset') }}" class="es-button">Reset Password</a>
                                         </td>
                                     </tr>

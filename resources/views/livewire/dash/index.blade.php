@@ -262,15 +262,17 @@
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-4 text-capitalize">Car assigned today</p>
-                        <h4 class="mb-0">{{ $cars->first()->make }} {{ $cars->first()->model }}</h4>
+                        <h4 class="mb-0">@if(count($cars) > 0) {{ $cars->first()->make }} {{ $cars->first()->model }} @else No car assigned @endif</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
+                @if(count($cars) > 0)
                 <div class="card-footer p-3 text-end">
                     <a wire:click="selectItem({{ $cars->first()->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                         <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
                     </a>
                 </div>
+                @endif
             </div>
         </div>
     </div>

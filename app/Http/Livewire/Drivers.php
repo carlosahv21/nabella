@@ -97,17 +97,14 @@ class Drivers extends Component
 
     public function save()
     {
+        $this->validate();
 
         if($this->modelId){
             $this->isEdit = true;
-            $this->validate();
-            
             $user = User::findOrFail($this->modelId);
         }else{
-            $this->validate();
-
             $user = new User;
-            $user->password = ('123456'); //solo cuando es un nuevo usuario 
+            $user->password = ('secret'); //solo cuando es un nuevo usuario 
         }
         
         $user->name = $this->name;

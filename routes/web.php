@@ -20,11 +20,9 @@ use App\Http\Livewire\Facilities;
 use App\Http\Livewire\Schedulings;
 use App\Http\Livewire\ServiceContracts;
 
-use App\Http\Livewire\Calendar;
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
-use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,15 +35,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 |
 */
 
-Route::get('reset', function(){
-    return 'hola mundo';
-})->middleware('signed')->name('reset');
-
 Route::get('/', function () {
     return redirect('sign-in');
 });
 
 Route::get('forgot-password', ForgotPassword::class)->middleware('guest')->name('password.forgot');
+Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->name('reset-password');
 
 Route::get('sign-up', Register::class)->middleware('guest')->name('register');
 Route::get('sign-in', Login::class)->middleware('guest')->name('login');
@@ -61,11 +56,11 @@ Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicec
 
 Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');
 
-Route::get('facility', Facilities::class)->middleware('auth')->name('facility');
+Route::get('facility', Facilities::class)->middleware('can:facility.view')->name('facility');
 
-Route::get('scheduling', Schedulings::class)->middleware('auth')->name('scheduling');
+Route::get('scheduling', Schedulings::class)->middleware('can:scheduling.view')->name('scheduling');
 
-Route::get('reports', Reports::class)->middleware('auth')->name('reports');
+Route::get('reports', Reports::class)->middleware('can:report.view')->name('reports');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dash::class)->name('dashboard');

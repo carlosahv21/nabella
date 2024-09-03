@@ -81,7 +81,7 @@
                 </a>
             </li>
             @endcan
-
+            @can ('report.view')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'reports' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('reports') }}">
@@ -91,11 +91,8 @@
                     <span class="nav-link-text ms-1">Report</span>
                 </a>
             </li>
-
+            @endcan
             @can ('dashboard.view')
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6>
-            </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('dashboard') }}">
