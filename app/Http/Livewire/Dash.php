@@ -58,9 +58,9 @@ class Dash extends Component
     {
         $this->modelId = $modelId;
 
-        $scheduling = Scheduling::find($this->modelId);
-        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $this->modelId)->first();
-        $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $this->modelId)->first();
+        $scheduling_address = SchedulingAddress::where('id', '=', $this->modelId)->first();
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $scheduling_address->scheduling_id)->first();
+        $scheduling = Scheduling::find($scheduling_address->scheduling_id);
 
         $patient = Patient::find($scheduling->patient_id);
         $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
@@ -158,10 +158,10 @@ class Dash extends Component
 
     function startDriving($event)
     {
-        $sql = "SELECT * FROM scheduling_address WHERE status = 'In Progress' AND scheduling_id = '{$event}'";
-        $scheduling_address = DB::select($sql);
+        $driver_id = SchedulingAddress::where('id', '=', $event)->first()->driver_id;
+        $validate = SchedulingAddress::where('status', '=', 'In Progress')->where('driver_id', '=', $driver_id)->get();
 
-        if (count($scheduling_address) > 0) {
+        if (count($validate) > 0) {
             $this->sessionAlert([
                 'message' => 'You are already driving!',
                 'type' => 'danger',
@@ -171,7 +171,7 @@ class Dash extends Component
             return;
         }
 
-        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $event)->first();
+        $scheduling_address = SchedulingAddress::where('id', '=', $event)->first();
         $scheduling_address->status = 'In Progress';
 
         $scheduling_address->save();
@@ -228,13 +228,13 @@ class Dash extends Component
     private function statusColor($status)
     {
         if ($status == 'Waiting') {
-            return 'badge-warning';
+            return 'bg-gradient-warning';
         } else if ($status == 'Canceled') {
-            return 'badge-primary';
+            return 'bg-gradient-danger';
         } else if ($status == 'Completed') {
-            return 'badge-success';
+            return 'bg-gradient-success';
         } else if ($status == 'In Progress') {
-            return 'badge-info';
+            return 'bg-gradient-info';
         }
     }
 

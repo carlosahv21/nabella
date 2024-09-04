@@ -28,7 +28,7 @@ class Schedulings extends Component
     public $google;
 
     // Campos de la tabla scheduling_address
-    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $request_by, $errors_r_check_in, $errors_driver = '';
+    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver = '';
 
     // Campos de la tabla scheduling_charge
     public $wheelchair = false;
@@ -130,18 +130,20 @@ class Schedulings extends Component
                 $this->dispatchBrowserEvent('openModal', ['name' => 'deleteSchedulingMasive']);
                 $this->countSchedulings = count($this->selected);
                 break;
-            case 'create':                
-                if(cache()->get('autoagendamiento_form')){
-                    $this->dispatchBrowserEvent('showAlert', 
-                    [
-                        'text' => 'You have unsaved changes! Do you want to continue?',
-                        'icon' => 'info',
-                        'confirmButtonText' => 'Yes',
-                        'denyButtonText' => 'No',
-                        'livewire' => 'continueScheduling',
-                        'id' => false,
-                    ]);
-                }else{
+            case 'create':
+                if (cache()->get('autoagendamiento_form')) {
+                    $this->dispatchBrowserEvent(
+                        'showAlert',
+                        [
+                            'text' => 'You have unsaved changes! Do you want to continue?',
+                            'icon' => 'info',
+                            'confirmButtonText' => 'Yes',
+                            'denyButtonText' => 'No',
+                            'livewire' => 'continueScheduling',
+                            'id' => false,
+                        ]
+                    );
+                } else {
                     $this->title_modal = 'Create Scheduling';
                     $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
                     $this->emit('clearForm');
@@ -155,13 +157,14 @@ class Schedulings extends Component
         }
     }
 
-    function continueScheduling($comfirm){
-        if($comfirm){
+    function continueScheduling($comfirm)
+    {
+        if ($comfirm) {
             $data = cache()->get('autoagendamiento_form');
             foreach ($data as $key => $value) {
                 $this->$key = $value;
             }
-        }else{
+        } else {
             cache()->forget('autoagendamiento_form');
             $this->clearForm();
         }
@@ -179,14 +182,31 @@ class Schedulings extends Component
         $this->auto_agend = $model_scheduling->auto_agend;
         $this->status = $model_scheduling->status;
 
-        $model_scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->first();
-        $this->pick_up_address = $model_scheduling_address->pick_up_address;
-        $this->drop_off_address = $model_scheduling_address->drop_off_address;
-        $this->date = $model_scheduling_address->date;
-        $this->check_in = $model_scheduling_address->pick_up_hour;
-        $this->pick_up_driver_id = $model_scheduling_address->pick_up_driver_id;
-        $this->pick_up_time = $model_scheduling_address->drop_off_hour;
-        $this->distance = $model_scheduling_address->distance;
+        $model_scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->get();
+
+        $count = 0;
+        $count_r = 0;
+        foreach ($model_scheduling_address as $address) {
+            if ($address->type_of_trip == 'pick_up') {
+                if(!$this->pick_up_address ){
+                    $this->pick_up_address = $address->pick_up_address;
+                }
+                if(!$this->check_in){
+                    $this->check_in = $address->pick_up_hour;
+                }
+                $this->pick_up_driver_id = $address->driver_id;
+                $this->stops[$count]['address'] = $address->drop_off_address;
+                $count++;
+            } elseif ($address->type_of_trip == 'return') {
+                $this->return_pick_up_address = $address->pick_up_address;
+                $this->r_check_in = $address->pick_up_hour;
+                $this->drop_off_driver_id = $address->driver_id;
+
+                $this->r_stops[$count_r]['address'] = $address->drop_off_address;
+                $count_r++;
+            }
+            
+        }
 
         $model_scheduling_charge = SchedulingCharge::where('scheduling_id', $model_scheduling->id)->first();
         $this->type_of_trip = $model_scheduling_charge->type_of_trip;
@@ -255,7 +275,7 @@ class Schedulings extends Component
 
         session()->flash('alert', $data);
         cache()->forget('autoagendamiento_form');
-        
+
         $this->clearForm();
     }
 
@@ -409,6 +429,14 @@ class Schedulings extends Component
         return Carbon::createFromFormat('H:i', $hora)->addMinutes($minutosASumar)->format('H:i');
     }
 
+    public function subtractTime($pick_up_hour, $duration)
+    {
+        $hora = $pick_up_hour;
+        $minutosASumar = $duration + 10;
+
+        return Carbon::createFromFormat('H:i', $hora)->subMinutes($minutosASumar)->format('H:i');
+    }
+
     public function forcedCloseModal()
     {
         sleep(2);
@@ -429,6 +457,7 @@ class Schedulings extends Component
     // Click en el input para obtener las direcciones guardadas
     public function getAddresses($input)
     {
+        $this->$input = $this->saved_addresses;
         if ($this->saved_addresses) {
             if (!$this->$input) {
                 $this->$input = $this->saved_addresses;
@@ -488,20 +517,27 @@ class Schedulings extends Component
         $this->saved_addresses = [];
 
         $patient = Patient::find($patientId);
+        if (!$patient) {
+            return;
+        }
+
         $address_patient = Address::where('patient_id', $patientId)->get();
 
         foreach ($address_patient as $address) {
             $this->saved_addresses[] = $address->address;
         }
 
-        $facilities = Facility::where('service_contract_id',$patient->service_contract_id)->get();
+        if (!$patient->service_contract_id) {
+            return;
+        }
+
+        $facilities = Facility::where('service_contract_id', $patient->service_contract_id)->get();
         foreach ($facilities as $facility) {
             $address_facility = Address::where('facility_id', $facility->id)->get();
             foreach ($address_facility as $address) {
                 $this->saved_addresses[] = $address->address;
             }
         }
-
     }
 
     public function updatedReturnPickUpAddress()
@@ -592,6 +628,7 @@ class Schedulings extends Component
 
             return;
         }
+        $this->r_pick_up_time = $this->subtractTime($this->r_check_in, '0');
 
         $this->validateFieldsReturn();
         $this->errors_r_check_in = '';
@@ -631,6 +668,10 @@ class Schedulings extends Component
         $this->location_driver = $address;
         $this->validateAddresses('location_driver');
         $this->prediction_location_driver = [];
+
+        if ($this->return_pick_up_address) {
+            $this->calculateTimeDriver();
+        }
     }
 
     public function addReturnPickUp($address)
@@ -865,7 +906,7 @@ class Schedulings extends Component
         $scheduling_address = SchedulingAddress::where('scheduling_id', $this->modelId)->first();
         $scheduling_address->status = ($cancel) ? 'Canceled' : 'Waiting';
         if (!$cancel) {
-            $scheduling_address->collect_cancel = false ; 
+            $scheduling_address->collect_cancel = false;
         }
         $scheduling_address->save();
 
@@ -917,7 +958,14 @@ class Schedulings extends Component
 
     public function validateFields()
     {
-        if (count($this->stops) == 0 && $this->pick_up_address == null && $this->check_in == null && $this->date == null) {
+        if (!$this->date) {
+            $this->date = Carbon::now()->format('Y-m-d');
+        }
+        if (!$this->check_in) {
+            $this->check_in = Carbon::now()->format('H:i');
+        }
+
+        if (count($this->stops) == 0 || $this->pick_up_address == null) {
             return false;
         }
 

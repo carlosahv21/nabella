@@ -218,15 +218,22 @@
                                     </ul>
                                     @endif
                                 </div>
-                                <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
-                                    @if (!empty($prediction_return_pick_up_address))
-                                    <ul class="list-group">
-                                        @foreach ($prediction_return_pick_up_address as $p_address_pick_up)
-                                        <li class="list-group-item cursor-pointer" wire:click="addReturnPickUp('{{ $p_address_pick_up }}')">{{ $p_address_pick_up }}</li>
-                                        @endforeach
-                                    </ul>
-                                    @endif
+                                <div class="mb-3 row">
+                                    <div class="col-md-10">
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                        @if (!empty($prediction_return_pick_up_address))
+                                        <ul class="list-group">
+                                            @foreach ($prediction_return_pick_up_address as $p_address_pick_up)
+                                            <li class="list-group-item cursor-pointer" wire:click="addReturnPickUp('{{ $p_address_pick_up }}')">{{ $p_address_pick_up }}</li>
+                                            @endforeach
+                                        </ul>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group input-group-static my-1">
+                                            <input type="text" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive" disabled placeholder="Time">
+                                        </div>
+                                    </div>
                                 </div>
                                 @foreach ($r_stops as $r_index => $r_stop)
                                 <div class="mb-3 row">
@@ -267,7 +274,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="text" wire.ignore.self wire:model="r_start_drive" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_start_drive" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="r_pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_pick_up_time" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
