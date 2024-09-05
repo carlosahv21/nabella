@@ -15,6 +15,9 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('patient_id');
             $table->boolean('auto_agend')->default(false);
+            $table->string('select_date')->nullable();
+            $table->date('ends_schedule')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }

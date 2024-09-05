@@ -1,7 +1,7 @@
 <div>
     <div class="table-settings mx-4 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
-            <div class="col-8 col-lg-8 row mt-3">
+            <div class="col-12 col-lg-8 row mt-3">
                 @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-3 col-lg-3">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
                     <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }}; min-width: 115px; text-align: center;">
@@ -10,7 +10,7 @@
             </div>
             @endfor
         </div>
-        <div class="col-4 col-lg-4 d-flex justify-content-end mt-3">
+        <div class="col-12 col-lg-4 d-flex justify-content-end mt-3">
             <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                 <i class="material-icons notranslate">add</i> Add scheduling
             </button>
@@ -349,7 +349,7 @@
                     <p>&nbsp;</p>
                     @endif
 
-                    <div>
+                    <div class="d-flex justify-content-end">
                         <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
                         @if(!$if_not_cancel)
                         <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
