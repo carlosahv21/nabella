@@ -188,7 +188,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Medicateid ID</label>
+                                        <label class="form-label">Medicaid ID</label>
                                         <input wire:model="medicalid" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('medicalid'))
                                         <div class="text-danger inputerror">
@@ -261,24 +261,6 @@
                                         </div>
                                         @endforeach
                                     </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Date start</label>
-                                        <input wire:model="date_start" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="YYYY/MM/DD">
-                                        @if ($errors->has('date_start'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('date_start') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label class="form-label">Date end</label>
-                                        <input wire:model="date_end" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="YYYY/MM/DD">
-                                        @if ($errors->has('date_end'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('date_end') }}
-                                        </div>
-                                        @endif
-                                    </div>
                                     <div class="mb-3 col-md-12">
                                         <label class="form-label">Description of the patient</label>
                                         <textarea wire:model="observations" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
@@ -308,7 +290,7 @@
                     <h5 class="modal-title">{{$title_modal}}</h2>
                 </div>
                 <div class="modal-body">
-                    Deseas eliminar este registro?
+                    Al borrar este paciente se eliminaran los agendamientos desde {{ Carbon\Carbon::parse(today())->format('m/d/Y') }} en adelante, Deseas continuar?
                 </div>
                 <div class="modal-footer">
                     <button wire:click="delete" class="btn btn-secondary">Eliminar</button>

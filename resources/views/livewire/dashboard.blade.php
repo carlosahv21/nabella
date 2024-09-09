@@ -166,11 +166,11 @@
                                 </div>
                                 <div class="form-check mb-3 col-md-3">
                                     <input wire:model="dash_companion" class="form-check-input" type="checkbox" id="customCompanion">
-                                    <label class="custom-control-label" for="customCompanion">Companion</label>
+                                    <label class="custom-control-label" for="customCompanion">Accompanist</label>
                                 </div>
                                 <div class="form-check mb-3 col-md-3">
                                     <input wire:model="dash_fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
-                                    <label class="custom-control-label" for="customFastTrack">Fast Track</label>
+                                    <label class="custom-control-label" for="customFastTrack">Quick Pass</label>
                                 </div>
                                 <div class="form-check mb-3 col-md-4">
                                     <input wire:model="dash_sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">
@@ -178,7 +178,7 @@
                                 </div>
                                 <div class="form-check mb-3 col-md-4">
                                     <input wire:model="dash_out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
-                                    <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
+                                    <label class="custom-control-label" for="customOutOfHours">After Hour</label>
                                 </div>
 
                             </div>

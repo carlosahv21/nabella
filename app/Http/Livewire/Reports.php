@@ -207,7 +207,7 @@ class Reports extends Component
         }
 
         if ($scheduling['charge']['out_of_hours']) {
-            $charges .= ($charges) ? 'and Out of Hours ' : 'Out of Hours ';
+            $charges .= ($charges) ? 'and After Hours ' : 'After Hours ';
         }
 
         if ($scheduling['charge']['aditional_waiting']) {

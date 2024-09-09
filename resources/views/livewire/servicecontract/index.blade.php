@@ -65,7 +65,7 @@
                                 </label>
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date start - Date end</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start date - End date</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
@@ -183,7 +183,7 @@
                                     </div>
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
-                                            <label class="form-label">Out of hours</label>
+                                            <label class="form-label">After Hours</label>
                                             <input wire:model="out_of_hours" type="text" min="0" placeholder="0" class="form-control" >
                                         </div>
                                         @if ($errors->has('out_of_hours'))
@@ -216,7 +216,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
-                                            <label class="form-label">Companion</label>
+                                            <label class="form-label">Accompanist</label>
                                             <input wire:model="companion" type="text" min="0" placeholder="0" class="form-control" >
                                         </div>
                                         @if ($errors->has('companion'))
@@ -250,7 +250,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled"> 
-                                            <label class="form-label">Fast track</label>
+                                            <label class="form-label">Quick Pass</label>
                                             <input wire:model="fast_track" type="text" class="form-control" min="0" placeholder="0" >
                                         </div>
                                         @if ($errors->has('fast_track'))

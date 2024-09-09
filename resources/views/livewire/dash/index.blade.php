@@ -11,8 +11,6 @@
                             <h5 class="font-weight-bolder mb-0">
                                 $230,220
                             </h5>
-                            <span class="text-sm text-end text-success font-weight-bolder mt-auto mb-0">+55%
-                                <span class="font-weight-normal text-secondary">since last month</span></span>
                         </div>
                         <div class="col-5">
                             <div class="dropdown text-end">
@@ -42,8 +40,6 @@
                             <h5 class="font-weight-bolder mb-0">
                                 3.200
                             </h5>
-                            <span class="text-sm text-end text-success font-weight-bolder mt-auto mb-0">+12%
-                                <span class="font-weight-normal text-secondary">since last month</span></span>
                         </div>
                         <div class="col-5">
                             <div class="dropdown text-end">
@@ -73,7 +69,6 @@
                             <h5 class="font-weight-bolder mb-0">
                                 $1.200
                             </h5>
-                            <span class="font-weight-normal text-secondary text-sm"><span class="font-weight-bolder text-success">+$213</span> since last month</span>
                         </div>
                         <div class="col-5">
                             <div class="dropdown text-end">
@@ -479,7 +474,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
+                                            <label class="custom-control-label" for="customOutOfHours">After Hour</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($saturdays)
@@ -515,7 +510,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customCompanion">Companion</label>
+                                            <label class="custom-control-label" for="customCompanion">Accompanist</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($aditional_waiting)
@@ -539,7 +534,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customFastTrack">Fast Track</label>
+                                            <label class="custom-control-label" for="customFastTrack">Quick Pass</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($if_not_cancel)
@@ -609,7 +604,7 @@
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
-                                            <label class="custom-control-label" for="customOutOfHours">Out of hour</label>
+                                            <label class="custom-control-label" for="customOutOfHours">After Hour</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
@@ -621,7 +616,7 @@
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
-                                            <label class="custom-control-label" for="customCompanion">Companion</label>
+                                            <label class="custom-control-label" for="customCompanion">Accompanist</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="aditional_waiting" class="form-check-input" type="checkbox" id="customAditionalWaiting">
@@ -629,7 +624,7 @@
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
-                                            <label class="custom-control-label" for="customFastTrack">Fast Track</label>
+                                            <label class="custom-control-label" for="customFastTrack">Quick Pass</label>
                                         </div>
                                     </div>
                                 </div>

@@ -15,7 +15,6 @@ use App\Models\ApiHoliday;
 use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class Schedulings extends Component
 {
@@ -165,6 +164,7 @@ class Schedulings extends Component
             foreach ($data as $key => $value) {
                 $this->$key = $value;
             }
+            $this->updatedPatientId($this->patient_id);
         } else {
             cache()->forget('autoagendamiento_form');
             $this->clearForm();

@@ -209,7 +209,7 @@
                                 <!-- RETURN -->
                                 <h6 class="text-center">RETURN</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Location Driver" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Driver´s Location" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_location_driver))
                                     <ul class="list-group">
                                         @foreach ($prediction_location_driver as $address_location_driver)
@@ -316,11 +316,11 @@
                                     </div>
                                     <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="companion" class="form-check-input" type="checkbox" id="customCompanion">
-                                        <label class="custom-control-label text-10" for="customCompanion">Companion</label>
+                                        <label class="custom-control-label text-10" for="customCompanion">Accompanist</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="fast_track" class="form-check-input" type="checkbox" id="customFastTrack">
-                                        <label class="custom-control-label text-10" for="customFastTrack">Fast Track</label>
+                                        <label class="custom-control-label text-10" for="customFastTrack">Quick Pass</label>
                                     </div>
                                     <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="sundays_holidays" class="form-check-input" type="checkbox" id="customSundaysHolidays">

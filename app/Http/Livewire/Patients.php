@@ -5,6 +5,9 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Patient;
 use App\Models\Address;
+use App\Models\Scheduling;
+use App\Models\SchedulingAddress;
+use App\Models\SchedulingCharge;
 
 use Illuminate\Support\Facades\DB;
 
@@ -190,8 +193,28 @@ class Patients extends Component
 
     public function delete()
     {
-        $Patient = Patient::findOrFail($this->item);
-        $Patient->delete();
+        $patient = Patient::findOrFail($this->item);
+
+        $schedulings = Scheduling::where('patient_id', $patient->id)->get();
+        if (count($schedulings) > 0) {
+            foreach ($schedulings as $scheduling) {
+                $scheduling_charge = SchedulingCharge::where('scheduling_id', $scheduling->id)->get();
+                foreach ($scheduling_charge as $charge) {
+                    $charge->delete();
+                }
+
+                $scheduling_address = SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
+                foreach ($scheduling_address as $address) {
+                    $address->delete();
+                }
+                $scheduling->delete();
+            }
+        }
+        $address = Address::where('patient_id', $patient->id)->get();
+        foreach ($address as $addr) {
+            $addr->delete();
+        }
+        $patient->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatient']);
 

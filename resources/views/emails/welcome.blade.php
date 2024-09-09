@@ -134,8 +134,8 @@
                     <table class="es-header-body" align="center" >
                         <tr>
                             <td align="center">
-                                <a href="https://viewstripo.email" target="_blank">
-                                    <img src="https://www.solracdev.online/assets/img/logo_nabella.png" alt="Nabella Logo" width="154">
+                                <a href="https://nabellatransportation.com/" target="_blank">
+                                    <img src="https://www.app.nabellatransportation.com/assets/img/logo_nabella.png" alt="Nabella Logo" width="154">
                                 </a>
                             </td>
                         </tr>
@@ -200,17 +200,17 @@
                                 <table class="es-social" align="center">
                                     <tr>
                                         <td align="center" style="padding-right: 10px;">
-                                            <a href="https://viewstripo.email" target="_blank">
+                                            <a href="https://nabellatransportation.com/" target="_blank">
                                                 <img src="https://stripo.email/static/assets/img/social-icons/logo-white/facebook-logo-white.png" alt="Facebook" width="32">
                                             </a>
                                         </td>
                                         <td align="center" style="padding-right: 10px;">
-                                            <a href="https://viewstripo.email" target="_blank">
+                                            <a href="https://nabellatransportation.com/" target="_blank">
                                                 <img src="https://stripo.email/static/assets/img/social-icons/logo-white/instagram-logo-white.png" alt="Instagram" width="32">
                                             </a>
                                         </td>
                                         <td align="center">
-                                            <a href="https://viewstripo.email" target="_blank">
+                                            <a href="https://nabellatransportation.com/" target="_blank">
                                                 <img src="https://stripo.email/static/assets/img/social-icons/logo-white/youtube-logo-white.png" alt="YouTube" width="32">
                                             </a>
                                         </td>
