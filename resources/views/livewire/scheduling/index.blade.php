@@ -135,11 +135,11 @@
                                 @endif
                                 <h6 class="text-center">GOING</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
-                                    @if (!empty($prediction_pick_up))
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                    @if (!empty($prediction_pick_up_address))
                                     <ul class="list-group">
-                                        @foreach ($prediction_pick_up as $address_pick_up)
-                                        <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_pick_up }}')">{{ $address_pick_up }}</li>
+                                        @foreach ($prediction_pick_up_address as $address_pick_up)
+                                        <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_pick_up }}', 'pick_up_address', 'prediction_pick_up_address')">{{ $address_pick_up }}</li>
                                         @endforeach
                                     </ul>
                                     @endif
@@ -147,25 +147,26 @@
                                 @foreach ($stops as $index => $stop)
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value)" @if($if_not_cancel) disabled @endif>
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value, 'stops')" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($stops[$index]['addresses']))
                                         <ul class="list-group">
                                             @foreach ($stops[$index]['addresses'] as $address)
-                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $index }}, '{{ $address }}')">{{ $address }}</li>
+                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $index }}, '{{ $address }}', 'stops')">{{ $address }}</li>
                                             @endforeach
                                         </ul>
                                         @endif
                                     </div>
                                     <div class="col-md-2 d-flex">
                                         @if ($index == count($stops) - 1)
-                                        <button type="button" wire:click="addStop" class="btn btn-link text-dark text-gradient px-3 mb-0"
-                                            data-bs-toggle="tooltip" data-bs-original-title="Add stops" @if($if_not_cancel) disabled @endif>
+                                        <button type="button" wire:click="addStop('stops')" class="btn btn-link text-dark text-gradient px-3 mb-0"  @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif
-                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }})" @if($if_not_cancel) disabled @endif>
+                                        @if ($index > 0)
+                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }}, 'stops')" @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons notranslate">delete</i>
                                         </button>
+                                        @endif
                                     </div>
                                 </div>
                                 @endforeach
@@ -213,7 +214,7 @@
                                     @if (!empty($prediction_location_driver))
                                     <ul class="list-group">
                                         @foreach ($prediction_location_driver as $address_location_driver)
-                                        <li class="list-group-item cursor-pointer" wire:click="addLocationDriver('{{ $address_location_driver }}')">{{ $address_location_driver }}</li>
+                                        <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_location_driver }}', 'location_driver', 'prediction_location_driver')">{{ $address_location_driver }}</li>
                                         @endforeach
                                     </ul>
                                     @endif
@@ -223,8 +224,8 @@
                                         <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($prediction_return_pick_up_address))
                                         <ul class="list-group">
-                                            @foreach ($prediction_return_pick_up_address as $p_address_pick_up)
-                                            <li class="list-group-item cursor-pointer" wire:click="addReturnPickUp('{{ $p_address_pick_up }}')">{{ $p_address_pick_up }}</li>
+                                            @foreach ($prediction_return_pick_up_address as $address_pick_up)
+                                            <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_pick_up }}', 'return_pick_up_address', 'prediction_return_pick_up_address')">{{ $address_pick_up }}</li>
                                             @endforeach
                                         </ul>
                                         @endif
@@ -238,25 +239,26 @@
                                 @foreach ($r_stops as $r_index => $r_stop)
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQueryReturn({{ $r_index }}, $event.target.value)" @if($if_not_cancel) disabled @endif>
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQuery({{ $r_index }}, $event.target.value, 'r_stops')" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($r_stops[$r_index]['addresses']))
                                         <ul class="list-group">
-                                            @foreach ($r_stops[$r_index]['addresses'] as $r_address)
-                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddressReturn({{ $r_index }}, '{{ $r_address }}')">{{ $r_address }}</li>
+                                            @foreach ($r_stops[$r_index]['addresses'] as $address)
+                                            <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $r_index }}, '{{ $address }}', 'r_stops')">{{ $address }}</li>
                                             @endforeach
                                         </ul>
                                         @endif
                                     </div>
                                     <div class="col-md-2 d-flex">
                                         @if ($r_index == count($r_stops) - 1)
-                                        <button type="button" wire:click="addStopReturn" class="btn btn-link text-dark text-gradient px-3 mb-0"
-                                            data-bs-toggle="tooltip" data-bs-original-title="Add stops" @if($if_not_cancel) disabled @endif>
+                                        <button type="button" wire:click="addStop('r_stops')" class="btn btn-link text-dark text-gradient px-3 mb-0" @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif
-                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStopReturn({{ $r_index }})">
+                                        @if ($r_index > 0)
+                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $r_index }}, 'r_stops')">
                                             <i class="material-icons notranslate">delete</i>
                                         </button>
+                                        @endif
                                     </div>
                                 </div>
                                 @endforeach
@@ -344,7 +346,7 @@
                 <div class="d-flex justify-content-between w-100">
                     <!-- Botón en el inicio/izquierda -->
                     @if($isEdit && !$if_not_cancel)
-                        <button type="button" class="btn" wire:click="cancelScheduling">Cancel Scheduling</button>
+                    <button type="button" class="btn" wire:click="cancelScheduling">Cancel Scheduling</button>
                     @else
                     <p>&nbsp;</p>
                     @endif
@@ -380,7 +382,6 @@
             Livewire.emit('editEvent', info.event.id);
         },
         eventDrop: function(info) {
-            console.log(info);
             Livewire.emit('updateEventDate', info.event.id, formatDateToYmdHis(info.event.start), formatDateToYmdHis(info.event.end));
         }
     });

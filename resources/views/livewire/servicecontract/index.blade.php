@@ -302,7 +302,7 @@
                                         </select>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Date Start</label>
+                                        <label class="form-label">Start Date</label>
                                         <input wire:model="date_start" class="form-control border border-2 p-2 date-input" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('date_start'))
                                         <div class="text-danger inputerror">
@@ -311,7 +311,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Date End</label>
+                                        <label class="form-label">End Date</label>
                                         <input wire:model="date_end" class="form-control border border-2 p-2 date-input" placeholder="YYYY/MM/DD">
                                         @if ($errors->has('date_end'))
                                         <div class="text-danger inputerror">

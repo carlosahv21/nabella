@@ -153,6 +153,12 @@ class Facilities extends Component
     public function delete()
     {
         $facility = Facility::findOrFail($this->item);
+        
+        $address = Address::where('facility_id', $facility->id)->get();
+        foreach ($address as $addr) {
+            $addr->delete();
+        }
+
         $facility->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteFacility']);
