@@ -265,6 +265,10 @@ class Schedulings extends Component
             $this->saveManualAgend();
         }
 
+        $auto = SchedulingAutoagend::get()->first();
+        $auto->id = $auto->id + 1;
+        $auto->save();
+
         $events = $this->getEventsCalendar();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
@@ -309,7 +313,7 @@ class Schedulings extends Component
 
                     $scheduling_address = SchedulingAddress::find($id);
                     $scheduling_address->scheduling_id = $scheduling->id;
-                    $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::find(1)->id;
+                    $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
                     $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
                     $scheduling_address->date = ($auto_agend) ? $date : $this->date;
                     $scheduling_address->pick_up_address = $addresses[$i]['address'];
@@ -327,7 +331,7 @@ class Schedulings extends Component
             } else {
                 $scheduling_address = new SchedulingAddress;
                 $scheduling_address->scheduling_id = $scheduling->id;
-                $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::find(1)->id;
+                $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
                 $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
                 $scheduling_address->date = ($auto_agend) ? $date : $this->date;
                 $scheduling_address->pick_up_address = $addresses[$i]['address'];
@@ -427,10 +431,6 @@ class Schedulings extends Component
 
                     $address->delete();
                 }
-
-                $auto = new SchedulingAutoagend;
-                $auto->id = $this->schedule_autoagend_id + 1;
-                $auto->save();
 
                 $this->modelId = '';
                 $this->modelIdAddress = [];
