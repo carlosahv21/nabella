@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('scheduling_address', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('scheduling_id')->nullable();
+            $table->unsignedInteger('scheduling_autoagend_id')->nullable();
             $table->unsignedInteger('driver_id')->nullable();
             $table->string('pick_up_address')->nullable();
             $table->string('drop_off_address')->nullable();

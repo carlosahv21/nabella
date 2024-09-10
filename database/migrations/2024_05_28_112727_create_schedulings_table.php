@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('patient_id');
             $table->boolean('auto_agend')->default(false);
             $table->string('select_date')->nullable();
-            $table->date('ends_schedule')->nullable();
+            $table->string('ends_schedule')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedulings');
+        // Schema::dropIfExists('schedulings');
     }
 };

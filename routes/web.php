@@ -2,23 +2,22 @@
 
 use App\Http\Livewire\Auth\ForgotPassword;
 use App\Http\Livewire\Auth\Login;
+use App\Http\Livewire\Auth\Logout;
+
 use App\Http\Livewire\Auth\Register;
 use App\Http\Livewire\Auth\ResetPassword;
-use App\Http\Livewire\Billing;
 use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\ExampleLaravel\UserManagement;
+
 use App\Http\Livewire\ExampleLaravel\UserProfile;
-use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\Roles;
 use App\Http\Livewire\Drivers;
-
-use App\Http\Livewire\Tables;
 use App\Http\Livewire\Vehicles;
 use App\Http\Livewire\Patients;
 use App\Http\Livewire\Facilities;
 use App\Http\Livewire\Schedulings;
 use App\Http\Livewire\ServiceContracts;
+
 
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
@@ -45,27 +44,17 @@ Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->n
 Route::get('sign-up', Register::class)->middleware('guest')->name('register');
 Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
-Route::get('user-profile', UserProfile::class)->middleware('can:user.view')->name('user-profile');
-Route::get('role', Roles::class)->middleware('can:role.view')->name('role');
-
-Route::get('driver', Drivers::class)->middleware('can:driver.view')->name('driver');
-
-Route::get('vehicle', Vehicles::class)->middleware('can:vehicle.view')->name('vehicle');
-
-Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicecontract.view')->name('servicecontract');
-
-Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');
-
-Route::get('facility', Facilities::class)->middleware('can:facility.view')->name('facility');
-
-Route::get('scheduling', Schedulings::class)->middleware('can:scheduling.view')->name('scheduling');
-
-Route::get('reports', Reports::class)->middleware('can:report.view')->name('reports');
-
 Route::group(['middleware' => 'auth'], function () {
+    Route::get('user-profile', UserProfile::class)->middleware('can:user.view')->name('user-profile');
+    Route::get('role', Roles::class)->middleware('can:role.view')->name('role');
+    Route::get('driver', Drivers::class)->middleware('can:driver.view')->name('driver');
+    Route::get('vehicle', Vehicles::class)->middleware('can:vehicle.view')->name('vehicle');
+    Route::get('servicecontract', ServiceContracts::class)->middleware('can:servicecontract.view')->name('servicecontract');
+    Route::get('patient', Patients::class)->middleware('can:patient.view')->name('patient');
+    Route::get('facility', Facilities::class)->middleware('can:facility.view')->name('facility');
+    Route::get('scheduling', Schedulings::class)->middleware('can:scheduling.view')->name('scheduling');
+    Route::get('reports', Reports::class)->middleware('can:report.view')->name('reports');
     Route::get('dashboard', Dash::class)->name('dashboard');
-    Route::get('billing', Billing::class)->name('billing');
     Route::get('profile/{id}', Profile::class)->name('profile');
-    Route::get('tables', Tables::class)->name('tables');
-    Route::get('notifications', Notifications::class)->name("notifications");
+    Route::get('destroy', Logout::class)->name('destroy');
 });
