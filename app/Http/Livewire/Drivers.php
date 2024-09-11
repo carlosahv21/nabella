@@ -19,6 +19,7 @@ class Drivers extends Component
 
     public $name, $email, $phone, $password, $dob, $dl_state, $dl_number, $date_of_hire, $modelId = '';
     public $item, $action, $search, $title_modal, $countDrivers = '';
+    public $selectedAll = false;
     public $selected = [];
     public $role = 'Driver';
     public $isEdit = false;
@@ -72,6 +73,24 @@ class Drivers extends Component
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('getModelId', $this->item);
 
+        }
+    }
+
+    public function updatedSelectedAll($value)
+    {
+        if ($value) {
+            // Si selecciona el checkbox padre, selecciona todas las filas
+            $this->selected = DB::table('users')
+            ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('roles.name', '=', 'Driver')
+            ->where('users.id', '!=', auth()->id())
+            ->where('users.name', 'like', '%' . $this->search . '%')
+            ->pluck('users.id')
+            ->toArray();
+        } else {
+            // Si deselecciona el checkbox padre, vacía la selección
+            $this->selected = [];
         }
     }
 

@@ -17,6 +17,7 @@ class Facilities extends Component
 
     public $name, $service_contract_id, $address, $city, $state, $modelId = '';
     public $item, $action, $search, $title_modal, $countFacilities = '';
+    public $selectedAll = false;
     public $selected = [];
     public $isEdit = false;
 
@@ -62,6 +63,19 @@ class Facilities extends Component
             $this->dispatchBrowserEvent('openModal', ['name' => 'createFacility']);
             $this->emit('getModelId', $this->item);
 
+        }
+    }
+
+    public function updatedSelectedAll($value)
+    {
+        if ($value) {
+            // Si selecciona el checkbox padre, selecciona todas las filas
+            $this->selected = Facility::all()
+                ->pluck('id')
+                ->toArray();
+        } else {
+            // Si deselecciona el checkbox padre, vacía la selección
+            $this->selected = [];
         }
     }
 

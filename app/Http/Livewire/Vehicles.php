@@ -17,6 +17,7 @@ class Vehicles extends Component
 {
     public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle = '';
     public $selected = [];
+    public $selectedAll = false;
     public $make, $model, $year, $vin = '';
     public $action, $isEdit = false;
 
@@ -78,6 +79,19 @@ class Vehicles extends Component
         $this->driver = null;
         $this->isEdit = false;
 
+    }
+
+    public function updatedSelectedAll($value)
+    {
+        if ($value) {
+            // Si selecciona el checkbox padre, selecciona todas las filas
+            $this->selected = DB::table('vehicles')
+                ->pluck('id')
+                ->toArray();
+        } else {
+            // Si deselecciona el checkbox padre, vacía la selección
+            $this->selected = [];
+        }
     }
 
     public function getModelId($modelId)

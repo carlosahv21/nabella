@@ -20,6 +20,7 @@ class Patients extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
+    public $selectedAll = false;
     
     public $inputs = [];
     public $state = [];
@@ -71,6 +72,19 @@ class Patients extends Component
             $this->dispatchBrowserEvent('openModal', ['name' => 'createPatient']);
             $this->emit('getModelId', $this->item);
 
+        }
+    }
+
+    public function updatedSelectedAll($value)
+    {
+        if ($value) {
+            // Si selecciona el checkbox padre, selecciona todas las filas
+            $this->selected = Patient::all()
+                ->pluck('id')
+                ->toArray();
+        } else {
+            // Si deselecciona el checkbox padre, vacía la selección
+            $this->selected = [];
         }
     }
 

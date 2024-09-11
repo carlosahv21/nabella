@@ -59,9 +59,7 @@ use App\Models\Address;
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
-                                <input class="form-check-input" type="checkbox" value="" id="userCheck55">
-                                <label class="form-check-label" for="userCheck55">
-                                </label>
+                                <input wire:model="selectedAll" class="form-check-input" type="checkbox" value="true" id="userCheck55">
                             </div>
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>

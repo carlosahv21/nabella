@@ -456,7 +456,7 @@ progress {
 }
 
 .cancelled-event {
-  text-decoration: line-through !important;
+  text-decoration: line-through 2px !important;
 }
 
 .lead {
