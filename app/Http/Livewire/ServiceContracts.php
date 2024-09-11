@@ -15,6 +15,7 @@ class ServiceContracts extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $address, $phone, $state, $date_start, $date_end, $modelId = '';
+    public $selected = [];
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
     public $isEdit = false;
 
@@ -37,8 +38,17 @@ class ServiceContracts extends Component
             $this->title_modal = 'Delete Service Contract';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteServiceContract']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteServiceContractMasive']);
             $this->countServiceContracts = count($this->selected);
+            if($this->countServiceContracts > 0){
+                $this->title_modal = 'Delete Service Contracts';
+                $this->dispatchBrowserEvent('openModal', ['name' => 'deleteServiceContractMasive']);
+            }else{
+                $this->sessionAlert([
+                    'message' => 'Please select a service contract!',
+                    'type' => 'danger',
+                    'icon' => 'error',
+                ]);
+            }
         }else if($action == 'create'){
             $this->title_modal = 'Create Service Contract';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createServiceContract']);
@@ -183,6 +193,21 @@ class ServiceContracts extends Component
         ];
         $this->sessionAlert($data);
 
+    }
+
+    public function massiveDelete()
+    {
+        $servicecontracts = ServiceContract::whereKey($this->selected);
+        $servicecontracts->delete();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteServiceContractMasive']);
+
+        $data = [
+            'message' => 'Service Contracts deleted successfully!',
+            'type' => 'success',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
     }
 
     function sessionAlert($data) {

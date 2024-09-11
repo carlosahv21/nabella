@@ -27,6 +27,7 @@ class Patients extends Component
     public $inputs_view = [];
     public $type = 'Patient';
 
+    public $selected = [];
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
 
@@ -50,8 +51,17 @@ class Patients extends Component
             $this->title_modal = 'Delete Patient';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deletePatient']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deletePatientMasive']);
             $this->countPatients = count($this->selected);
+            if($this->countPatients > 0){
+                $this->title_modal = 'Delete Patients';
+                $this->dispatchBrowserEvent('openModal', ['name' => 'deletePatientMasive']);
+            }else{
+                $this->sessionAlert([
+                    'message' => 'Please select a patient!',
+                    'type' => 'danger',
+                    'icon' => 'error',
+                ]);
+            }
         }else if($action == 'create'){
             $this->title_modal = 'Create Patient';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createPatient']);
@@ -195,6 +205,57 @@ class Patients extends Component
     {
         $patient = Patient::findOrFail($this->item);
 
+        $action = $this->actionDelete($patient);
+        if($action){
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatient']);
+
+            $data = [
+                'message' => 'Patient deleted successfully!',
+                'type' => 'danger',
+                'icon' => 'delete',
+            ];
+            $this->sessionAlert($data);
+        }else{
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatient']);
+
+            $data = [
+                'message' => 'Patient not deleted!',
+                'type' => 'danger',
+                'icon' => 'delete',
+            ];
+            $this->sessionAlert($data);
+        }
+    }
+
+    public function masiveDelete()
+    {
+        foreach ($this->selected as $patient) {
+            $patient = Patient::findOrFail($patient);
+            $action = $this->actionDelete($patient);
+            if($action){
+                $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatientMasive']);
+
+                $data = [
+                    'message' => 'Patients deleted successfully!',
+                    'type' => 'success',
+                    'icon' => 'delete',
+                ];
+                $this->sessionAlert($data);
+            }else{
+                $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatientMasive']);
+
+                $data = [
+                    'message' => 'Patients not deleted!',
+                    'type' => 'danger',
+                    'icon' => 'delete',
+                ];
+                $this->sessionAlert($data);
+            }
+        }
+    }
+
+    public function actionDelete($patient){
+        
         $schedulings = Scheduling::where('patient_id', $patient->id)->get();
         if (count($schedulings) > 0) {
             foreach ($schedulings as $scheduling) {
@@ -214,17 +275,12 @@ class Patients extends Component
         foreach ($address as $addr) {
             $addr->delete();
         }
-        $patient->delete();
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatient']);
+        if($patient->delete()){
+            return true;
+        }
 
-        $data = [
-            'message' => 'Patient deleted successfully!',
-            'type' => 'danger',
-            'icon' => 'delete',
-        ];
-        $this->sessionAlert($data);
-
+        return false;
     }
 
     function sessionAlert($data) {

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 class Vehicles extends Component
 {
     public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle = '';
+    public $selected = [];
     public $make, $model, $year, $vin = '';
     public $action, $isEdit = false;
 
@@ -38,7 +39,17 @@ class Vehicles extends Component
             $this->title_modal = 'Delete Vehicle';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteVehicle']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteVehicleMasive']);
+            $this->countVehicles = count($this->selected);
+            if($this->countVehicles > 0){
+                $this->title_modal = 'Delete Vehicles';
+                $this->dispatchBrowserEvent('openModal', ['name' => 'deleteVehicleMasive']);
+            }else{
+                $this->sessionAlert([
+                    'message' => 'Please select a vehicle!',
+                    'type' => 'danger',
+                    'icon' => 'error',
+                ]);
+            }
         }else if($action == 'create'){
             $this->title_modal = 'Create Vehicle';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createVehicle']);
@@ -142,6 +153,21 @@ class Vehicles extends Component
         $data = [
             'message' => 'Vehicle deleted successfully!',
             'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
+    }
+
+    public function massiveDelete()
+    {
+        $vehicles = Vehicle::whereKey($this->selected);
+        $vehicles->delete();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteVehicleMasive']);
+
+        $data = [
+            'message' => 'Vehicles deleted successfully!',
+            'type' => 'success',
             'icon' => 'delete',
         ];
         $this->sessionAlert($data);

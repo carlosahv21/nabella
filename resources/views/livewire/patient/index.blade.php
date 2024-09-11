@@ -12,21 +12,18 @@
                 </div>
             </div>
             <div class="col-12 col-lg-5 d-flex mt-3 me-4 justify-content-end">
-                <!-- <div class="dropdown px-4">
+                <div class="dropdown px-4">
                     <button class="btn btn-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Mass action <i class="material-icons notranslate">expand_more</i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li>
-                            <button wire:click="selectItem('','masiveExport')" class="dropdown-item btn-outline-gray-500"><i class="material-icons notranslate">download</i> Export</button>
-                        </li>
                         @can('patient.delete')
                         <li>
                             <button wire:click="selectItem('','masiveDelete')" class="dropdown-item btn-outline-gray-500 text-danger"><i class="material-icons notranslate">delete</i> Delete</button>
                         </li>
                         @endcan
                     </ul>
-                </div> -->
+                </div>
                 @can('patient.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
                     <i class="material-icons notranslate">add</i> Add Patient
@@ -75,9 +72,7 @@
                     <tr>
                         <th>
                             <div class="form-check dashboard-check">
-                                <input class="form-check-input" type="checkbox" value="" id="userCheck1">
-                                <label class="form-check-label" for="userCheck1">
-                                </label>
+                                <input wire:model="selected" class="form-check-input" type="checkbox" value="{{ $patient->id }}" id="patientCheck{{ $patient->id }}">
                             </div>
                         </th>
                         <th>
@@ -316,10 +311,10 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    Deseas eliminar este registro?
+                    Deseas eliminar estos {{ $countPatients }} registros?
                 </div>
                 <div class="modal-footer">
-                    <button wire:click="delete" class="btn btn-secondary">Eliminar</button>
+                    <button wire:click="masiveDelete" class="btn btn-secondary">Eliminar</button>
                     <button type="button" class="btn btn-link text-gray-600 " data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>

@@ -19,6 +19,7 @@ class Drivers extends Component
 
     public $name, $email, $phone, $password, $dob, $dl_state, $dl_number, $date_of_hire, $modelId = '';
     public $item, $action, $search, $title_modal, $countDrivers = '';
+    public $selected = [];
     public $role = 'Driver';
     public $isEdit = false;
 
@@ -51,8 +52,17 @@ class Drivers extends Component
             $this->title_modal = 'Delete Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriver']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriverMasive']);
             $this->countDrivers = count($this->selected);
+            if($this->countDrivers > 0){
+                $this->title_modal = 'Delete Drivers';
+                $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriverMasive']);
+            }else{
+                $this->sessionAlert([
+                    'message' => 'Please select a driver!',
+                    'type' => 'danger',
+                    'icon' => 'error',
+                ]);
+            }
         }else if($action == 'create'){
             $this->title_modal = 'Create Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
@@ -167,6 +177,21 @@ class Drivers extends Component
         $data = [
             'message' => 'User deleted successfully!',
             'type' => 'danger',
+            'icon' => 'delete',
+        ];
+        $this->sessionAlert($data);
+    }
+
+    public function massiveDelete()
+    {
+        $drivers = User::whereKey($this->selected);
+        $drivers->delete();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteDriverMasive']);
+
+        $data = [
+            'message' => 'Drivers deleted successfully!',
+            'type' => 'success',
             'icon' => 'delete',
         ];
         $this->sessionAlert($data);

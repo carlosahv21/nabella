@@ -17,6 +17,7 @@ class Facilities extends Component
 
     public $name, $service_contract_id, $address, $city, $state, $modelId = '';
     public $item, $action, $search, $title_modal, $countFacilities = '';
+    public $selected = [];
     public $isEdit = false;
 
     public $inputs = [];
@@ -41,8 +42,17 @@ class Facilities extends Component
             $this->title_modal = 'Delete Facility';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteFacility']);
         }else if($action == 'masiveDelete'){
-            $this->dispatchBrowserEvent('openModal', ['name' => 'deleteFacilityMasive']);
             $this->countFacilities = count($this->selected);
+            if($this->countFacilities > 0){
+                $this->title_modal = 'Delete Facilities';
+                $this->dispatchBrowserEvent('openModal', ['name' => 'deleteFacilityMasive']);
+            }else{
+                $this->sessionAlert([
+                    'message' => 'Please select a facility!',
+                    'type' => 'danger',
+                    'icon' => 'error',
+                ]);
+            }
         }else if($action == 'create'){
             $this->clearForm();
             $this->title_modal = 'Create Facility';
@@ -154,22 +164,68 @@ class Facilities extends Component
     {
         $facility = Facility::findOrFail($this->item);
         
+        $action = $this->actionDelete($facility);
+        if($action){
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteFacility']);
+
+            $data = [
+                'message' => 'Facility deleted successfully!',
+                'type' => 'danger',
+                'icon' => 'delete',
+            ];
+            $this->sessionAlert($data);
+        }else{
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteFacility']);
+
+            $data = [
+                'message' => 'Facility not deleted!',
+                'type' => 'danger',
+                'icon' => 'delete',
+            ];
+            $this->sessionAlert($data);
+        }
+
+    }
+
+    public function masiveDelete()
+    {
+        $data = [];
+        foreach ($this->selected as $facility) {
+            $facility = Facility::findOrFail($facility);
+            $action = $this->actionDelete($facility);
+            if($action){
+                $data = [
+                    'message' => 'Facilities deleted successfully!',
+                    'type' => 'success',
+                    'icon' => 'delete',
+                ];
+            }else{
+                $data = [
+                    'message' => 'Facilities not deleted!',
+                    'type' => 'danger',
+                    'icon' => 'delete',
+                ];
+            }
+        }
+        $this->sessionAlert($data);
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteFacilityMasive']);
+
+    }
+
+    public function actionDelete($facility){
+
+        $facility = Facility::findOrFail($facility->id);
         $address = Address::where('facility_id', $facility->id)->get();
         foreach ($address as $addr) {
             $addr->delete();
         }
 
-        $facility->delete();
+        if($facility->delete()){
+            return true;
+        }
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteFacility']);
-        
-        $data = [        
-            'message' => 'Facility deleted successfully!',
-            'type' => 'danger',
-            'icon' => 'delete',
-        ];
-        $this->sessionAlert($data);
-
+        return false;
     }
 
     public function addInput()
