@@ -45,6 +45,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{$title_modal}}</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="material-icons notranslate">close</i>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="card card-plain h-100">
@@ -158,7 +161,7 @@
                                     </div>
                                     <div class="col-md-2 d-flex">
                                         @if ($index == count($stops) - 1)
-                                        <button type="button" wire:click="addStop('stops')" class="btn btn-link text-dark text-gradient px-3 mb-0"  @if($if_not_cancel) disabled @endif>
+                                        <button type="button" wire:click="addStop('stops')" class="btn btn-link text-dark text-gradient px-3 mb-0" @if($if_not_cancel) disabled @endif>
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif

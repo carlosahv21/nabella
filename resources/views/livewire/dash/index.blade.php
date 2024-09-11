@@ -379,7 +379,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
@@ -565,7 +568,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
@@ -645,7 +651,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div>

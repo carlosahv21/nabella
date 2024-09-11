@@ -55,7 +55,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons notranslate">personal_injury</i>
                     </div>
-                    <span class="nav-link-text ms-1">Patient</span>
+                    <span class="nav-link-text ms-1">Patients</span>
                 </a>
             </li>
             @endcan
@@ -66,7 +66,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons notranslate">local_hospital</i>
                     </div>
-                    <span class="nav-link-text ms-1">Facility</span>
+                    <span class="nav-link-text ms-1">Facilities</span>
                 </a>
             </li>
             @endcan
@@ -77,7 +77,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons notranslate">event_available</i>
                     </div>
-                    <span class="nav-link-text ms-1">Scheduling</span>
+                    <span class="nav-link-text ms-1">Schedulings</span>
                 </a>
             </li>
             @endcan

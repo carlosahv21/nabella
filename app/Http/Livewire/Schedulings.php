@@ -261,92 +261,26 @@ class Schedulings extends Component
 
         if ($this->auto_agend) {
             $this->saveAutoAgend();
+
+            $auto = SchedulingAutoagend::get()->first();
+            $auto->id = $auto->id + 1;
+            $auto->save();
         } else {
             $this->saveManualAgend();
         }
 
-        $auto = SchedulingAutoagend::get()->first();
-        $auto->id = $auto->id + 1;
-        $auto->save();
-
-        $events = $this->getEventsCalendar();
-
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
+        
+        $events = $this->getEventsCalendar();
+        $this->emit('updateEvents', $events);
 
         $data = ($this->isEdit)
             ? ['message' => 'Scheduling updated successfully!', 'type' => 'success', 'icon' => 'edit']
             : ['message' => 'Scheduling created successfully!', 'type' => 'info', 'icon' => 'check'];
+        $this->sessionAlert($data);
 
-        $this->emit('updateEvents', $events);
-
-
-        session()->flash('alert', $data);
         cache()->forget('autoagendamiento_form');
-
         $this->clearForm();
-    }
-
-    private function saveAddresses($addresses, $scheduling, $type, $date, $auto_agend)
-    {
-        for ($i = 0; $i < count($addresses) - 1; $i++) {
-
-            if ($type == 'pick_up') {
-                $check_in = ($i == 0) ? $this->check_in : $this->sumWaitTime($this->check_in, $addresses[$i]['duration']);
-                $drop_off = $this->sumWaitTime($this->check_in, $addresses[$i]['duration']);
-            } else {
-                $check_in = ($i == 0) ? $this->r_check_in : $this->sumWaitTime($this->r_check_in, $addresses[$i]['duration']);
-                $drop_off = $this->sumWaitTime($this->r_check_in, $addresses[$i]['duration']);
-            }
-
-            if (count($this->modelIdAddress) > 0) {
-                for ($j = 0; $j < count($this->modelIdAddress); $j++) {
-
-                    $id = ($type == 'pick_up') ? $this->modelIdAddress['pick_up'] : $this->modelIdAddress['return'];
-
-                    if ($auto_agend) {
-                        if ($this->isEdit) {
-                            $date = $this->date;
-                        } else {
-                            $date = $date;
-                        }
-                    }
-
-                    $scheduling_address = SchedulingAddress::find($id);
-                    $scheduling_address->scheduling_id = $scheduling->id;
-                    $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
-                    $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
-                    $scheduling_address->date = ($auto_agend) ? $date : $this->date;
-                    $scheduling_address->pick_up_address = $addresses[$i]['address'];
-                    $scheduling_address->drop_off_address = $addresses[$i + 1]['address'];
-                    $scheduling_address->pick_up_hour = $check_in;
-                    $scheduling_address->drop_off_hour = $drop_off;
-                    $scheduling_address->distance = $addresses[$i + 1]['distance'];
-                    $scheduling_address->duration = $addresses[$i + 1]['duration'];
-                    $scheduling_address->type_of_trip = $type;
-                    $scheduling_address->request_by = $this->request_by;
-                    $scheduling_address->status = 'Waiting';
-
-                    $scheduling_address->save();
-                }
-            } else {
-                $scheduling_address = new SchedulingAddress;
-                $scheduling_address->scheduling_id = $scheduling->id;
-                $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
-                $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
-                $scheduling_address->date = ($auto_agend) ? $date : $this->date;
-                $scheduling_address->pick_up_address = $addresses[$i]['address'];
-                $scheduling_address->drop_off_address = $addresses[$i + 1]['address'];
-                $scheduling_address->pick_up_hour = $check_in;
-                $scheduling_address->drop_off_hour = $drop_off;
-                $scheduling_address->distance = $addresses[$i + 1]['distance'];
-                $scheduling_address->duration = $addresses[$i + 1]['duration'];
-                $scheduling_address->type_of_trip = $type;
-                $scheduling_address->request_by = $this->request_by;
-                $scheduling_address->status = 'Waiting';
-
-                $scheduling_address->save();
-            }
-        }
     }
 
     public function saveManualAgend()
@@ -380,6 +314,13 @@ class Schedulings extends Component
         $scheduling_charge->fast_track = $this->fast_track;
         $scheduling_charge->if_not_cancel = $this->if_not_cancel;
         $scheduling_charge->save();
+
+        $d_saved_addresses =  SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
+        if(count($d_saved_addresses) > 0){
+            foreach ($d_saved_addresses as $address) {
+                $address->delete();
+            }
+        }
 
         $newStop = [
             "address" => $this->pick_up_address,
@@ -480,6 +421,11 @@ class Schedulings extends Component
                 $scheduling_charge->if_not_cancel = $this->if_not_cancel;
                 $scheduling_charge->save();
 
+                $d_saved_addresses =  SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
+                foreach ($d_saved_addresses as $address) {
+                    $address->delete();
+                }
+
                 $newStop = [
                     "address" => $this->pick_up_address,
                     "addresses" => [],
@@ -491,6 +437,7 @@ class Schedulings extends Component
                     array_unshift($this->stops, $newStop);
                 }
 
+                
                 $this->saveAddresses($this->stops, $scheduling, 'pick_up', $start->format('Y-m-d'), $this->auto_agend);
 
                 $nerReturnStop = [
@@ -511,9 +458,39 @@ class Schedulings extends Component
         }
     }
 
+    private function saveAddresses($addresses, $scheduling, $type, $date, $auto_agend)
+    {
+        for ($i = 0; $i < count($addresses) - 1; $i++) {
+            if ($type == 'pick_up') {
+                $check_in = ($i == 0) ? $this->check_in : $this->sumWaitTime($this->check_in, $addresses[$i]['duration']);
+                $drop_off = $this->pick_up_time;
+            } else {
+                $check_in = ($i == 0) ? $this->r_check_in : $this->sumWaitTime($this->r_check_in, $addresses[$i]['duration']);
+                $drop_off = $this->pick_up_time;
+            }
+
+            $scheduling_address = new SchedulingAddress;
+            $scheduling_address->scheduling_id = $scheduling->id;
+            $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
+            $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
+            $scheduling_address->date = ($auto_agend) ? $date : $this->date;
+            $scheduling_address->pick_up_address = $addresses[$i]['address'];
+            $scheduling_address->drop_off_address = $addresses[$i + 1]['address'];
+            $scheduling_address->pick_up_hour = $check_in;
+            $scheduling_address->drop_off_hour = $drop_off;
+            $scheduling_address->distance = $addresses[$i + 1]['distance'];
+            $scheduling_address->duration = $addresses[$i + 1]['duration'];
+            $scheduling_address->type_of_trip = $type;
+            $scheduling_address->request_by = $this->request_by;
+            $scheduling_address->status = 'Waiting';
+
+            $scheduling_address->save();
+        }
+    }
+
     public function sumWaitTime($pick_up_hour, $duration)
     {
-        $hora = $pick_up_hour;
+        $hora = Carbon::parse($pick_up_hour)->format('H:i');
         $minutosASumar = $duration + 10;
 
         return Carbon::createFromFormat('H:i', $hora)->addMinutes($minutosASumar)->format('H:i');
@@ -784,6 +761,10 @@ class Schedulings extends Component
     {
         $this->$type[$index]['address'] = $address;
         $this->$type[$index]['addresses'] = [];
+
+        if($type == 'stops'){
+            $this->updatedCheckIn();
+        }
     }
 
     public function validateAddresses($inptu)
@@ -932,9 +913,6 @@ class Schedulings extends Component
     {
         $scheduling_address = SchedulingAddress::where('scheduling_id', $this->modelId)->first();
         $scheduling_address->status = ($cancel) ? 'Canceled' : 'Waiting';
-        if (!$cancel) {
-            $scheduling_address->collect_cancel = false;
-        }
         $scheduling_address->save();
 
         $scheduling_charge = SchedulingCharge::findOrFail($scheduling_address->scheduling_id);

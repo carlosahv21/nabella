@@ -113,7 +113,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
@@ -122,7 +125,7 @@
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
                                         <label wire.ignore.self class="form-label">Company</label>
-                                        <input  wire:model="company" type="text" class="form-control border border-2 p-2">
+                                        <input wire:model="company" type="text" class="form-control border border-2 p-2">
                                         @if ($errors->has('company'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('company') }}
@@ -160,9 +163,9 @@
                                     <label class="form-label mb-3">Rate config</label>
                                     <hr class="dark horizontal">
                                     <div class="my-3 col-md-3 col-3">
-                                        <div  class="input-group input-group-dynamic mb-4 is-filled">
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Wheelchair</label>
-                                            <input wire:model="wheelchair" type="text" class="form-control" min="0" placeholder="0" >
+                                            <input wire:model="wheelchair" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
                                         @if ($errors->has('wheelchair'))
                                         <div class="text-danger inputerror">
@@ -184,7 +187,7 @@
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">After Hours</label>
-                                            <input wire:model="out_of_hours" type="text" min="0" placeholder="0" class="form-control" >
+                                            <input wire:model="out_of_hours" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('out_of_hours'))
                                         <div class="text-danger inputerror">
@@ -193,9 +196,9 @@
                                         @endif
                                     </div>
                                     <div class="my-3 col-md-3 col-3">
-                                        <div class="input-group input-group-dynamic mb-4 is-filled"> 
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Saturdays</label>
-                                            <input wire:model="saturdays" type="text" min="0" placeholder="0" class="form-control" >
+                                            <input wire:model="saturdays" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('saturdays'))
                                         <div class="text-danger inputerror">
@@ -206,7 +209,7 @@
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Sundays/Holidays</label>
-                                            <input wire:model="sundays_holidays" type="text" min="0" placeholder="0" class="form-control" >
+                                            <input wire:model="sundays_holidays" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('sundays_holidays'))
                                         <div class="text-danger inputerror">
@@ -217,7 +220,7 @@
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Accompanist</label>
-                                            <input wire:model="companion" type="text" min="0" placeholder="0" class="form-control" >
+                                            <input wire:model="companion" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('companion'))
                                         <div class="text-danger inputerror">
@@ -228,7 +231,7 @@
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Additional waiting</label>
-                                            <input wire:model="additional_waiting" type="text" min="0" placeholder="0" class="form-control" >
+                                            <input wire:model="additional_waiting" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('additional_waiting'))
                                         <div class="text-danger inputerror">
@@ -240,7 +243,7 @@
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">After</label>
                                             <span class="input-group-text">Min</span>
-                                            <input wire:model="after" type="text" class="form-control" >
+                                            <input wire:model="after" type="text" class="form-control">
                                         </div>
                                         @if ($errors->has('after'))
                                         <div class="text-danger inputerror">
@@ -249,9 +252,9 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
-                                        <div class="input-group input-group-dynamic mb-4 is-filled"> 
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Quick Pass</label>
-                                            <input wire:model="fast_track" type="text" class="form-control" min="0" placeholder="0" >
+                                            <input wire:model="fast_track" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
                                         @if ($errors->has('fast_track'))
                                         <div class="text-danger inputerror">
@@ -260,9 +263,9 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
-                                        <div class="input-group input-group-dynamic mb-4 is-filled"> 
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">If not cancel</label>
-                                            <input wire:model="if_not_cancel" type="text"  class="form-control" min="0" placeholder="0" >
+                                            <input wire:model="if_not_cancel" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
                                         @if ($errors->has('if_not_cancel'))
                                         <div class="text-danger inputerror">
@@ -272,9 +275,9 @@
                                     </div>
 
                                     <div class="mb-3 col-md-3 col-3">
-                                        <div class="input-group input-group-dynamic mb-4 is-filled"> 
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Rate Per Mile</label>
-                                            <input wire:model="rate_per_mile" type="text" class="form-control" min="0" placeholder="0" >
+                                            <input wire:model="rate_per_mile" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
                                         @if ($errors->has('rate_per_mile'))
                                         <div class="text-danger inputerror">
@@ -283,9 +286,9 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
-                                        <div class="input-group input-group-dynamic mb-4 is-filled"> 
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Overcharge</label>
-                                            <input wire:model="overcharge" type="text" class="form-control" min="0" placeholder="0" >
+                                            <input wire:model="overcharge" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
                                         @if ($errors->has('overcharge'))
                                         <div class="text-danger inputerror">
@@ -336,7 +339,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     Deseas eliminar este registro?
@@ -353,7 +359,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{$title_modal}}</h2>
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     Deseas eliminar este registro?
