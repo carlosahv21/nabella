@@ -57,12 +57,14 @@
                                 <!-- PATIENT -->
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label">Patient</label>
-                                    <select wire.ignore.self wire:model="patient_id" class="form-select" id="patient_id" @if($if_not_cancel) disabled @endif>
-                                        <option value="">Select a patient</option>
-                                        @foreach($patients as $patient)
-                                        <option value="{{ $patient->id }}">{{ $patient->first_name }} {{ $patient->last_name }}</option>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="patient_name" wire:input="checkPatientName($event.target.value)" placeholder="Patient" @if($if_not_cancel) disabled @endif>
+                                    @if (!empty($search_patients))
+                                    <ul class="list-group">
+                                        @foreach ($search_patients as $patient)
+                                        <li class="list-group-item cursor-pointer" wire:click="selectPatient({{ $patient['id'] }})">{{ $patient['name'] }}</li>
                                         @endforeach
-                                    </select>
+                                    </ul>
+                                    @endif
                                     @if ($errors->has('patient_id'))
                                     <div class="text-danger inputerror">
                                         {{ $errors->first('patient_id') }}
@@ -78,9 +80,15 @@
                                     </div>
                                     @endif
                                 </div>
-                                <div class="form-check mb-3 col-md-4 " style="margin-top: 2.4rem !important;">
+                                <div class="form-check mb-3 col-md-4 ">
                                     <input wire.ignore.self wire:model="auto_agend" class="form-check-input" type="checkbox" id="auto_agend" @if($if_not_cancel) disabled @endif>
                                     <label class="custom-control-label" for="auto_agend">Auto Agend</label>
+                                    <br>
+                                    <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip">
+                                    <label class="custom-control-label text-10" for="one_way">OW</label>
+                                    <br>
+                                    <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip">
+                                    <label class="custom-control-label text-10" for="round_trip">RT</label>
                                 </div>
                                 @if($auto_agend)
                                 <hr class="dark horizontal">
@@ -176,7 +184,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check In</label>
-                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control date-input-time" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
                                         @if ($errors->has('check_in'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('check_in') }}
@@ -187,7 +195,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control date-input-time" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
@@ -211,6 +219,7 @@
                                 </div>
 
                                 <!-- RETURN -->
+                                @if($type_of_trip == 'round_trip')
                                 <h6 class="text-center">RETURN</h6>
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Driver´s Location" @if($if_not_cancel) disabled @endif>
@@ -296,18 +305,11 @@
                                     </div>
                                     @endif
                                 </div>
+                                @endif
                                 <!-- CHARGES -->
                                 <h6 class="text-center">CHARGES</h6>
                                 <div class="row col-md-12 mx-3 px-2">
-                                    <div class="form-check mb-3 col-md-2 p-1">
-                                        <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip">
-                                        <label class="custom-control-label text-10" for="one_way">OW</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-2 p-1">
-                                        <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip">
-                                        <label class="custom-control-label text-10" for="round_trip">RT</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-2 p-1">
+                                    <div class="form-check mb-3 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="wheelchair" class="form-check-input" type="checkbox" id="customWheelchair">
                                         <label class="custom-control-label text-10" for="customWheelchair">Wheelchair</label>
                                     </div>
@@ -315,7 +317,7 @@
                                         <input wire.ignore.self="" wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
                                         <label class="custom-control-label text-10" for="customAmbulatory">Ambulatory</label>
                                     </div>
-                                    <div class="form-check mb-4 col-md-2 p-1">
+                                    <div class="form-check mb-4 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
                                         <label class="custom-control-label text-10" for="customSaturdays">Saturdays</label>
                                     </div>

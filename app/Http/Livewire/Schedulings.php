@@ -23,11 +23,12 @@ class Schedulings extends Component
     public $patient_id, $date, $check_in, $pick_up_time, $status, $ends_date, $end_date = '';
     public $auto_agend = false;
     public $weekdays = [];
+    public $search_patients = [];
     public $ends_schedule;
     public $google;
 
     // Campos de la tabla scheduling_address
-    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver, $schedule_autoagend_id = '';
+    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver, $schedule_autoagend_id, $patient_name = '';
 
     // Campos de la tabla scheduling_charge
     public $wheelchair = false;
@@ -39,7 +40,7 @@ class Schedulings extends Component
     public $out_of_hours = false;
     public $aditional_waiting = false;
     public $if_not_cancel = false;
-    public $type_of_trip = '';
+    public $type_of_trip = 'one_way';
 
     public $item, $action, $search, $title_modal, $countSchedulings, $modelId, $modelIdCharge = '';
     public $modelIdAddress = [];
@@ -98,7 +99,6 @@ class Schedulings extends Component
         'date' => 'required',
         'check_in' => 'required',
         'pick_up_driver_id' => 'required',
-        'drop_off_driver_id' => 'required',
     ];
 
     protected $listeners = [
@@ -226,7 +226,7 @@ class Schedulings extends Component
 
     private function clearForm()
     {
-        $this->reset(['modelId', 'modelIdAddress', 'modelIdCharge', 'patient_id', 'weekdays', 'ends_schedule', 'ends_date', 'pick_up_address', 'pick_up_time',  'return_pick_up_address', 'drop_off_address', 'date', 'check_in', 'drop_off_hour', 'type_of_trip', 'wheelchair', 'ambulatory', 'out_of_hours', 'saturdays', 'sundays_holidays', 'companion', 'aditional_waiting', 'fast_track', 'if_not_cancel', 'auto_agend']);
+        $this->reset(['modelId', 'modelIdAddress', 'modelIdCharge', 'patient_id', 'weekdays', 'ends_schedule', 'ends_date', 'pick_up_driver_id', 'pick_up_time',  'return_pick_up_address', 'drop_off_address', 'date', 'check_in', 'drop_off_hour', 'type_of_trip', 'wheelchair', 'ambulatory', 'out_of_hours', 'saturdays', 'sundays_holidays', 'companion', 'aditional_waiting', 'fast_track', 'if_not_cancel', 'auto_agend', 'pick_up_address', 'r_check_in', 'r_pick_up_time', 'drop_off_driver_id', 'patient_name']);
 
         $this->isEdit = false;
 
@@ -321,32 +321,36 @@ class Schedulings extends Component
                 $address->delete();
             }
         }
+        
+        if($this->pick_up_address){
+            $newStop = [
+                "address" => $this->pick_up_address,
+                "addresses" => [],
+                "distance" => "0",
+                "duration" => "0"
+            ]; 
 
-        $newStop = [
-            "address" => $this->pick_up_address,
-            "addresses" => [],
-            "distance" => "0",
-            "duration" => "0"
-        ];
+            if (!in_array($newStop, $this->stops)) {
+                array_unshift($this->stops, $newStop);
+            }
 
-        if (!in_array($newStop, $this->stops)) {
-            array_unshift($this->stops, $newStop);
+            $this->saveAddresses($this->stops, $scheduling, 'pick_up', '', $this->auto_agend);
         }
 
-        $this->saveAddresses($this->stops, $scheduling, 'pick_up', '', $this->auto_agend);
+        if($this->return_pick_up_address){
+            $nerReturnStop = [
+                "address" => $this->return_pick_up_address,
+                "addresses" => [],
+                "distance" => "0",
+                "duration" => "0"
+            ];
 
-        $nerReturnStop = [
-            "address" => $this->return_pick_up_address,
-            "addresses" => [],
-            "distance" => "0",
-            "duration" => "0"
-        ];
+            if (!in_array($nerReturnStop, $this->r_stops)) {
+                array_unshift($this->r_stops, $nerReturnStop);
+            }
 
-        if (!in_array($nerReturnStop, $this->r_stops)) {
-            array_unshift($this->r_stops, $nerReturnStop);
+            $this->saveAddresses($this->r_stops, $scheduling, 'return', '', $this->auto_agend);
         }
-
-        $this->saveAddresses($this->r_stops, $scheduling, 'return', '', $this->auto_agend);
     }
 
     public function saveAutoAgend()
@@ -554,7 +558,7 @@ class Schedulings extends Component
         cache()->put('autoagendamiento_form', $data, now()->addMinutes(30)); // Guardar por 30 minutos
     }
 
-    public function updatedPatientId($patientId)
+    public function selectPatient($patientId)
     {
         $this->saved_addresses = [];
 
@@ -563,6 +567,15 @@ class Schedulings extends Component
             return;
         }
 
+        $this->patient_id = $patient->id;
+        if ($patient->billing_code == 'A0100') {
+            $this->wheelchair = true;
+        }elseif ($patient->billing_code == 'A0120-Ambulatory') {
+            $this->ambulatory = true;
+        }else{
+            $this->wheelchair = true;
+        }
+        $this->patient_name = $patient->first_name . ' ' . $patient->last_name;
         $address_patient = Address::where('patient_id', $patientId)->get();
         foreach ($address_patient as $address) {
             $this->saved_addresses[] = $address->address;
@@ -578,6 +591,33 @@ class Schedulings extends Component
             foreach ($address_facility as $address) {
                 $this->saved_addresses[] = $address->address;
             }
+        }
+
+        $this->search_patients = [];
+    }
+
+    public function checkPatientName($query)
+    {
+        if ( strlen($query) >= 3) {
+            $search = Patient::where('first_name', 'LIKE', "%$query%")
+                ->orWhere('last_name', 'LIKE', "%$query%")
+                ->orWhere('medicalid', 'LIKE', "%$query%")
+                ->get();
+                
+            // Obtener los IDs ya presentes en $this->search_patients
+            $existingIds = array_column($this->search_patients, 'id');
+
+            foreach ($search as $patient) {
+                // Verificar si el paciente ya está en el arreglo
+                if (!in_array($patient->id, $existingIds)) {
+                    $this->search_patients[] = [
+                        'name' => $patient->first_name . ' ' . $patient->last_name,
+                        'id' => $patient->id
+                    ];
+                }
+            }
+        } else {
+            $this->search_patients = [];
         }
     }
 
@@ -654,7 +694,7 @@ class Schedulings extends Component
         $driverColors = [];
 
         foreach ($scheduling as $event) {
-            $scheduling_address = SchedulingAddress::find($event->id);
+            $scheduling_address = SchedulingAddress::where('scheduling_id', $event->id)->first();
 
             $patient = Patient::find($event->patient_id);
 

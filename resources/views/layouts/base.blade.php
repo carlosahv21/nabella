@@ -131,8 +131,7 @@
             flatpickr(".date-input-time", {
                 enableTime: true,
                 noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true
+                dateFormat: "H:i"
             });
         });
     </script>

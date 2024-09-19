@@ -24,7 +24,7 @@ class Dash extends Component
 
     public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $modelId = '';
 
-    public $observations, $additional_milles = '';
+    public $observations, $additional_milles = 0;
 
     public $item, $action, $search, $title_modal, $countDrivers = '';
 
@@ -192,13 +192,13 @@ class Dash extends Component
 
     public function finishDriving()
     {
-        $scheduling_address = SchedulingAddress::where('scheduling_id', '=', $this->modelId)->first();
+        $scheduling_address = SchedulingAddress::where('id', '=', $this->modelId)->first();
         $scheduling_address->status = 'Completed';
         $scheduling_address->observations = $this->observations;
         $scheduling_address->additional_milles = $this->additional_milles;
         $scheduling_address->save();
 
-        $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $this->modelId)->first();
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $scheduling_address->scheduling_id)->first();
         $scheduling_charge->wheelchair = $this->wheelchair;
         $scheduling_charge->ambulatory = $this->ambulatory;
         $scheduling_charge->saturdays = $this->saturdays;

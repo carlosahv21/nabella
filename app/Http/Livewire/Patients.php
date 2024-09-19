@@ -16,12 +16,12 @@ use Livewire\WithPagination;
 class Patients extends Component
 {
     use WithPagination;
-    
+
     protected $paginationTheme = 'bootstrap';
 
     public $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
     public $selectedAll = false;
-    
+
     public $inputs = [];
     public $state = [];
     public $zipcode = [];
@@ -32,46 +32,48 @@ class Patients extends Component
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
 
-    protected $rules=[
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'phone1' => 'required',
-        'medicalid' => 'required|unique:patients,medicalid',
-    ];
-
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
     ];
-    
+
+    protected function rules()
+    {
+        return [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone1' => 'required',
+            'medicalid' => ['required', 'unique:patients,medicalid,' . $this->item],
+        ];
+    }
+
     public function selectItem($item, $action)
     {
         $this->item = $item;
 
-        if($action == 'delete'){
+        if ($action == 'delete') {
             $this->title_modal = 'Delete Patient';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deletePatient']);
-        }else if($action == 'masiveDelete'){
+        } else if ($action == 'masiveDelete') {
             $this->countPatients = count($this->selected);
-            if($this->countPatients > 0){
+            if ($this->countPatients > 0) {
                 $this->title_modal = 'Delete Patients';
                 $this->dispatchBrowserEvent('openModal', ['name' => 'deletePatientMasive']);
-            }else{
+            } else {
                 $this->sessionAlert([
                     'message' => 'Please select a patient!',
                     'type' => 'danger',
                     'icon' => 'error',
                 ]);
             }
-        }else if($action == 'create'){
+        } else if ($action == 'create') {
             $this->title_modal = 'Create Patient';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createPatient']);
             $this->emit('clearForm');
-        }else{
+        } else {
             $this->title_modal = 'Edit Patient';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createPatient']);
             $this->emit('getModelId', $this->item);
-
         }
     }
 
@@ -107,7 +109,6 @@ class Patients extends Component
         $this->observations = $model->observations;
 
         $this->inputs_view = Address::where('patient_id', $this->modelId)->get();
-
     }
 
     private function clearForm()
@@ -136,13 +137,13 @@ class Patients extends Component
     {
         $this->validate();
 
-        if($this->modelId){
+        if ($this->modelId) {
             $patient = Patient::findOrFail($this->modelId);
             $this->isEdit = true;
-        }else{
+        } else {
             $patient = new Patient;
         }
-        
+
         $patient->service_contract_id = $this->service_contract_id;
         $patient->first_name = $this->first_name;
         $patient->last_name = $this->last_name;
@@ -159,7 +160,7 @@ class Patients extends Component
         $patient->save();
 
         if ($this->inputs) {
-            for ($i=0; $i < count($this->inputs); $i++) { 
+            for ($i = 0; $i < count($this->inputs); $i++) {
                 if (empty($this->inputs[$i]) || empty($this->state[$i]) || empty($this->zipcode[$i])) {
                     continue;
                 }
@@ -167,7 +168,7 @@ class Patients extends Component
                 $address = new Address;
 
                 $address->patient_id = $patient->id;
-                $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
+                $address->address = $this->inputs[$i] . ', ' . $this->state[$i] . ', ' . $this->zipcode[$i];
                 $address->entity_type = $this->type;
 
                 $address->save();
@@ -220,7 +221,7 @@ class Patients extends Component
         $patient = Patient::findOrFail($this->item);
 
         $action = $this->actionDelete($patient);
-        if($action){
+        if ($action) {
             $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatient']);
 
             $data = [
@@ -229,7 +230,7 @@ class Patients extends Component
                 'icon' => 'delete',
             ];
             $this->sessionAlert($data);
-        }else{
+        } else {
             $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatient']);
 
             $data = [
@@ -246,7 +247,7 @@ class Patients extends Component
         foreach ($this->selected as $patient) {
             $patient = Patient::findOrFail($patient);
             $action = $this->actionDelete($patient);
-            if($action){
+            if ($action) {
                 $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatientMasive']);
 
                 $data = [
@@ -255,7 +256,7 @@ class Patients extends Component
                     'icon' => 'delete',
                 ];
                 $this->sessionAlert($data);
-            }else{
+            } else {
                 $this->dispatchBrowserEvent('closeModal', ['name' => 'deletePatientMasive']);
 
                 $data = [
@@ -268,8 +269,9 @@ class Patients extends Component
         }
     }
 
-    public function actionDelete($patient){
-        
+    public function actionDelete($patient)
+    {
+
         $schedulings = Scheduling::where('patient_id', $patient->id)->get();
         if (count($schedulings) > 0) {
             foreach ($schedulings as $scheduling) {
@@ -290,15 +292,16 @@ class Patients extends Component
             $addr->delete();
         }
 
-        if($patient->delete()){
+        if ($patient->delete()) {
             return true;
         }
 
         return false;
     }
 
-    function sessionAlert($data) {
-        session()->flash('alert', $data); 
+    function sessionAlert($data)
+    {
+        session()->flash('alert', $data);
 
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
@@ -313,10 +316,11 @@ class Patients extends Component
         unset($this->inputs[$index]);
         $this->inputs = array_values($this->inputs); // Reindex array
     }
-    
+
     public function render()
     {
-        return view('livewire.patient.index', 
+        return view(
+            'livewire.patient.index',
             [
                 'patients' => Patient::search('first_name', $this->search)->paginate(10),
                 'service_contracts' => DB::table('service_contracts')->get()

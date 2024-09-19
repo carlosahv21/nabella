@@ -27,17 +27,10 @@ class Drivers extends Component
 
     public function rules()
     {
-        if ($this->isEdit) {
-            return [
-                'name' => 'required|min:3',
-                'email' => 'required|email',
-            ];
-        } else {
-            return [
-                'name' => 'required|min:3',
-                'email' => 'required|email|unique:users,email',
-            ];
-        }
+        return [
+            'name' => 'required|min:3',
+            'email' => ['required', 'unique:users,email,' . $this->item],
+        ];
     }
 
     protected $listeners = [
