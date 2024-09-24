@@ -357,7 +357,7 @@
                     @endif
 
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn" wire:click="showAlertDelete">Delete</button>
                         @if(!$if_not_cancel)
                         <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
                         @else

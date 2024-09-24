@@ -109,7 +109,8 @@ class Schedulings extends Component
         'updateEventDate',
         'updateEventsCalendar',
         'confirmCollect',
-        'continueScheduling'
+        'continueScheduling',
+        'deleteScheduling'
     ];
 
     public function __construct()
@@ -165,6 +166,9 @@ class Schedulings extends Component
     {
         $this->modelId = $modelId;
         $model_scheduling = Scheduling::find($this->modelId);
+
+        $patient = Patient::find($model_scheduling->patient_id);
+        $this->patient_name = $patient->first_name . ' ' . $patient->last_name;
 
         $this->patient_id = $model_scheduling->patient_id;
         $this->auto_agend = $model_scheduling->auto_agend;
@@ -490,6 +494,44 @@ class Schedulings extends Component
 
             $scheduling_address->save();
         }
+    }
+
+    public function showAlertDelete()
+    {
+        $this->dispatchBrowserEvent('showAlert', [
+            'text' => "Do you want to delete this scheduling? This action cannot be undone!",
+            'icon' => 'warning',
+            'confirmButtonText' => 'Yes',
+            'denyButtonText' => 'No',
+            'livewire' => 'deleteScheduling',
+        ]);
+    }
+
+    public function deleteScheduling()
+    {
+        $model_scheduling = Scheduling::find($this->modelId);
+        
+        $scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->get();
+        foreach ($scheduling_address as $address) {
+            $address->delete();
+        }
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', $model_scheduling->id)->get();
+        foreach ($scheduling_charge as $charge) {
+            $charge->delete();
+        }
+
+        $model_scheduling->delete();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
+
+        $events = $this->getEventsCalendar();
+        $this->emit('updateEvents', $events);
+
+        $this->sessionAlert([
+            'message' => 'Scheduling deleted successfully!',
+            'type' => 'success',
+            'icon' => 'check',
+        ]);
     }
 
     public function sumWaitTime($pick_up_hour, $duration)
@@ -980,6 +1022,10 @@ class Schedulings extends Component
         foreach ($scheduling as $event) {
             $scheduling_address = SchedulingAddress::where('scheduling_id', $event->id)->first();
             $patient = Patient::find($event->patient_id);
+            
+            if(!$scheduling_address){
+                continue;
+            }
 
             $driver_id = $scheduling_address->driver_id;
             if (!isset($driverColors[$driver_id])) {

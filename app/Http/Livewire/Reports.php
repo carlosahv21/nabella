@@ -186,7 +186,10 @@ class Reports extends Component
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {
             $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'] . '. ';
         }else{
-            $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'] . '. And return to: ' . $scheduling['address']['return']['drop_off_address'] . '. ';
+            $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'];
+            if(in_array('return', $scheduling['address'])){
+                $description .= '. And return to: ' . $scheduling['address']['return']['drop_off_address'] . '. ';
+            }
         }
 
         $charges = '';
