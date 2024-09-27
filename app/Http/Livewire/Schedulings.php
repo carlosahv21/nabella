@@ -792,7 +792,8 @@ class Schedulings extends Component
         $sql = "SELECT id FROM scheduling_address 
             WHERE driver_id = '$this->pick_up_driver_id' 
                 AND date = '$this->date' 
-                AND pick_up_hour BETWEEN '$this->pick_up_time' AND '$this->check_in'
+                AND pick_up_hour >= '$this->pick_up_time' 
+                AND pick_up_hour <= '$this->check_in'
                 AND status = 'Waiting'";
         $validation = DB::select($sql);
 
