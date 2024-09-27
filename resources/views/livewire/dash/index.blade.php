@@ -182,7 +182,13 @@
                         @foreach($comments as $comment)
                         <figure>
                             <blockquote class="blockquote">
-                                <p class="ps-2">{{ $comment['observations'] }}</p>
+                                <p class="ps-2">
+                                    @if( !empty($comment['observations']) )
+                                        {{ $comment['observations'] }}
+                                    @else
+                                        No comments found!
+                                    @endif
+                                    </p>
                             </blockquote>
                             <figcaption class="blockquote-footer ps-3">
                                 <cite title="Source Title">{{ $comment['patient_name'] }}</cite>
