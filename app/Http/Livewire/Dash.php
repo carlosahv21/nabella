@@ -22,9 +22,11 @@ class Dash extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $modelId = '';
+    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $modelId = '';
 
     public $observations, $additional_milles = 0;
+
+    public $comments = [];
 
     public $item, $action, $search, $title_modal, $countDrivers = '';
 
@@ -51,6 +53,9 @@ class Dash extends Component
             $this->title_modal = 'See Map';
             $this->dispatchBrowserEvent('openModal', ['name' => 'seeMap']);
             $this->emit('showMap', $this->item);
+        } else if ($action == 'seeComments') {
+            $this->title_modal = 'See Comments';
+            $this->showComments($this->item);
         }
     }
 
@@ -79,6 +84,7 @@ class Dash extends Component
         $this->check_in = $scheduling_address->pick_up_hour;
         $this->pick_up = $scheduling_address->pick_up_address;
         $this->drop_off = $scheduling_address->drop_off_address;
+        $this->drop_off_hours = $scheduling_address->drop_off_hour;
 
         $this->wheelchair = $scheduling_charge->wheelchair;
         $this->ambulatory = $scheduling_charge->ambulatory;
@@ -218,6 +224,44 @@ class Dash extends Component
         ]);
     }
 
+    public function showComments($driverId)
+    {
+        $this->comments = [];
+        
+        $sql = "SELECT u.id, u.name, CONCAT(p.first_name, ' ', p.last_name) as patient_name, sa.observations
+            FROM
+                users u
+            JOIN scheduling_address sa ON
+                sa.driver_id = u.id
+            JOIN schedulings s ON
+                s.id = sa.scheduling_id
+            JOIN patients p ON
+                p.id = s.patient_id
+            WHERE
+                sa.driver_id = $driverId
+                AND DATE(sa.date) = CURDATE();";
+
+        $data = DB::select($sql);
+
+        if(count($data) > 0){
+            foreach ($data as $comment) {
+                $this->comments[] = [
+                    'id' => $comment->id,
+                    'name' => $comment->name,
+                    'patient_name' => $comment->patient_name,
+                    'observations' => $comment->observations,
+                ];
+            }
+            $this->dispatchBrowserEvent('openModal', ['name' => 'seeComments']);
+        }else{
+            $this->sessionAlert([
+                'message' => 'No comments found!',
+                'type' => 'info',
+                'icon' => 'info',
+            ]);
+        }
+    }
+
     function sessionAlert($data)
     {
         session()->flash('alert', $data);
@@ -318,21 +362,27 @@ class Dash extends Component
                 ->where('scheduling_address.status', '=', 'Completed')
                 ->get();
 
-            $drive = DB::table('users')
-                ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
-                ->leftJoin('scheduling_address', 'users.id', '=', 'scheduling_address.driver_id')
-                ->select('users.*', 'scheduling_address.*')
-                ->where('roles.name', '=', 'Driver')
-                ->where('scheduling_address.date', '=', Carbon::today()->format('Y-m-d'))
-                ->get();
-
+            $sql = "SELECT 
+                    u.id,
+                    u.name,
+                    CASE 
+                        WHEN MAX(NOW() BETWEEN sa.pick_up_hour AND sa.drop_off_hour) THEN 'Busy'
+                        ELSE 'Free'
+                    END AS status,
+                    COUNT(CASE 
+                        WHEN DATE(sa.date) = CURDATE() THEN 1 
+                        ELSE NULL 
+                    END) AS total_dates
+                FROM users u
+                LEFT JOIN scheduling_address sa ON sa.driver_id = u.id
+                GROUP BY u.id, u.name;";
+            $drivers = DB::select($sql);
 
             return view(
                 'livewire.dash.index',
                 [
                     'events' => $events,
-                    'cars' => $drive
+                    'drivers' => $drivers
                 ]
             );
         }

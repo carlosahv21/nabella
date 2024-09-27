@@ -1,6 +1,22 @@
 @section('title','Usuario')
 @if(auth()->user()->roles->first()->name == 'Admin')
 <div class="container-fluid py-4 px-3">
+    <!-- notifications -->
+    <div class="position-fixed top-2 end-2 z-index-2">
+        <div class="toast fade hide p-2 bg-white bg-gradient-{{ session('alert.type', 'info') }}" role="alert" aria-live="assertive" id="toast" data-bs-delay="2000">
+            <div class="toast-header bg-transparent text-white border-0">
+                <i class="material-icons notranslate me-2">
+                    {{ session('alert.icon') }}
+                </i>
+                <span class="me-auto font-weight-bold">Notification!</span>
+                <i class="material-icons notranslate cursor-pointer" data-bs-dismiss="toast" aria-label="Close">close</i>
+            </div>
+            <hr class="horizontal light m-0">
+            <div class="toast-body text-white ">
+                {{ session('alert.message') }}
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
@@ -102,142 +118,46 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Product</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Value</th>
+                                        Driver</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+                                        Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+                                        Schedules</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Ads Spent</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Refunds</th>
+                                        Coments</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($drivers as $driver)
                                 <tr>
                                     <td>
                                         <div class="d-flex px-3 py-1">
-                                            <div>
-                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/blue-shoe.jpg" class="avatar me-3" alt="image">
+                                            <div style="width: 35px; margin-right: 10px;">
+                                                <img src="https://material-dashboard-pro-laravel-livewire.creative-tim.com/assets/img/placeholder.jpg" alt="avatar" class="w-100 rounded-circle shadow-sm">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Nike v22 Running</h6>
-                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">8.232</span> orders</p>
+                                                <h6 class="mb-0 text-sm">{{ $driver->name }}</h6>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
-                                        <p class="text-sm font-weight-normal mb-0">$130.992</p>
+                                    <td class="align-middle text-center">
+                                        <p class="text-sm font-weight-normal mb-0">
+                                            <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                            <span class="font-weight-bold ms-1">{{ $driver->total_dates }} route</span> this day
+                                        </p>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="badge @if($driver->status == 'Busy') bg-gradient-danger @else bg-gradient-success @endif">
+                                            {{ $driver->status }}
+                                        </span>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">$9.500</p>
-                                    </td>
-                                    <td class="align-middle text-end">
-                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
-                                            <p class="text-sm font-weight-normal mb-0">13</p>
-                                            <i class="ni ni-bold-down text-sm ms-1 text-success"></i>
-                                        </div>
+                                        <button class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="selectItem({{ $driver->id }}, 'seeComments')">
+                                            <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See map">eye</i> See comments
+                                        </button>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
-                                            <div>
-                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/black-mug.jpg" class="avatar me-3" alt="image">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Business Kit (Mug + Notebook)</h6>
-                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">12.821</span> orders</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm font-weight-normal mb-0">$80.250</p>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">$4.200</p>
-                                    </td>
-                                    <td class="align-middle text-end">
-                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
-                                            <p class="text-sm font-weight-normal mb-0">40</p>
-                                            <i class="ni ni-bold-down text-sm ms-1 text-success"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
-                                            <div>
-                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/black-chair.jpg" class="avatar me-3" alt="image">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Black Chair</h6>
-                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">2.421</span> orders</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm font-weight-normal mb-0">$40.600</p>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">$9.430</p>
-                                    </td>
-                                    <td class="align-middle text-end">
-                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
-                                            <p class="text-sm font-weight-normal mb-0">54</p>
-                                            <i class="ni ni-bold-up text-sm ms-1 text-danger"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
-                                            <div>
-                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/bang-sound.jpg" class="avatar me-3" alt="image">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Wireless Charger</h6>
-                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">5.921</span> orders</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm font-weight-normal mb-0">$91.300</p>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">$7.364</p>
-                                    </td>
-                                    <td class="align-middle text-end">
-                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
-                                            <p class="text-sm font-weight-normal mb-0">5</p>
-                                            <i class="ni ni-bold-down text-sm ms-1 text-success"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
-                                            <div>
-                                                <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-design-system/assets/img/ecommerce/photo-tools.jpg" class="avatar me-3" alt="image">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Mountain Trip Kit (Camera + Backpack)
-                                                </h6>
-                                                <p class="text-sm font-weight-normal text-secondary mb-0"><span class="text-success">921</span> orders</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm font-weight-normal mb-0">$140.925</p>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <p class="text-sm font-weight-normal mb-0">$20.531</p>
-                                    </td>
-                                    <td class="align-middle text-end">
-                                        <div class="d-flex px-3 py-1 justify-content-center align-items-center">
-                                            <p class="text-sm font-weight-normal mb-0">121</p>
-                                            <i class="ni ni-bold-up text-sm ms-1 text-danger"></i>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -245,6 +165,39 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Comments-->
+<div wire:ignore.self class="modal fade" id="seeComments" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{$title_modal}}</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="material-icons notranslate">close</i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card card-plain h-100">
+                    <div class="card-body p-0">
+                        @foreach($comments as $comment)
+                        <figure>
+                            <blockquote class="blockquote">
+                                <p class="ps-2">{{ $comment['observations'] }}</p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer ps-3">
+                                <cite title="Source Title">{{ $comment['patient_name'] }}</cite>
+                            </figcaption>
+                        </figure>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 @elseif(auth()->user()->roles->first()->name == 'Driver')
 <div class="mx-3">
@@ -329,11 +282,10 @@
                                                 </span>
                                                 <div class="timeline-content">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0"> {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
+                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Pick up {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['drop_off_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <div class="timeline-content pt-3">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['drop_off_address'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $event['date'] }} {{ \Carbon\Carbon::parse($event['drop_off_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <span class="timeline-step" style="margin-top: -25px;">
                                                     <i class="material-icons notranslate text-success text-gradient">location_on</i>
@@ -436,7 +388,7 @@
                                         <label>Facility Check In</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons notranslate text-sm me-1">schedule</i>
-                                            {{ \Carbon\Carbon::parse($check_in)->format('H:i A') }}
+                                            {{ \Carbon\Carbon::parse($drop_off_hours)->format('H:i A') }}
                                         </span>
                                     </div>
                                     <div class="row">

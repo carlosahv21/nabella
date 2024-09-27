@@ -789,7 +789,11 @@ class Schedulings extends Component
 
     public function updatedPickUpDriverId()
     {
-        $sql = "SELECT * FROM scheduling_address WHERE driver_id = '$this->pick_up_driver_id' AND pick_up_hour BETWEEN '$this->pick_up_time' AND '$this->check_in'";
+        $sql = "SELECT * FROM scheduling_address 
+            WHERE driver_id = '$this->pick_up_driver_id' 
+                AND date = '$this->date' 
+                AND pick_up_hour = '$this->pick_up_time' 
+                AND status = 'Waiting'";
         $validation = DB::select($sql);
 
         if (count($validation) > 0) {
