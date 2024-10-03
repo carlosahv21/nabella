@@ -459,6 +459,13 @@ progress {
   text-decoration: line-through 2px !important;
 }
 
+.fc-toolbar-title{
+  text-align: center;
+}
+
+.fc-daygrid-more-link{
+  margin-top : -10px !important;
+}
 .lead {
   font-size: 1.25rem;
   font-weight: 400; }

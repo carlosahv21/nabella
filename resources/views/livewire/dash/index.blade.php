@@ -406,10 +406,6 @@
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
-                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
                                         </div>
@@ -417,10 +413,6 @@
                                             @if($ambulatory)
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
-                                            </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
                                             <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
@@ -430,10 +422,6 @@
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
-                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customOutOfHours">After Hour</label>
                                         </div>
@@ -441,10 +429,6 @@
                                             @if($saturdays)
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
-                                            </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
                                             <label class="custom-control-label" for="customSaturdays">Saturdays</label>
@@ -454,10 +438,6 @@
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
-                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
                                         </div>
@@ -465,10 +445,6 @@
                                             @if($companion)
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
-                                            </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
                                             <label class="custom-control-label" for="customCompanion">Accompanist</label>
@@ -478,10 +454,6 @@
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
-                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customAditionalWaiting">Aditional Waiting</label>
                                         </div>
@@ -490,10 +462,6 @@
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
-                                            </span>
                                             @endif
                                             <label class="custom-control-label" for="customFastTrack">Quick Pass</label>
                                         </div>
@@ -501,10 +469,6 @@
                                             @if($if_not_cancel)
                                             <span>
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
-                                            </span>
-                                            @else
-                                            <span>
-                                                <i class="material-icons notranslate text-sm me-1">close</i>
                                             </span>
                                             @endif
                                             <label class="custom-control-label" for="customIfNotCancel">If not cancel</label>

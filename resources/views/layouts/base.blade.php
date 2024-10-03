@@ -73,7 +73,7 @@
             $('#' + event.detail.name).toast('show');
         })
 
-        window.addEventListener('showAlert', event => {
+        window.addEventListener('showConfirm', event => {
             Swal.fire({
                 title: event.detail.text,
                 icon: event.detail.icon,
@@ -92,7 +92,7 @@
                         });
                     }
                 }else if(result.isDenied){
-                    if(event.detail.livewire){
+                    if(event.detail.livewire == 'continueScheduling' || event.detail.livewire == 'confirmCollect'){
                         Livewire.emit(event.detail.livewire, result.isConfirmed);
                     }else{
                         Swal.fire({
@@ -108,6 +108,14 @@
                 }
             });
         })
+
+        window.addEventListener('showAlert', event => {
+            Swal.fire({
+                title:  event.detail.text,
+                icon: event.detail.icon,
+                });
+        })
+
 
         $(document).ready(function() {
             var modals = ['createUser', 'createDriver', 'createRole', 'createVehicle', 'createClient', 'createServiceContract', 'createPatient', 'SeeFileVehicle', 'createScheduling', 'seeEventDetails'];

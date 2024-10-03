@@ -47,7 +47,7 @@ class Dash extends Component
         if ($action == 'seeDetails') {
             $this->emit('getModelId', $this->item);
 
-            $this->title_modal = 'See Event Details';
+            $this->title_modal = 'See Details';
             $this->dispatchBrowserEvent('openModal', ['name' => 'seeEventDetails']);
         } else if ($action == 'seeMap') {
             $this->title_modal = 'See Map';
@@ -165,7 +165,10 @@ class Dash extends Component
     function startDriving($event)
     {
         $driver_id = SchedulingAddress::where('id', '=', $event)->first()->driver_id;
-        $validate = SchedulingAddress::where('status', '=', 'In Progress')->where('driver_id', '=', $driver_id)->get();
+        $validate = SchedulingAddress::where('status', '=', 'In Progress')
+                                    ->where('driver_id', '=', $driver_id)
+                                    ->where('date', '=', date('Y-m-d'))
+                                    ->get();
 
         if (count($validate) > 0) {
             $this->sessionAlert([
@@ -227,7 +230,7 @@ class Dash extends Component
     public function showComments($driverId)
     {
         $this->comments = [];
-        
+
         $sql = "SELECT u.id, u.name, CONCAT(p.first_name, ' ', p.last_name) as patient_name, sa.observations
             FROM
                 users u

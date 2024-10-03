@@ -2,9 +2,9 @@
     <div class="table-settings mx-4 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
             <div class="col-12 col-lg-8 row mt-3">
-                @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-3 col-lg-3">
+                @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-6 col-lg-3" style="margin-right: 0;">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
-                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }}; min-width: 115px; text-align: center;">
+                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }}; min-width: 114px; text-align: center;">
                         <b class="text-white"> {{ $drivers[$i]->name }} </b>
                     </label>
             </div>
@@ -45,9 +45,18 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{$title_modal}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal">
-                    <i class="material-icons notranslate">close</i>
-                </button>
+                <div class="d-flex justify-content-between pt-2">
+                    <div class="d-flex justify-content-end">
+                        @if(!$if_not_cancel)
+                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                        <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
+                        @elseif($isEdit)
+                        <button type="button" class="btn" wire:click="showConfirmDelete">Delete</button>
+                        @else
+                        <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
+                        @endif
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="card card-plain h-100">
@@ -357,7 +366,7 @@
                     @endif
 
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn" wire:click="showAlertDelete">Delete</button>
+                        <button type="button" class="btn" wire:click="showConfirmDelete">Delete</button>
                         @if(!$if_not_cancel)
                         <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
                         @else
@@ -376,13 +385,20 @@
 <script>
     let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
         headerToolbar: {
-            start: 'dayGridMonth,timeGridWeek,timeGridDay',
+            start: 'dayGridMonth,timeGridDay',
             center: 'title',
-            end: 'today prev,next',
+            end: 'prev,next',
         },
         events: @json($events),
         editable: true,
         selectable: true,
+        views: {
+            timeGrid: {
+                dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
+            }
+        },
+        dayMaxEventRows: true, // for all non-TimeGrid views
+        eventoMaxStack : true,
         eventClick: function(info) {
             Livewire.emit('editEvent', info.event.id);
         },
@@ -407,6 +423,13 @@
                     center: 'title',
                     end: 'today prev,next',
                 },
+                dayMaxEventRows: true, // for all non-TimeGrid views
+                views: {
+                    timeGrid: {
+                        dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+                    }
+                },
+                eventoMaxStack : true,
                 events: events,
                 editable: true,
                 selectable: true,

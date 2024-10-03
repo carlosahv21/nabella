@@ -110,7 +110,8 @@ class Schedulings extends Component
         'updateEventsCalendar',
         'confirmCollect',
         'continueScheduling',
-        'deleteScheduling'
+        'deleteScheduling',
+        'showConfirmDelete'
     ];
 
     public function __construct()
@@ -126,7 +127,7 @@ class Schedulings extends Component
             case 'create':
                 if (cache()->get('autoagendamiento_form')) {
                     $this->dispatchBrowserEvent(
-                        'showAlert',
+                        'showConfirm',
                         [
                             'text' => 'You have unsaved changes! Do you want to continue?',
                             'icon' => 'info',
@@ -261,6 +262,14 @@ class Schedulings extends Component
 
         if ($this->modelId) {
             $this->isEdit = true;
+        }
+
+        if($this->validateDriverHour() > 0){
+            $this->dispatchBrowserEvent('showAlert', [
+                'text' => "Cannot save this scheduling! Pick up driver must be available between pick up time and check in time",
+                'icon' => 'warning'
+            ]);
+            return;
         }
 
         if ($this->auto_agend) {
@@ -496,9 +505,9 @@ class Schedulings extends Component
         }
     }
 
-    public function showAlertDelete()
+    public function showConfirmDelete()
     {
-        $this->dispatchBrowserEvent('showAlert', [
+        $this->dispatchBrowserEvent('showConfirm', [
             'text' => "Do you want to delete this scheduling? This action cannot be undone!",
             'icon' => 'warning',
             'confirmButtonText' => 'Yes',
@@ -574,6 +583,7 @@ class Schedulings extends Component
     {
         $data = [
             'patient_id' => $this->patient_id,
+            'patient_name' => $this->patient_name,
             'auto_agend' => $this->auto_agend,
             'date' => $this->date,
             'check_in' => $this->check_in,
@@ -789,17 +799,10 @@ class Schedulings extends Component
 
     public function updatedPickUpDriverId()
     {
-        $sql = "SELECT id FROM scheduling_address 
-            WHERE driver_id = '$this->pick_up_driver_id' 
-                AND date = '$this->date' 
-                AND pick_up_hour >= '$this->pick_up_time' 
-                AND pick_up_hour <= '$this->check_in'
-                AND status = 'Waiting'";
-        $validation = DB::select($sql);
-
-        if (count($validation) > 0) {
+        if($this->validateDriverHour() > 0){
             $this->errors_driver = 'Pick up driver must be available between pick up time and check in time';
-        } else {
+            return;
+        }else{
             $this->errors_driver = '';
         }
     }
@@ -973,7 +976,7 @@ class Schedulings extends Component
 
     public function cancelScheduling()
     {
-        $this->dispatchBrowserEvent('showAlert', [
+        $this->dispatchBrowserEvent('showConfirm', [
             'text' => "This scheduling will be canceled! Do you want to collect the cancellation?",
             'icon' => 'warning',
             'confirmButtonText' => 'Yes',
@@ -1091,6 +1094,18 @@ class Schedulings extends Component
         $arrivalTime = $this->date . ' ' . $this->r_check_in;
 
         $this->getDistance($addresses, $arrivalTime, 'return');
+    }
+
+    public function validateDriverHour(){
+        $sql = "SELECT id FROM scheduling_address 
+            WHERE driver_id = '$this->pick_up_driver_id' 
+                AND date = '$this->date' 
+                AND pick_up_hour >= '$this->pick_up_time' 
+                AND pick_up_hour <= '$this->check_in'
+                AND status = 'Waiting'";
+        $validation = DB::select($sql);
+
+        return count($validation);
     }
 
     public function calculateTimeDriver()
