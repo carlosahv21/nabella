@@ -463,6 +463,10 @@ progress {
   text-align: center;
 }
 
+.fc-popover{
+  z-index: 1 !important;
+}
+
 .fc-daygrid-more-link{
   margin-top : -10px !important;
 }

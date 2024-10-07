@@ -27,7 +27,8 @@ class Facilities extends Component
     public $type = 'Facility';
 
     protected $rules=[
-        'name' => 'required'
+        'name' => 'required',
+        'service_contract_id' => 'required'
     ];
 
     protected $listeners = [
@@ -117,12 +118,21 @@ class Facilities extends Component
 
     public function save()
     {
+        $this->validate();
+
+        if (count($this->inputs) == 0) {
+            $this->dispatchBrowserEvent('showAlert', [
+                'text' => 'Please add at least one address!',
+                'icon' => 'warning'
+            ]);
+            return;
+        }
+        
         if($this->modelId){
             $facility = Facility::findOrFail($this->modelId);
             $this->isEdit = true;
         }else{
             $facility = new Facility;
-            $this->validate();
         }
         
         $facility->name = $this->name;

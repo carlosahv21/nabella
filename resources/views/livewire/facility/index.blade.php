@@ -137,6 +137,11 @@ use App\Models\Address;
                                             <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
                                             @endforeach
                                         </select>
+                                        @if ($errors->has('service_contract_id'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('service_contract_id') }}
+                                        </div>
+                                        @endif
                                     </div>
                                     @if(count($inputs_view) > 0)
                                     <div class="row">
