@@ -467,6 +467,9 @@ progress {
   z-index: 1 !important;
 }
 
+.fc-daygrid-more-link{
+  margin-top : 0px !important;
+}
 .lead {
   font-size: 1.25rem;
   font-weight: 400; }
