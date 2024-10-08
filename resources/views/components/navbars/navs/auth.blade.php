@@ -8,7 +8,7 @@
             <h6 class="font-weight-bolder mb-0 text-capitalize">{{ str_replace('-', ' ', Route::currentRouteName()) }}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 justify-content-end" id="navbar">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav justify-content-end">
                 <li class="nav-item d-flex align-items-center">
                     <livewire:auth.logout />
                 </li>
