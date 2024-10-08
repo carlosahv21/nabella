@@ -39,7 +39,7 @@ class Reports extends Component
 
         $range = explode(' to', $this->date_range);
 
-        $sql = "SELECT scheduling_address.* FROM scheduling_address inner join schedulings on schedulings.id = scheduling_address.scheduling_id inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND scheduling_address.date BETWEEN '". $range[0]. "' AND '". $range[1]. "'";
+        $sql = "SELECT scheduling_address.* FROM scheduling_address inner join schedulings on schedulings.id = scheduling_address.scheduling_id inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND scheduling_address.date BETWEEN '". $range[0]. "' AND '". $range[1]. "' ORDER BY scheduling_address.date";
 
         $schedulings = DB::select($sql);
 

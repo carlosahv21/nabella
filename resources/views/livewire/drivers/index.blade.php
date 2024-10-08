@@ -150,7 +150,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">DOB</label>
-                                        <input wire:model="dob" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="dob" class="form-control border border-2 p-2 date-input" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('dob'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('dob') }}
@@ -177,7 +177,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Date of Hire</label>
-                                        <input wire:model="date_of_hire" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="date_of_hire" class="form-control border border-2 p-2 date-input" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('date_of_hire'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('date_of_hire') }}
