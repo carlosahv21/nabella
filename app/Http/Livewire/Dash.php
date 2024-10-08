@@ -378,6 +378,10 @@ class Dash extends Component
                     END) AS total_dates
                 FROM users u
                 LEFT JOIN scheduling_address sa ON sa.driver_id = u.id
+                INNER JOIN model_has_roles mhr ON mhr.model_id = u.id
+                INNER JOIN roles r ON r.id = mhr.role_id
+                WHERE 
+                    r.name = 'Driver'
                 GROUP BY u.id, u.name;";
             $drivers = DB::select($sql);
 
