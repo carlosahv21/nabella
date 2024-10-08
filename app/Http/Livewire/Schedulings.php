@@ -191,7 +191,8 @@ class Schedulings extends Component
                     $this->pick_up_address = $address->pick_up_address;
                 }
                 if (!$this->check_in) {
-                    $this->check_in = $address->pick_up_hour;
+                    $this->check_in = $address->drop_off_hour;
+                    $this->pick_up_time = $address->pick_up_hour;
                 }
                 $this->pick_up_driver_id = $address->driver_id;
                 $this->stops[$count]['address'] = $address->drop_off_address;
@@ -202,7 +203,8 @@ class Schedulings extends Component
             } elseif ($address->type_of_trip == 'return') {
                 $this->modelIdAddress[$address->type_of_trip] = $address->id;
                 $this->return_pick_up_address = $address->pick_up_address;
-                $this->r_check_in = $address->pick_up_hour;
+                $this->r_check_in = $address->drop_off_hour;
+                $this->r_pick_up_time = $address->pick_up_hour;
                 $this->drop_off_driver_id = $address->driver_id;
 
                 $this->r_stops[$count_r]['address'] = $address->drop_off_address;
@@ -225,8 +227,8 @@ class Schedulings extends Component
         $this->fast_track = $model_scheduling_charge->fast_track;
         $this->if_not_cancel = $model_scheduling_charge->if_not_cancel;
 
-        $this->updatedCheckIn();
-        $this->updatedRCheckin();
+        // $this->updatedCheckIn();
+        // $this->updatedRCheckin();
     }
 
     private function clearForm()
@@ -262,14 +264,6 @@ class Schedulings extends Component
 
         if ($this->modelId) {
             $this->isEdit = true;
-        }
-
-        if($this->validateDriverHour() > 0){
-            $this->dispatchBrowserEvent('showAlert', [
-                'text' => "Cannot save this scheduling! Pick up driver must be available between pick up time and check in time",
-                'icon' => 'warning'
-            ]);
-            return;
         }
 
         if ($this->auto_agend) {
