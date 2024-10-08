@@ -369,7 +369,7 @@ class Dash extends Component
                     u.id,
                     u.name,
                     CASE 
-                        WHEN MAX(NOW() BETWEEN sa.pick_up_hour AND sa.drop_off_hour) THEN 'Busy'
+                        WHEN MAX(NOW() BETWEEN CONCAT(sa.date, ' ', sa.pick_up_hour) AND CONCAT(sa.date, ' ', sa.drop_off_hour)) THEN 'Busy'
                         ELSE 'Free'
                     END AS status,
                     COUNT(CASE 
@@ -381,11 +381,54 @@ class Dash extends Component
                 GROUP BY u.id, u.name;";
             $drivers = DB::select($sql);
 
+            $first_day_of_month = date('Y-m') . '-01';
+            $last_day_of_month = date('Y-m-t');
+
+            $sql_total = "SELECT 
+                    SUM(
+                        CASE 
+                            WHEN sc.wheelchair = 1 THEN svc.wheelchair ELSE 0 END
+                        + CASE 
+                            WHEN sc.ambulatory = 1 THEN svc.ambulatory ELSE 0 END
+                        + CASE 
+                            WHEN sc.out_of_hours = 1 THEN svc.out_of_hours ELSE 0 END
+                        + CASE 
+                            WHEN sc.saturdays = 1 THEN svc.saturdays ELSE 0 END
+                        + CASE 
+                            WHEN sc.sundays_holidays = 1 THEN svc.sundays_holidays ELSE 0 END
+                        + CASE 
+                            WHEN sc.companion = 1 THEN svc.companion ELSE 0 END
+                        + CASE 
+                            WHEN sc.aditional_waiting = 1 THEN svc.additional_waiting ELSE 0 END
+                        + CASE 
+                            WHEN sc.fast_track = 1 THEN svc.fast_track ELSE 0 END
+                        + CASE 
+                            WHEN sc.overcharge = 1 THEN svc.overcharge ELSE 0 END
+                        + (sa.distance + COALESCE(sa.additional_milles, 0)) * svc.rate_per_mile
+                    ) AS total_facturado
+                FROM 
+                    schedulings s
+                JOIN 
+                    scheduling_charge sc ON s.id = sc.scheduling_id
+                JOIN 
+                    patients p ON s.patient_id = p.id
+                JOIN 
+                    service_contracts svc ON p.service_contract_id = svc.id
+                JOIN 
+                    scheduling_address sa ON s.id = sa.scheduling_id
+                WHERE 
+                    sa.date BETWEEN '".$first_day_of_month."' AND '".$last_day_of_month."'
+                    AND sa.status = 'Completed';";
+
+                $total_facturado = DB::select($sql_total);
+                $total_facturado = ($total_facturado[0]->total_facturado != null) ? $total_facturado[0]->total_facturado : 0;
+
             return view(
                 'livewire.dash.index',
                 [
                     'events' => $events,
-                    'drivers' => $drivers
+                    'drivers' => $drivers,
+                    'total_facturado' => $total_facturado,
                 ]
             );
         }

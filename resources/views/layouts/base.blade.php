@@ -83,24 +83,24 @@
                 denyButtonText: event.detail.denyButtonText,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    if(event.detail.livewire){
+                    if (event.detail.livewire) {
                         Livewire.emit(event.detail.livewire, result.isConfirmed);
-                    }else{
+                    } else {
                         Swal.fire({
                             title: "Success!",
                             icon: "success"
                         });
                     }
-                }else if(result.isDenied){
-                    if(event.detail.livewire == 'continueScheduling' || event.detail.livewire == 'confirmCollect'){
+                } else if (result.isDenied) {
+                    if (event.detail.livewire == 'continueScheduling' || event.detail.livewire == 'confirmCollect') {
                         Livewire.emit(event.detail.livewire, result.isConfirmed);
-                    }else{
+                    } else {
                         Swal.fire({
                             title: "Canceled!",
                             icon: "error"
                         });
                     }
-                }else{
+                } else {
                     Swal.fire({
                         title: "Canceled!",
                         icon: "error"
@@ -111,9 +111,9 @@
 
         window.addEventListener('showAlert', event => {
             Swal.fire({
-                title:  event.detail.text,
+                title: event.detail.text,
                 icon: event.detail.icon,
-                });
+            });
         })
 
 

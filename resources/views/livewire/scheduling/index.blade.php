@@ -51,7 +51,10 @@
                         <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
                         <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
                         @elseif($isEdit)
-                        <button type="button" class="btn" wire:click="showConfirmDelete">Delete</button>
+                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                            @if($if_not_cancel)
+                            <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
+                            @endif
                         @else
                         <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
                         @endif
@@ -193,7 +196,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check In</label>
-                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control date-input-time" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
                                         @if ($errors->has('check_in'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('check_in') }}
@@ -204,7 +207,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Pick up time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control date-input-time" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
@@ -366,7 +369,12 @@
                     @endif
 
                     <div class="d-flex justify-content-end">
+                        @if($isEdit)
                         <button type="button" class="btn" wire:click="showConfirmDelete">Delete</button>
+                        @else
+                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                        @endif
+
                         @if(!$if_not_cancel)
                         <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
                         @else
