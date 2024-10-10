@@ -204,13 +204,13 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="mb-3 col-md-3">
+                                <div class="mb-3 col-md-4">
                                     <div class="input-group input-group-static my-1">
-                                        <label>Pick up time</label>
+                                        <label>Estimated Pickup Time</label>
                                         <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
-                                <div class="mb-3 col-md-6">
+                                <div class="mb-3 col-md-5">
                                     <label class="form-label">Pick up driver</label>
                                     <select wire.ignore.self wire:model="pick_up_driver_id" class="form-select" id="pick_up_driver_id" @if($if_not_cancel) disabled @endif>
                                         <option value="">Select a Driver</option>
@@ -297,13 +297,13 @@
                                     </div>
                                     @endif
                                 </div>
-                                <div class="mb-3 col-md-3">
+                                <div class="mb-3 col-md-4">
                                     <div class="input-group input-group-static my-1">
-                                        <label>Pick up time</label>
+                                        <label>Estimated Pickup Time</label>
                                         <input type="time" wire.ignore.self wire:model="r_pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_pick_up_time" @if($if_not_cancel) disabled @endif>
                                     </div>
                                 </div>
-                                <div class="mb-3 col-md-6">
+                                <div class="mb-3 col-md-5">
                                     <label class="form-label">Drop off driver</label>
                                     <select wire.ignore.self wire:model="drop_off_driver_id" class="form-select" id="drop_off_driver_id" @if($if_not_cancel) disabled @endif>
                                         <option value="">Select a Driver</option>

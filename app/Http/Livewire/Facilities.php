@@ -120,7 +120,7 @@ class Facilities extends Component
     {
         $this->validate();
 
-        if (count($this->inputs) == 0) {
+        if (count($this->inputs) == 0 && count($this->inputs_view) == 0) {
             $this->dispatchBrowserEvent('showAlert', [
                 'text' => 'Please add at least one address!',
                 'icon' => 'warning'

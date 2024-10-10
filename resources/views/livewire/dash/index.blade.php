@@ -75,7 +75,7 @@
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div style="width: 35px; margin-right: 10px;">
-                                                <img src="https://material-dashboard-pro-laravel-livewire.creative-tim.com/assets/img/placeholder.jpg" alt="avatar" class="w-100 rounded-circle shadow-sm">
+                                                <img  src="{{ asset('assets') }}/img/placeholder.jpg" alt="avatar" class="w-100 rounded-circle shadow-sm">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $driver->name }}</h6>
@@ -230,13 +230,13 @@
                                                 </span>
                                                 <div class="timeline-content">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Pick up {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['drop_off_hour'])->format('H:i A') }} </p>
+                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Estimated Pickup time {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <div class="timeline-content pt-3">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['drop_off_address'] }}</h6>
                                                 </div>
                                                 <span class="timeline-step" style="margin-top: -25px;">
-                                                    <i class="material-icons notranslate text-success text-gradient">location_on</i>
+                                                    <i class="material-icons notranslate text-warning text-gradient">location_on</i>
                                                 </span>
                                             </div>
                                         </div>
@@ -252,7 +252,7 @@
                                 </td>
                                 <td class="align-middle">
                                     <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">
-                                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="See details">visibility</i> See details
+                                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip">visibility</i> See details
                                     </a>
                                 </td>
                                 <td class="align-middle">
@@ -333,10 +333,10 @@
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label>Facility Check In</label><br>
+                                        <label>Facility pickup time</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons notranslate text-sm me-1">schedule</i>
-                                            {{ \Carbon\Carbon::parse($drop_off_hours)->format('H:i A') }}
+                                            {{ \Carbon\Carbon::parse($check_in)->format('H:i A') }}
                                         </span>
                                     </div>
                                     <div class="row">
@@ -349,7 +349,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customWheelchair">Wheelchair</label>
+                                            <label class="custom-control-label">Wheelchair</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($ambulatory)
@@ -357,7 +357,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customAmbulatory">Ambulatory</label>
+                                            <label class="custom-control-label">Ambulatory</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($out_of_hours)
@@ -365,7 +365,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customOutOfHours">After Hour</label>
+                                            <label class="custom-control-label">After Hour</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($saturdays)
@@ -373,7 +373,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customSaturdays">Saturdays</label>
+                                            <label class="custom-control-label">Saturdays</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($sundays_holidays)
@@ -381,7 +381,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customSundaysHolidays">Sundays/Holidays</label>
+                                            <label class="custom-control-label">Sundays/Holidays</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($companion)
@@ -389,7 +389,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customCompanion">Accompanist</label>
+                                            <label class="custom-control-label">Accompanist</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($aditional_waiting)
@@ -397,7 +397,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customAditionalWaiting">Aditional Waiting</label>
+                                            <label class="custom-control-label">Aditional Waiting</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($fast_track)
@@ -405,7 +405,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customFastTrack">Quick Pass</label>
+                                            <label class="custom-control-label">Quick Pass</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($if_not_cancel)
@@ -413,7 +413,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label" for="customIfNotCancel">If not cancel</label>
+                                            <label class="custom-control-label">If not cancel</label>
                                         </div>
                                     </div>
                                 </div>

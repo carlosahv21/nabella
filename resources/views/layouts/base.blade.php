@@ -128,18 +128,18 @@
 
             flatpickr(".date-input", {
                 enableTime: false, // Si quieres habilitar la selección de hora, cámbialo a true
-                dateFormat: "Y-m-d", // Formato de la fecha
+                dateFormat: "m-d-Y", // Formato de la fecha
             });
 
             flatpickr(".date-input-range", {
-                mode: "range",  // Habilita el modo de rango
-                dateFormat: "Y-m-d",  // Formato de la fecha
+                mode: "range", // Habilita el modo de rango
+                dateFormat: "Y-m-d", // Formato de la fecha
             });
 
             flatpickr(".date-input-time", {
                 enableTime: true,
                 noCalendar: true,
-                dateFormat: "H:i"
+                dateFormat: "H:i",
             });
         });
     </script>

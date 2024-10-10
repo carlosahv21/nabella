@@ -540,7 +540,7 @@ class Schedulings extends Component
     public function sumWaitTime($pick_up_hour, $duration)
     {
         $hora = Carbon::parse($pick_up_hour)->format('H:i');
-        $minutosASumar = $duration + 10;
+        $minutosASumar = $duration + 30;
 
         return Carbon::createFromFormat('H:i', $hora)->addMinutes($minutosASumar)->format('H:i');
     }
@@ -548,7 +548,7 @@ class Schedulings extends Component
     public function subtractTime($pick_up_hour, $duration)
     {
         $hora = Carbon::parse($pick_up_hour)->format('H:i');
-        $minutosASumar = $duration + 10;
+        $minutosASumar = $duration + 30;
 
         return Carbon::createFromFormat('H:i', $hora)->subMinutes($minutosASumar)->format('H:i');
     }
@@ -922,7 +922,7 @@ class Schedulings extends Component
 
     public function getTime($duration, $arrivalTime)
     {
-        $totalMinutesToSubtract = $duration + 10;
+        $totalMinutesToSubtract = $duration + 30;
 
         list($date, $time) = explode(' ', $arrivalTime);
         list($year, $month, $day) = explode('-', $date);

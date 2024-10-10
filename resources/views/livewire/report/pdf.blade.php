@@ -55,15 +55,14 @@
 
         <div style="background-color: #ecf6f7; font-size: 12px; padding: 40px;">
             <div style="font-weight: bold;">Bill To:</div>
-            <div> Novant Health Rowan Medical Center</div>
-            <div> 123 Main St.</div>
-            <div> Anytown, USA 12345</div>
+            <div> {{ $facility->name }}</div>
+            <div> {{ $facility->address }}</div>
             <hr style="border: none; border-top: 1px dashed #d4d7dc; margin: 1rem 0;">
             <div style="font-weight: bold;">Invoice details</div>
             <div>Invoice no: 1316</div>
             <div>Terms: Net {{ $terms }}</div>
             <div>Invoice date: {{ Carbon\Carbon::parse(today())->format('m/d/Y') }}</div>
-            <div>Due date: {{ Carbon\Carbon::parse(today()->addDays(15))->format('m/d/Y') }}</div>
+            <div>Due date: {{ Carbon\Carbon::parse(today()->addDays($terms))->format('m/d/Y') }}</div>
         </div>
 
         <table width="100%" style="font-size: 10px; padding: 20px 40px; margin-top: 10px;">

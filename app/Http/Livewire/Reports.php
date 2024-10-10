@@ -53,6 +53,7 @@ class Reports extends Component
         }
 
         $service_contract = DB::table('service_contracts')->where('id', $this->service_contract_id)->get()->first();
+        $facility = DB::select('SELECT * FROM facilities f inner join addresses a on a.facility_id = f.id WHERE f.service_contract_id = '.$this->service_contract_id.'  LIMIT 1');
 
         foreach ($schedulings as $scheduling) {
             
@@ -79,6 +80,7 @@ class Reports extends Component
         $pdf = Pdf::loadView('livewire.report.pdf', [
             'data' => $data,
             'service_contract' => $service_contract,
+            'facility' => $facility[0],
             'total' => array_sum(array_column($data, 'amount')),
             'terms' => $this->terms
         ]);

@@ -37,6 +37,7 @@
                         <option value="">Select a term</option>
                         <option value="15">15</option>
                         <option value="30">30</option>
+                        <option value="0">Today</option>
                     </select>
                 </div>
             </div>

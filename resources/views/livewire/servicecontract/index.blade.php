@@ -290,7 +290,7 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">State</label>
+                                        <label class="form-label">Status</label>
                                         <select wire:ignore.self wire:model="state" class="form-select" id="state">
                                             <option>Elegir</option>
                                             <option value="active">Active</option>

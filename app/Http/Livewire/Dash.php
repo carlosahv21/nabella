@@ -382,6 +382,7 @@ class Dash extends Component
                 INNER JOIN roles r ON r.id = mhr.role_id
                 WHERE 
                     r.name = 'Driver'
+                    
                 GROUP BY u.id, u.name;";
             $drivers = DB::select($sql);
 
