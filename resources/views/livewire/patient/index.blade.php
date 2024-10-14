@@ -158,7 +158,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Birth Date</label>
-                                        <input wire:model="birth_date" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="YYYY/MM/DD">
+                                        <input wire:model="birth_date" class="form-control date-input border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="MM-DD-YYYY">
                                         @if ($errors->has('birth_date'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('birth_date') }}

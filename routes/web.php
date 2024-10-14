@@ -44,6 +44,17 @@ Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->n
 Route::get('sign-up', Register::class)->middleware('guest')->name('register');
 Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
+Route::get('download', function () {
+    // Ruta dentro de storage
+    $filePath = storage_path('dump_production.sql');
+
+    if (file_exists($filePath)) {
+        return response()->download($filePath);
+    } else {
+        echo 'error', 'El archivo de dump no se encuentra.';
+    }
+});
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('user-profile', UserProfile::class)->middleware('can:user.view')->name('user-profile');
     Route::get('role', Roles::class)->middleware('can:role.view')->name('role');

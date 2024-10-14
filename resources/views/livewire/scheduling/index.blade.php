@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="mb-3 col-md-3">
                                     <label class="form-label">Start Date</label>
-                                    <input wire:model="date" class="form-control border border-1 p-2 date-input active" placeholder="YYYY/MM/DD" @if($if_not_cancel) disabled @endif>
+                                    <input wire:model="date" class="form-control border border-1 p-2 date-input active" placeholder="MM-DD-YYYY" @if($if_not_cancel) disabled @endif>
                                     @if ($errors->has('date'))
                                     <div class="text-danger inputerror">
                                         {{ $errors->first('date') }}
