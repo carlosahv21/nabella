@@ -14,7 +14,7 @@ class ServiceContracts extends Component
     
     protected $paginationTheme = 'bootstrap';
 
-    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $address, $phone, $state, $date_start, $date_end, $modelId = '';
+    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $address, $phone, $state, $email, $date_start, $date_end, $modelId = '';
     public $selectedAll = false;
     public $selected = [];
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
@@ -24,6 +24,7 @@ class ServiceContracts extends Component
         'state' => 'required',
         'date_start' => 'required',
         'date_end' => 'required',
+        'email' => 'email'
     ];
 
     protected $listeners = [
@@ -85,6 +86,7 @@ class ServiceContracts extends Component
         $this->address = $model->address;
         $this->phone = $model->phone;
         $this->state = $model->state;
+        $this->email = $model->email;
         $this->date_start = $model->date_start;
         $this->date_end = $model->date_end;
     }
@@ -122,6 +124,7 @@ class ServiceContracts extends Component
         $this->address = null;
         $this->phone = null;
         $this->state = null;
+        $this->email = null;
         $this->date_start = null;
         $this->date_end = null;
         $this->isEdit = false;
@@ -156,6 +159,7 @@ class ServiceContracts extends Component
         $servicecontract->date_start = $this->date_start;
         $servicecontract->date_end = $this->date_end;
         $servicecontract->state = $this->state;
+        $servicecontract->email = $this->email;
         
         $servicecontract->save();
 

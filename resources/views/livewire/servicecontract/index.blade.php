@@ -290,6 +290,15 @@
                                         @endif
                                     </div>
                                     <div class="mb-3 col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input wire:model="email" type="text" class="form-control border border-2 p-2" placeholder="johndoe@example.com">
+                                        @if ($errors->has('email'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('email') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Status</label>
                                         <select wire:ignore.self wire:model="state" class="form-select" id="state">
                                             <option>Elegir</option>
