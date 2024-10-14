@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\ServiceContract;
+use Carbon\Carbon;
 
 use Livewire\WithPagination;
 
@@ -139,7 +140,7 @@ class ServiceContracts extends Component
             $servicecontract = new ServiceContract;
             $this->validate();
         }
-        
+
         $servicecontract->company = $this->company;
         $servicecontract->contact_name = $this->contact_name;
         $servicecontract->wheelchair = ($this->wheelchair) ? $this->wheelchair : 0;
@@ -156,8 +157,8 @@ class ServiceContracts extends Component
         $servicecontract->overcharge = ($this->overcharge) ? $this->overcharge : 0;
         $servicecontract->address = $this->address;
         $servicecontract->phone = $this->phone;
-        $servicecontract->date_start = $this->date_start;
-        $servicecontract->date_end = $this->date_end;
+        $servicecontract->date_start = Carbon::createFromFormat('m-d-Y', $this->date_start)->format('Y-m-d');
+        $servicecontract->date_end =Carbon::createFromFormat('m-d-Y', $this->date_end)->format('Y-m-d');
         $servicecontract->state = $this->state;
         $servicecontract->email = $this->email;
         

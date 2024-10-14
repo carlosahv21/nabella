@@ -183,7 +183,7 @@ class Schedulings extends Component
         $count = 0;
         $count_r = 0;
         foreach ($model_scheduling_address as $address) {
-            $this->date = $address->date;
+            $this->date = Carbon::createFromFormat('Y-m-d', $address->date)->format('m-d-Y');
             $this->schedule_autoagend_id = $address->scheduling_autoagend_id;
             if ($address->type_of_trip == 'pick_up') {
                 $this->modelIdAddress[$address->type_of_trip] = $address->id;
@@ -480,11 +480,12 @@ class Schedulings extends Component
                 $drop_off = $this->r_check_in;
             }
 
+            $date = Carbon::createFromFormat('m-d-Y', '10-14-2024')->toDateString();
             $scheduling_address = new SchedulingAddress;
             $scheduling_address->scheduling_id = $scheduling->id;
             $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
             $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
-            $scheduling_address->date = ($auto_agend) ? $date : $this->date;
+            $scheduling_address->date = ($auto_agend) ? Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d') : Carbon::createFromFormat('m-d-Y', $this->date)->format('Y-m-d');
             $scheduling_address->pick_up_address = $addresses[$i]['address'];
             $scheduling_address->drop_off_address = $addresses[$i + 1]['address'];
             $scheduling_address->pick_up_hour = $check_in;
@@ -1076,9 +1077,10 @@ class Schedulings extends Component
     }
 
     public function validateDriverHour(){
+        $date = Carbon::createFromFormat('m-d-Y', '10-14-2024')->toDateString();
         $sql = "SELECT id FROM scheduling_address 
             WHERE driver_id = '$this->pick_up_driver_id' 
-                AND date = '$this->date' 
+                AND date = '$date' 
                 AND pick_up_hour >= '$this->pick_up_time'
                 AND pick_up_hour <= '$this->check_in'
                 AND status = 'Waiting'";
