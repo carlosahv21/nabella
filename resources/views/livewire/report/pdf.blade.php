@@ -60,7 +60,7 @@
             <hr style="border: none; border-top: 1px dashed #d4d7dc; margin: 1rem 0;">
             <div style="font-weight: bold;">Invoice details</div>
             <div>Invoice no: 1316</div>
-            <div>Terms: Net {{ $terms }}</div>
+            <div>Terms: {{ $terms }}</div>
             <div>Invoice date: {{ Carbon\Carbon::parse(today())->format('m/d/Y') }}</div>
             <div>Due date: {{ Carbon\Carbon::parse(today()->addDays($terms))->format('m/d/Y') }}</div>
         </div>
@@ -76,18 +76,25 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $counter = 1;
+                @endphp
+
                 @foreach($data as $item)
                 <tr>
-                    <td class="border-bottom" style="padding: 10px;">{{ $item['id'] }}.</td>
+                    <td class="border-bottom" style="padding: 10px;">{{ $counter }}.</td>
                     <td class="border-bottom" style="padding: 10px;">{{ Carbon\Carbon::parse($item['date'])->format('m/d/Y') }}</td>
                     <td class="border-bottom" style="font-weight: bold; padding: 10px;">{{ $item['patient_name'] }}</td>
                     <td class="border-bottom" style="padding: 10px;">{{ $item['description'] }}</td>
-                    <td class="border-bottom" style="padding: 10px; text-align: right;">${{ $item['amount'] }}</td>
+                    <td class="border-bottom" style="padding: 10px; text-align: right;">${{ number_format($item['amount'], 2) }}</td>
                 </tr>
+                @php
+                $counter++;
+                @endphp
                 @endforeach
                 <tr class="total-row">
                     <td colspan="5" class="border-bottom" style="padding: 10px; text-align: right; font-size: 15px; font-weight: bold;">
-                        Total <span style=" font-size: 25px; padding-left: 10px;">${{ $total }}</span>
+                        Total <span style=" font-size: 25px; padding-left: 10px;">${{ number_format($total, 2) }}</span>
                     </td>
                 </tr>
             </tbody>

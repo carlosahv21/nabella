@@ -35,9 +35,9 @@
                 <div class="input-group mb-2">
                     <select wire:model="terms" class="form-select" id="terms">
                         <option value="">Select a term</option>
-                        <option value="15">15</option>
-                        <option value="30">30</option>
-                        <option value="0">Today</option>
+                        <option value="Net 15">Net 15</option>
+                        <option value="Net 30">Net 30</option>
+                        <option value="Due on receipt">Due on receipt</option>
                     </select>
                 </div>
             </div>
