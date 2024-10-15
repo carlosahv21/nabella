@@ -8,7 +8,7 @@
                     <span class="input-group-text">
                         <i class="material-icons notranslate">search</i>
                     </span>
-                    <input wire:model="search" type="text" class="form-control" placeholder="Search service contract...">
+                    <input wire:model="search" type="text" class="form-control" placeholder="Search contract...">
                 </div>
             </div>
             <div class="col-12 col-lg-5 d-flex mt-3 me-4 justify-content-end">
@@ -26,7 +26,7 @@
                 </div>
                 @can('servicecontract.create')
                 <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
-                    <i class="material-icons notranslate">add</i> Add Service Contract
+                    <i class="material-icons notranslate">add</i> Add Contract
                 </button>
                 @endcan
             </div>
@@ -73,7 +73,7 @@
                                 <input wire:model="selected" class="form-check-input" type="checkbox" value="{{ $servicecontract->id }}" id="servicecontractCheck{{ $servicecontract->id }}">
                             </div>
                         </th>
-                        <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('d/m/Y')}} - {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('d/m/Y')}}</th>
+                        <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('m-d-Y')}} to {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('m-d-Y')}}</th>
                         <th> {{ $servicecontract->company }}</th>
                         <th>
                             <span class="my-2 text-xs">
@@ -94,7 +94,7 @@
         </div>
         @else
         <div class="d-flex justify-content-center py-6">
-            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no service contracts to show</span>
+            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no Contracts to show</span>
         </div>
         @endif
         <div class="d-flex justify-content-end py-1 mx-5">

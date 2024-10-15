@@ -43,7 +43,7 @@ class ServiceContracts extends Component
         }else if($action == 'masiveDelete'){
             $this->countServiceContracts = count($this->selected);
             if($this->countServiceContracts > 0){
-                $this->title_modal = 'Delete Service Contracts';
+                $this->title_modal = 'Delete Contracts';
                 $this->dispatchBrowserEvent('openModal', ['name' => 'deleteServiceContractMasive']);
             }else{
                 $this->sessionAlert([
@@ -222,7 +222,7 @@ class ServiceContracts extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteServiceContractMasive']);
 
         $data = [
-            'message' => 'Service Contracts deleted successfully!',
+            'message' => 'Contracts deleted successfully!',
             'type' => 'success',
             'icon' => 'delete',
         ];

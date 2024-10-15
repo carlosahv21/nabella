@@ -227,8 +227,6 @@ class Schedulings extends Component
         $this->fast_track = $model_scheduling_charge->fast_track;
         $this->if_not_cancel = $model_scheduling_charge->if_not_cancel;
 
-        // $this->updatedCheckIn();
-        // $this->updatedRCheckin();
     }
 
     private function clearForm()
@@ -265,6 +263,8 @@ class Schedulings extends Component
         if ($this->modelId) {
             $this->isEdit = true;
         }
+
+        $this->date = Carbon::createFromFormat('m-d-Y', $this->date)->format('Y-m-d');
 
         if ($this->auto_agend) {
             $this->saveAutoAgend();
@@ -362,7 +362,6 @@ class Schedulings extends Component
 
     public function saveAutoAgend()
     {
-
         if ($this->auto_agend) {
             $scheduling_address = SchedulingAddress::where('scheduling_autoagend_id', $this->schedule_autoagend_id)
                 ->where('date', '>=', $this->date)
@@ -480,12 +479,11 @@ class Schedulings extends Component
                 $drop_off = $this->r_check_in;
             }
 
-            $date = Carbon::createFromFormat('m-d-Y', '10-14-2024')->toDateString();
             $scheduling_address = new SchedulingAddress;
             $scheduling_address->scheduling_id = $scheduling->id;
             $scheduling_address->scheduling_autoagend_id = SchedulingAutoagend::get()->first()->id;
             $scheduling_address->driver_id = ($type == 'pick_up') ? $this->pick_up_driver_id : $this->drop_off_driver_id;
-            $scheduling_address->date = ($auto_agend) ? Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d') : Carbon::createFromFormat('m-d-Y', $this->date)->format('Y-m-d');
+            $scheduling_address->date = ($auto_agend) ? $date : $this->date;
             $scheduling_address->pick_up_address = $addresses[$i]['address'];
             $scheduling_address->drop_off_address = $addresses[$i + 1]['address'];
             $scheduling_address->pick_up_hour = $check_in;
@@ -995,7 +993,7 @@ class Schedulings extends Component
     {
         $scheduling = Scheduling::all();
         $events = [];
-        $driverColors = [];
+        $driverColors = $this->assignColorsToDrivers();
 
         foreach ($scheduling as $event) {
             $sql = "SELECT * FROM scheduling_address WHERE scheduling_id = '$event->id'";
@@ -1015,10 +1013,6 @@ class Schedulings extends Component
             foreach ($scheduling_address as $address) {
                 $driver_id = $address->driver_id;
 
-                if (!isset($driverColors[$driver_id])) {
-                    $driverColors[$driver_id] = $this->colors[$driver_id - 1];
-                }
-
                 $events[] = [
                     'id' => $event->id,
                     'driver_id' => $driver_id,
@@ -1029,10 +1023,31 @@ class Schedulings extends Component
                     'className' => ($address->status == 'Canceled') ? 'cancelled-event' : '',
                 ];
             }
-
         }
 
         return $events;
+    }
+
+    function assignColorsToDrivers() {
+        // Definir una paleta de colores atractivos para un calendario
+        $driverColors = [];
+        $paletteSize = count($this->colors);
+    
+        $drivers = DB::table('users')
+        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+        ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+        ->select('users.*')
+        ->where('roles.name', '=', 'Driver')
+        ->where('users.id', '!=', auth()->id())
+        ->get();
+
+        // Asignar colores cíclicamente a cada conductor
+        foreach ($drivers as $index => $driverId) {
+            $colorIndex = $index % $paletteSize; // Ciclar sobre la paleta
+            $driverColors[$driverId->id] = $this->colors[$colorIndex];
+        }
+    
+        return $driverColors;
     }
 
     public function validateFields()

@@ -52,9 +52,9 @@
                         <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
                         @elseif($isEdit)
                         <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                            @if($if_not_cancel)
-                            <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
-                            @endif
+                        @if($if_not_cancel)
+                        <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
+                        @endif
                         @else
                         <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
                         @endif
@@ -406,7 +406,7 @@
             }
         },
         dayMaxEventRows: true, // for all non-TimeGrid views
-        eventoMaxStack : true,
+        eventoMaxStack: true,
         eventClick: function(info) {
             Livewire.emit('editEvent', info.event.id);
         },
@@ -437,7 +437,7 @@
                         dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
                     }
                 },
-                eventoMaxStack : true,
+                eventoMaxStack: true,
                 events: events,
                 editable: true,
                 selectable: true,
