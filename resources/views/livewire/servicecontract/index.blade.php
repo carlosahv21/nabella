@@ -157,6 +157,7 @@
                                     <hr class="dark horizontal">
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Wheelchair</label>
                                             <input wire:model="wheelchair" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
@@ -168,6 +169,7 @@
                                     </div>
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Ambulatory</label>
                                             <input wire:model="ambulatory" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
@@ -179,6 +181,7 @@
                                     </div>
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">After Hours</label>
                                             <input wire:model="out_of_hours" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
@@ -190,6 +193,7 @@
                                     </div>
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Saturdays</label>
                                             <input wire:model="saturdays" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
@@ -201,6 +205,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Sundays/Holidays</label>
                                             <input wire:model="sundays_holidays" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
@@ -212,6 +217,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Accompanist</label>
                                             <input wire:model="companion" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
@@ -224,6 +230,7 @@
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <label class="form-label">Waiting Charge</label>
+                                            <span class="input-group-text">$</span>
                                             <input wire:model="additional_waiting" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('additional_waiting'))
@@ -246,6 +253,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Quick Pass</label>
                                             <input wire:model="fast_track" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
@@ -257,6 +265,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Cancel</label>
                                             <input wire:model="if_not_cancel" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
@@ -269,6 +278,7 @@
 
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Rate Per Mile</label>
                                             <input wire:model="rate_per_mile" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
@@ -280,6 +290,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">Overcharge</label>
                                             <input wire:model="overcharge" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
