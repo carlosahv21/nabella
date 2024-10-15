@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\ServiceContract;
 use Carbon\Carbon;
+use Exception;
 
 use Livewire\WithPagination;
 
@@ -88,8 +89,8 @@ class ServiceContracts extends Component
         $this->phone = $model->phone;
         $this->state = $model->state;
         $this->email = $model->email;
-        $this->date_start = $model->date_start;
-        $this->date_end = $model->date_end;
+        $this->date_start = Carbon::createFromFormat('Y-m-d', $model->date_start)->format('m-d-Y');
+        $this->date_end = Carbon::createFromFormat('Y-m-d', $model->date_end)->format('m-d-Y');
     }
 
     public function updatedSelectedAll($value)
@@ -141,6 +142,29 @@ class ServiceContracts extends Component
             $this->validate();
         }
 
+        $formats = ['Y-m-d', 'm-d-Y', 'd-m-Y', 'Y/m/d', 'm/d/Y', 'd/m/Y']; // Lista de formatos comunes
+
+        foreach ($formats as $format) {
+            try {
+                // Intentamos crear la fecha con cada formato
+                $convertedDateStart = Carbon::createFromFormat($format, $this->date_start)->format('Y-m-d');
+                $convertedDateEnd = Carbon::createFromFormat($format, $this->date_start)->format('Y-m-d');
+
+                break; // Si logra convertir, se sale del ciclo
+            } catch (Exception $e) {
+                // Si falla, continúa con el siguiente formato
+                continue;
+            }
+        }
+
+        if (!$convertedDateStart) {
+            $convertedDateStart = Carbon::now()->format('Y-m-d');
+        }
+
+        if(!$convertedDateEnd){
+            $convertedDateEnd = Carbon::now()->format('Y-m-d');
+        }
+
         $servicecontract->company = $this->company;
         $servicecontract->contact_name = $this->contact_name;
         $servicecontract->wheelchair = ($this->wheelchair) ? $this->wheelchair : 0;
@@ -157,8 +181,8 @@ class ServiceContracts extends Component
         $servicecontract->overcharge = ($this->overcharge) ? $this->overcharge : 0;
         $servicecontract->address = $this->address;
         $servicecontract->phone = $this->phone;
-        $servicecontract->date_start = Carbon::createFromFormat('m-d-Y', $this->date_start)->format('Y-m-d');
-        $servicecontract->date_end =Carbon::createFromFormat('m-d-Y', $this->date_end)->format('Y-m-d');
+        $servicecontract->date_start = $convertedDateStart;
+        $servicecontract->date_end = $convertedDateEnd;
         $servicecontract->state = $this->state;
         $servicecontract->email = $this->email;
         

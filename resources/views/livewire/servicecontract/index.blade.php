@@ -153,7 +153,7 @@
                                         @endif
                                     </div>
                                     <hr class="dark horizontal">
-                                    <label class="form-label mb-3">Rate config</label>
+                                    <label class="form-label mb-3">Rates</label>
                                     <hr class="dark horizontal">
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
@@ -223,7 +223,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
-                                            <label class="form-label">Additional waiting</label>
+                                            <label class="form-label">Waiting Charge</label>
                                             <input wire:model="additional_waiting" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
                                         @if ($errors->has('additional_waiting'))
@@ -257,7 +257,7 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
-                                            <label class="form-label">If not cancel</label>
+                                            <label class="form-label">Cancel</label>
                                             <input wire:model="if_not_cancel" type="text" class="form-control" min="0" placeholder="0">
                                         </div>
                                         @if ($errors->has('if_not_cancel'))

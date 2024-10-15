@@ -230,7 +230,7 @@
                                                 </span>
                                                 <div class="timeline-content">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Estimated Pickup time {{ $event['date'] }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
+                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Estimated Pickup time {{ \Carbon\Carbon::parse($event['date'])->format('m-d-Y') }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
                                                 </div>
                                                 <div class="timeline-content pt-3">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['drop_off_address'] }}</h6>
@@ -314,7 +314,7 @@
                                         <label>Date</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons notranslate text-sm me-1">calendar_today</i>
-                                            {{ $date }}
+                                            {{ \Carbon\Carbon::parse($date)->format('m-d-Y') }}
                                         </span>
                                     </div>
 
@@ -365,7 +365,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label">After Hour</label>
+                                            <label class="custom-control-label">After Hours</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             @if($saturdays)
@@ -413,7 +413,7 @@
                                                 <i class="material-icons notranslate text-sm me-1">check</i>
                                             </span>
                                             @endif
-                                            <label class="custom-control-label">If not cancel</label>
+                                            <label class="custom-control-label">Cancel</label>
                                         </div>
                                     </div>
                                 </div>
@@ -474,7 +474,7 @@
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
-                                            <label class="custom-control-label" for="customOutOfHours">After Hour</label>
+                                            <label class="custom-control-label" for="customOutOfHours">After Hours</label>
                                         </div>
                                         <div class="form-check mb-3 col-md-4">
                                             <input wire.ignore.self wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
