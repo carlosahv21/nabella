@@ -14,6 +14,7 @@ use App\Models\SchedulingAutoagend;
 use App\Models\ApisGoogle;
 use App\Models\ApiHoliday;
 use Illuminate\Support\Carbon;
+use Exception;
 
 use Illuminate\Support\Facades\DB;
 
@@ -263,8 +264,27 @@ class Schedulings extends Component
         if ($this->modelId) {
             $this->isEdit = true;
         }
+        $formats = ['Y-m-d', 'm-d-Y', 'd-m-Y', 'Y/m/d', 'm/d/Y', 'd/m/Y']; // Lista de formatos comunes
 
-        $this->date = Carbon::createFromFormat('m-d-Y', $this->date)->format('Y-m-d');
+        foreach ($formats as $format) {
+            try {
+                // Intentamos crear la fecha con cada formato
+                $convertedDate = Carbon::createFromFormat($format, $this->date)->format('Y-m-d');
+                break; // Si logra convertir, se sale del ciclo
+            } catch (Exception $e) {
+                // Si falla, continúa con el siguiente formato
+                continue;
+            }
+        }
+
+        if (!$convertedDate) {
+            // Si no logró convertir la fecha, puedes manejar el error de alguna forma
+            // Por ejemplo, asignando una fecha por defecto
+            $convertedDate = Carbon::now()->format('Y-m-d');
+        }
+        
+        $this->date = $convertedDate;
+
 
         if ($this->auto_agend) {
             $this->saveAutoAgend();
