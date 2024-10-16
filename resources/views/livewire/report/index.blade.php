@@ -51,7 +51,7 @@
     
     @if($invoice)
     <div>
-        <iframe src="{{ asset($invoice) }}" width="100%" class="pdf-frame p-2" style="height: 1500px;"></iframe>
+        <iframe src="{{ $invoice }}" width="100%" class="pdf-frame p-2" style="height: 1500px;"></iframe>
     </div>
     @endif
 </div>

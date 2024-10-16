@@ -15244,9 +15244,9 @@ hr.horizontal {
   font-variant: normal;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Material Icons';
   font-weight: 700;
-  content: "\f107";
+  content: "\e313";
   margin-left: auto;
   color: rgba(206, 212, 218, 0.7);
   transition: all 0.2s ease-in-out; }

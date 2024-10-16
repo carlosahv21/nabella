@@ -4,10 +4,10 @@
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand m-0 d-flex text-wrap align-items-center" href=" {{ route('dashboard') }} ">
-                <img src="{{ asset('assets') }}/img/logo_nabella_black.png" class="navbar-brand-img h-100" alt="main_logo">
-                <span class="ms-2 font-weight-bold text-white">Nabella Transportation LLC</span>
-            </a>
+        <a class="navbar-brand m-0 d-flex text-wrap align-items-center" href=" {{ route('dashboard') }} ">
+            <img src="{{ asset('assets') }}/img/logo_nabella_black.png" class="navbar-brand-img h-100" alt="main_logo">
+            <span class="ms-2 font-weight-bold text-white">Nabella Transportation LLC</span>
+        </a>
     </div>
     <hr class="horizontal light mt-0 mb-2">
     <div class="collapse navbar-collapse  w-auto h-auto" id="sidenav-collapse-main">
@@ -82,14 +82,32 @@
             </li>
             @endcan
             @can ('report.view')
+
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'reports' ? ' active bg-gradient-primary' : '' }} "
-                    href="{{ route('reports') }}">
+                <a data-bs-toggle="collapse" href="#reportExamples" class="nav-link text-white {{ Route::currentRouteName() == 'reports' || Route::currentRouteName() == 'seeReports' ? ' active' : 'collapsed' }} " aria-controls="reportExamples" role="button" aria-expanded="false">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons notranslate">assessment</i>
                     </div>
                     <span class="nav-link-text ms-1">Report</span>
                 </a>
+                <div class="collapse {{ Route::currentRouteName() == 'reports' || Route::currentRouteName() == 'seeReports' ? ' show' : '' }} " id="reportExamples">
+                    <ul class="nav ">
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'reports' ? ' active bg-gradient-primary' : '' }}" href="{{ route('reports') }}">
+                                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="material-icons notranslate">picture_as_pdf</i>
+                                </div>
+                                <span class="sidenav-normal  ms-2  ps-1"> Generate </span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'seeReports' ? ' active bg-gradient-primary' : '' }}" href="{{ route('seeReports') }}">
+                                <span class="sidenav-mini-icon"> S </span>
+                                <span class="sidenav-normal  ms-2  ps-1"> See reports </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
             @endcan
             @can ('dashboard.view')

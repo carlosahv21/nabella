@@ -65,6 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('facility', Facilities::class)->middleware('can:facility.view')->name('facility');
     Route::get('scheduling', Schedulings::class)->middleware('can:scheduling.view')->name('scheduling');
     Route::get('reports', Reports::class)->middleware('can:report.view')->name('reports');
+    Route::get('seeReports', Reports::class)->middleware('can:report.view')->name('seeReports');
     Route::get('dashboard', Dash::class)->name('dashboard');
     Route::get('profile/{id}', Profile::class)->name('profile');
     Route::get('destroy', Logout::class)->name('destroy');

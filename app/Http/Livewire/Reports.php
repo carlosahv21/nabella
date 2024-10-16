@@ -7,11 +7,27 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use App\Models\ServiceContract;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class Reports extends Component
 {
     public $date_range, $service_contract_id, $invoice, $terms;
     public $data_report = [];
+
+    public $showDetailed = false;
+    public $pdfFiles = [];
+
+    public function mount()
+    {
+        // Determinar qué vista cargar basado en la ruta
+        $routeName = request()->route()->getName();
+        $this->showDetailed = $routeName === 'seeReports';
+
+        // Cargar los archivos PDF si se muestra la vista detallada
+        if ($this->showDetailed) {
+            $this->loadPdfFiles();
+        }
+    }
 
     public function generateReport()
     {
@@ -39,11 +55,11 @@ class Reports extends Component
 
         $range = explode(' to', $this->date_range);
 
-        $sql = "SELECT scheduling_address.* FROM scheduling_address inner join schedulings on schedulings.id = scheduling_address.scheduling_id inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND scheduling_address.date BETWEEN '". $range[0]. "' AND '". $range[1]. "' ORDER BY scheduling_address.date";
+        $sql = "SELECT scheduling_address.* FROM scheduling_address inner join schedulings on schedulings.id = scheduling_address.scheduling_id inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND scheduling_address.date BETWEEN '" . $range[0] . "' AND '" . $range[1] . "' ORDER BY scheduling_address.date";
 
         $schedulings = DB::select($sql);
 
-        if(count($schedulings) == 0) {
+        if (count($schedulings) == 0) {
             $this->sessionAlert([
                 'message' => 'No schedulings found for the selected date range!',
                 'type' => 'danger',
@@ -53,10 +69,9 @@ class Reports extends Component
         }
 
         $service_contract = DB::table('service_contracts')->where('id', $this->service_contract_id)->get()->first();
-        $facility = DB::select('SELECT * FROM facilities f inner join addresses a on a.facility_id = f.id WHERE f.service_contract_id = '.$this->service_contract_id.'  LIMIT 1');
+        $facility = DB::select('SELECT * FROM facilities f inner join addresses a on a.facility_id = f.id WHERE f.service_contract_id = ' . $this->service_contract_id . '  LIMIT 1');
 
         foreach ($schedulings as $scheduling) {
-            
             $data[$scheduling->scheduling_id]['id'] = $scheduling->scheduling_id;
             $data[$scheduling->scheduling_id]['date'] = $scheduling->date;
             $data[$scheduling->scheduling_id]['patient_name'] = $this->getPatient($scheduling);
@@ -70,12 +85,40 @@ class Reports extends Component
                 'pick_up_hour' => $scheduling->pick_up_hour,
             ];
             $data[$scheduling->scheduling_id]['charge'] = $this->getCharge($scheduling);
-
         }
 
         $data = $this->sanitizeData($data);
 
-        $filePath = 'pdfs/'.time().'-invoice.pdf';
+        $this->saveInvoicePdf($data, $service_contract, $facility);
+    }
+
+    function getWeekOfMonth($date)
+    {
+        // Obtener la semana en que cae el primer día del mes
+        $firstDayOfMonth = date('Y-m-01', strtotime($date));
+        $firstDayWeekNumber = date('W', strtotime($firstDayOfMonth));
+
+        // Calcular la semana del año para la fecha actual
+        $currentWeekNumber = date('W', strtotime($date));
+
+        // Determinar la semana del mes
+        return $currentWeekNumber - $firstDayWeekNumber + 1;
+    }
+
+    function saveInvoicePdf($data, $service_contract, $facility)
+    {
+        // Obtener el año, mes y semana actual
+        $year = date('Y');
+        $month = date('F');
+        $weekOfMonth = $this->getWeekOfMonth(now());
+
+        // Definir la ruta de almacenamiento
+        $directoryPath = "public/pdfs/{$year}/{$month}/week{$weekOfMonth}";
+
+        // Verificar si el directorio existe, si no, crearlo
+        if (!Storage::exists($directoryPath)) {
+            Storage::makeDirectory($directoryPath, 0755, true);
+        }
 
         $pdf = Pdf::loadView('livewire.report.pdf', [
             'data' => $data,
@@ -84,19 +127,25 @@ class Reports extends Component
             'total' => array_sum(array_column($data, 'amount')),
             'terms' => $this->terms
         ]);
-    
-        $pdf->save($filePath);
-        $this->invoice = $filePath;
 
+        $fileName = time() . '-invoice.pdf';
+
+        $filePath = "{$directoryPath}/{$fileName}";
+
+        $pdf->save(storage_path("app/{$filePath}"));
+
+        $this->invoice = Storage::url("pdfs/{$year}/{$month}/week{$weekOfMonth}/{$fileName}");
     }
 
-    public function getPatient($scheduling_address){
+    public function getPatient($scheduling_address)
+    {
         $scheduling = DB::table('schedulings')->where('id', $scheduling_address->scheduling_id)->get()->first();
         $patient = DB::table('patients')->where('id', $scheduling->patient_id)->get()->first();
         return $patient->first_name . ' ' . $patient->last_name;
     }
 
-    public function getCharge($scheduling){
+    public function getCharge($scheduling)
+    {
         $scheduling_charge = DB::table('scheduling_charge')->where('scheduling_id', $scheduling->scheduling_id)->get()->first();
 
         return [
@@ -112,7 +161,8 @@ class Reports extends Component
         ];
     }
 
-    public function sanitizeData($schedulings){
+    public function sanitizeData($schedulings)
+    {
 
         foreach ($schedulings as $key => $scheduling) {
             $schedulings[$key]['description'] = $this->getDescription($scheduling);
@@ -122,12 +172,13 @@ class Reports extends Component
             unset($schedulings[$key]['address']);
             unset($schedulings[$key]['request_by']);
             unset($schedulings[$key]['service_contract']);
-        }   
+        }
 
         return $schedulings;
     }
 
-    public function getAmount($scheduling){
+    public function getAmount($scheduling)
+    {
         $service_contract = DB::table('service_contracts')->where('id', $scheduling['service_contract'])->get()->first();
 
         if ($scheduling['charge']['wheelchair']) {
@@ -141,10 +192,10 @@ class Reports extends Component
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {
             $distance_number = array_sum(array_column($scheduling['address'], 'distance'));
             $amount = $distance_number * $service_contract->rate_per_mile;
-        }else{
+        } else {
             $pick_up = $scheduling['address']['pick_up']['distance'] * $service_contract->rate_per_mile;
             $drop_off = $scheduling['address']['pick_up']['distance'] * $service_contract->rate_per_mile;
-            
+
             $amount = $pick_up + $drop_off;
         }
 
@@ -175,7 +226,7 @@ class Reports extends Component
 
     public function getDescription($scheduling)
     {
-        $description= '';
+        $description = '';
 
         if ($scheduling['charge']['wheelchair']) {
             $description .= 'WHEELCHAIR. ';
@@ -187,9 +238,9 @@ class Reports extends Component
 
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {
             $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'] . '. ';
-        }else{
+        } else {
             $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'];
-            if(in_array('return', $scheduling['address'])){
+            if (in_array('return', $scheduling['address'])) {
                 $description .= '. And return to: ' . $scheduling['address']['return']['drop_off_address'] . '. ';
             }
         }
@@ -224,7 +275,7 @@ class Reports extends Component
         }
 
         if ($scheduling['request_by']) {
-            $description .= 'Transportation was requested by ' . $scheduling['request_by'] . '. Patient was picked up at '. $scheduling['address']['pick_up']['pick_up_hour'] . '. ';
+            $description .= 'Transportation was requested by ' . $scheduling['request_by'] . '. Patient was picked up at ' . $scheduling['address']['pick_up']['pick_up_hour'] . '. ';
         }
 
         $distance_number = array_sum(array_column($scheduling['address'], 'distance'));
@@ -240,8 +291,34 @@ class Reports extends Component
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
 
+    public function loadPdfFiles()
+    {
+        // Ruta base donde se guardan los PDFs
+        $baseDirectory = 'public/pdfs'; // Usa la ruta relativa en `storage/app/public`
+
+        // Obtener todos los archivos recursivamente
+        $files = Storage::allFiles($baseDirectory);
+
+        // Crear URLs para cada archivo PDF
+        $this->pdfFiles = array_filter(array_map(function ($file) {
+            if (pathinfo($file, PATHINFO_EXTENSION) === 'pdf') {
+                return [
+                    'name' => basename($file),
+                    'url' => Storage::url(str_replace('public/', '', $file))
+                ];
+            }
+            return null;
+        }, $files));
+    }
+
     public function render()
     {
+        if ($this->showDetailed) {
+            return view('livewire.report.seeReports', [
+                'pdfFiles' => $this->pdfFiles,
+            ]);
+        }
+
         $driver = DB::table('users')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
