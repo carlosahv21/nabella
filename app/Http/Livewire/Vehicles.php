@@ -5,17 +5,22 @@ namespace App\Http\Livewire;
 use App\Models\Vehicle;
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
+use Livewire\WithFileUploads;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class Vehicles extends Component
 {
-    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle = '';
+
+    use WithFileUploads, WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle, $fileVehicle, $seeFileVehicle, $image_key = '';
+
     public $selected = [];
     public $selectedAll = false;
     public $make, $model, $year, $vin = '';
@@ -24,7 +29,8 @@ class Vehicles extends Component
     protected $rules=[
         'make' => 'required|min:3',
         'model' => 'required|min:3',
-        'year' => 'required|numeric|min_digits:4'
+        'year' => 'required|numeric|min_digits:4',
+        'fileVehicle' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
     ];
 
     protected $listeners = [
@@ -76,6 +82,8 @@ class Vehicles extends Component
         $this->vin = null;
         $this->number_vehicle = null;
         $this->user_id = null;
+        $this->seeFileVehicle = null;
+        $this->image_key = rand();
         $this->driver = null;
         $this->isEdit = false;
 
@@ -103,6 +111,7 @@ class Vehicles extends Component
         $this->model = $model->model;
         $this->year = $model->year;
         $this->vin = $model->vin;
+        $this->seeFileVehicle = $model->image;
         $this->number_vehicle = $model->number_vehicle;
         $this->user_id = $model->user_id;
         $this->driver = User::find($this->user_id)->name ?? '';
@@ -121,14 +130,20 @@ class Vehicles extends Component
         if($this->modelId){
             $vehicle = Vehicle::findOrFail($this->modelId);
             $this->isEdit = true;
+            // Delete old image
+            if($vehicle->image){
+                Storage::delete('public/' . $vehicle->image);
+            }
         }else{
             $vehicle = new Vehicle;
         }
+        $filename = $this->fileVehicle->store('images/vehicle', 'public');
 
         $vehicle->make = $this->make;
         $vehicle->model = $this->model;
         $vehicle->year = $this->year;
         $vehicle->vin = $this->vin;
+        $vehicle->image = $filename;
         $vehicle->user_id = $this->user_id;
         
         $vehicle->save();
@@ -221,6 +236,17 @@ class Vehicles extends Component
             }
         }
         return false;
+    }
+
+    public function deleteImage(){
+        if($this->fileVehicle){
+            $this->fileVehicle = null;
+        }
+
+        if($this->seeFileVehicle){
+            $this->seeFileVehicle = null;
+        }
+        $this->image_key = rand();
     }
 
     public function render()

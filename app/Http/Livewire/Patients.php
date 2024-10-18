@@ -8,6 +8,7 @@ use App\Models\Address;
 use App\Models\Scheduling;
 use App\Models\SchedulingAddress;
 use App\Models\SchedulingCharge;
+use App\Models\ApisGoogle;
 
 use Illuminate\Support\Facades\DB;
 
@@ -22,9 +23,15 @@ class Patients extends Component
     public $service_contract_id, $first_name, $last_name, $birth_date, $phone1, $phone2, $medicalid, $billing_code, $emergency_contact, $date_start, $date_end, $observations, $modelId = '';
     public $selectedAll = false;
 
-    public $inputs = [];
-    public $state = [];
-    public $zipcode = [];
+    public $stops = [
+        [
+            'address' => '',
+            'addresses' => []
+        ]
+    ];
+
+    public $description = [];
+    
     public $inputs_view = [];
     public $type = 'Patient';
 
@@ -32,10 +39,17 @@ class Patients extends Component
     public $item, $action, $search, $title_modal, $countPatients = '';
     public $isEdit = false;
 
+    public $google;
+
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
     ];
+
+    public function __construct()
+    {
+        $this->google = new ApisGoogle();
+    }
 
     protected function rules()
     {
@@ -90,6 +104,24 @@ class Patients extends Component
         }
     }
 
+    public function updateStop($index, $query)
+    {
+        $this->stops[$index]['address'] = $query;
+
+        if (strlen($query) >= 3) {
+            $googlePredictions = $this->google->getPlacePredictions($query);
+            $this->stops[$index]['addresses'] = $googlePredictions;
+        } else {
+            $this->stops[$index]['addresses'] = [];
+        }
+    }
+
+    public function selectStopAddress($index, $address)
+    {
+        $this->stops[$index]['address'] = $address;
+        $this->stops[$index]['addresses'] = [];
+    }
+
     public function getModelId($modelId)
     {
         $this->modelId = $modelId;
@@ -126,11 +158,17 @@ class Patients extends Component
         $this->date_end = null;
         $this->observations = null;
         $this->isEdit = false;
-        $this->inputs = [];
-        $this->state = [];
-        $this->zipcode = [];
         $this->inputs_view = [];
         $this->modelId = null;
+
+        $this->stops = [
+            [
+                'address' => '',
+                'addresses' => []
+            ]
+        ];
+
+        $this->description = [];
     }
 
     public function save()
@@ -159,16 +197,17 @@ class Patients extends Component
 
         $patient->save();
 
-        if ($this->inputs) {
-            for ($i = 0; $i < count($this->inputs); $i++) {
-                if (empty($this->inputs[$i]) || empty($this->state[$i]) || empty($this->zipcode[$i])) {
+        if ($this->stops) {
+            for ($i = 0; $i < count($this->stops); $i++) {
+                if (empty($this->stops[$i])) {
                     continue;
                 }
 
                 $address = new Address;
 
                 $address->patient_id = $patient->id;
-                $address->address = $this->inputs[$i] . ', ' . $this->state[$i] . ', ' . $this->zipcode[$i];
+                $address->address = $this->stops[$i]['address'];
+                $address->description = $this->description[$i];
                 $address->entity_type = $this->type;
 
                 $address->save();
@@ -306,15 +345,15 @@ class Patients extends Component
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
 
-    public function addInput()
+    public function addStop()
     {
-        $this->inputs[] = '';
+        $this->stops[] = ['address' => '', 'addresses' => []];
     }
 
-    public function removeInput($index)
+    public function removeStop($index)
     {
-        unset($this->inputs[$index]);
-        $this->inputs = array_values($this->inputs); // Reindex array
+        unset($this->stops[$index]);
+        $this->stops = array_values($this->stops); // Reindex array
     }
 
     public function render()

@@ -115,9 +115,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{$title_modal}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal">
-                    <i class="material-icons notranslate">close</i>
-                </button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="card card-plain h-100">
@@ -224,33 +224,37 @@
                                             <label class="form-label">
                                                 <i class="material-icons notranslate">location_on</i>
                                                 {{ $input->address }} </label>
-                                                <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input->id }})">
-                                                    <i class="material-icons notranslate">delete</i>
-                                                </button>
+                                            <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input->id }})">
+                                                <i class="material-icons notranslate">delete</i>
+                                            </button>
                                         </div>
                                         @endforeach
                                         <hr class="dark horizontal">
                                     </div>
                                     @endif
                                     <div class="mb-3 col-md-12">
-                                        <label class="form-label">Address</label>
-                                        <button type="button" wire:click="addInput" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add address">
+                                        <label class="form-label">Address, city and state</label>
+                                        <button type="button" wire:click="addStop" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Add address">
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         <!-- Add new address -->
-                                        @foreach($inputs as $index => $input)
-                                        <div class="row mb-3 me-3">
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="inputs.{{ $index }}" placeholder="Address and city">
+                                        @foreach ($stops as $index => $stop)
+                                        <div class="mb-3 row">
+                                            <div class="col-md-7">
+                                                <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="New address" wire:input="updateStop({{ $index }}, $event.target.value)">
+                                                @if (!empty($stops[$index]['addresses']))
+                                                <ul class="list-group predictions shadow-sm">
+                                                    @foreach ($stops[$index]['addresses'] as $address)
+                                                    <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $index }}, '{{ $address }}')">{{ $address }}</li>
+                                                    @endforeach
+                                                </ul>
+                                                @endif
                                             </div>
-                                            <div class="col-md-2">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="state.{{ $index }}" placeholder="State">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="zipcode.{{ $index }}" placeholder="Zipcode">
+                                            <div class="col-md-4">
+                                                <input class="form-control border border-2 p-2" type="text" wire:model="description.{{ $index }}" placeholder="Apt/Suit/Office/Floor">
                                             </div>
                                             <div class="col-md-1">
-                                                <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeInput({{ $index }})">
+                                                <button type="button" class="btn btn-link text-danger text-gradient p-0 d-flex justify-center" wire:click="removeStop({{ $index }})" style="margin-top: 0.8rem;">
                                                     <i class="material-icons notranslate">delete</i>
                                                 </button>
                                             </div>
@@ -284,9 +288,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{$title_modal}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal">
-                    <i class="material-icons notranslate">close</i>
-                </button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     Al borrar este paciente se eliminaran los agendamientos desde {{ Carbon\Carbon::parse(today())->format('m/d/Y') }} en adelante, Deseas continuar?
@@ -304,9 +308,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{$title_modal}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal">
-                    <i class="material-icons notranslate">close</i>
-                </button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     Deseas eliminar estos {{ $countPatients }} registros?
@@ -319,5 +323,3 @@
         </div>
     </div>
 </div>
-
-<!-- <script src="{{asset('public/assets/js/users.js') }}"></script> -->

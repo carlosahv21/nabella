@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Facility;
 use App\Models\Address;
 use App\Models\ServiceContract;
+use App\Models\ApisGoogle;
 
 use Livewire\WithPagination;
 
@@ -21,10 +22,17 @@ class Facilities extends Component
     public $selected = [];
     public $isEdit = false;
 
-    public $inputs = [];
-    public $zipcode = [];
+    public $stops = [
+        [
+            'address' => '',
+            'addresses' => []
+        ]
+    ];
+
     public $inputs_view = [];
     public $type = 'Facility';
+
+    public $google;
 
     protected $rules=[
         'name' => 'required',
@@ -35,6 +43,11 @@ class Facilities extends Component
         'getModelId',
         'forcedCloseModal',
     ];
+
+    public function __construct()
+    {
+        $this->google = new ApisGoogle();
+    }
     
     public function selectItem($item, $action)
     {
@@ -80,6 +93,25 @@ class Facilities extends Component
         }
     }
 
+    public function updateStop($index, $query)
+    {
+        $this->stops[$index]['address'] = $query;
+
+        if (strlen($query) >= 3) {
+            $googlePredictions = $this->google->getPlacePredictions($query);
+            $this->stops[$index]['addresses'] = $googlePredictions;
+        } else {
+            $this->stops[$index]['addresses'] = [];
+        }
+    }
+
+    public function selectStopAddress($index, $address)
+    {
+        $this->stops[$index]['address'] = $address;
+        $this->stops[$index]['addresses'] = [];
+    }
+
+
     public function getModelId($modelId)
     {
 
@@ -105,8 +137,14 @@ class Facilities extends Component
         $this->city = null;
         $this->state = null;
         $this->isEdit = false;
-        $this->inputs = [];
         $this->inputs_view = [];
+
+        $this->stops = [
+            [
+                'address' => '',
+                'addresses' => []
+            ]
+        ];
     }
 
     public function removeAddress($index, $id)
@@ -252,15 +290,15 @@ class Facilities extends Component
         return false;
     }
 
-    public function addInput()
+    public function addStop()
     {
-        $this->inputs[] = '';
+        $this->stops[] = ['address' => '', 'addresses' => []];
     }
 
-    public function removeInput($index)
+    public function removeStop($index)
     {
-        unset($this->inputs[$index]);
-        $this->inputs = array_values($this->inputs); // Reindex array
+        unset($this->stops[$index]);
+        $this->stops = array_values($this->stops); // Reindex array
     }
 
     function sessionAlert($data) {

@@ -71,7 +71,7 @@
                                     <label class="form-label">Patient</label>
                                     <input class="form-control border border-2 p-2" type="text" wire:model="patient_name" wire:input="checkPatientName($event.target.value)" placeholder="Patient" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($search_patients))
-                                    <ul class="list-group">
+                                    <ul class="list-group predictions shadow-sm">
                                         @foreach ($search_patients as $patient)
                                         <li class="list-group-item cursor-pointer" wire:click="selectPatient({{ $patient['id'] }})">{{ $patient['name'] }}</li>
                                         @endforeach
@@ -160,7 +160,7 @@
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_pick_up_address))
-                                    <ul class="list-group">
+                                    <ul class="list-group predictions shadow-sm">
                                         @foreach ($prediction_pick_up_address as $address_pick_up)
                                         <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_pick_up }}', 'pick_up_address', 'prediction_pick_up_address')">{{ $address_pick_up }}</li>
                                         @endforeach
@@ -172,7 +172,7 @@
                                     <div class="col-md-10">
                                         <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value, 'stops')" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($stops[$index]['addresses']))
-                                        <ul class="list-group">
+                                        <ul class="list-group predictions shadow-sm">
                                             @foreach ($stops[$index]['addresses'] as $address)
                                             <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $index }}, '{{ $address }}', 'stops')">{{ $address }}</li>
                                             @endforeach
@@ -236,7 +236,7 @@
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Driver´s Location" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_location_driver))
-                                    <ul class="list-group">
+                                    <ul class="list-group predictions shadow-sm">
                                         @foreach ($prediction_location_driver as $address_location_driver)
                                         <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_location_driver }}', 'location_driver', 'prediction_location_driver')">{{ $address_location_driver }}</li>
                                         @endforeach
@@ -247,7 +247,7 @@
                                     <div class="col-md-10">
                                         <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($prediction_return_pick_up_address))
-                                        <ul class="list-group">
+                                        <ul class="list-group predictions shadow-sm">
                                             @foreach ($prediction_return_pick_up_address as $address_pick_up)
                                             <li class="list-group-item cursor-pointer" wire:click="addPickUp('{{ $address_pick_up }}', 'return_pick_up_address', 'prediction_return_pick_up_address')">{{ $address_pick_up }}</li>
                                             @endforeach
@@ -265,7 +265,7 @@
                                     <div class="col-md-10">
                                         <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQuery({{ $r_index }}, $event.target.value, 'r_stops')" @if($if_not_cancel) disabled @endif>
                                         @if (!empty($r_stops[$r_index]['addresses']))
-                                        <ul class="list-group">
+                                        <ul class="list-group predictions shadow-sm">
                                             @foreach ($r_stops[$r_index]['addresses'] as $address)
                                             <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $r_index }}, '{{ $address }}', 'r_stops')">{{ $address }}</li>
                                             @endforeach

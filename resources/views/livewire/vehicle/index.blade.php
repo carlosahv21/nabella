@@ -60,8 +60,10 @@
                                 <input wire:model="selectedAll" class="form-check-input" type="checkbox" value="true" id="userCheck55">
                             </div>
                         </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Year</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Make</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Model</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vin</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Driver</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
@@ -74,20 +76,42 @@
                                 <input wire:model="selected" class="form-check-input" type="checkbox" value="{{ $vehicle->id }}" id="vehicleCheck{{ $vehicle->id }}">
                             </div>
                         </th>
-                        <th>{{ $vehicle->make }}</th>
-                        <th>{{ $vehicle->model }}</th>
-                        <th>{{ ($vehicle->user) ? $vehicle->user->name : 'No assigned' }}</th>
+                        <th>
+                            <div class="d-block">
+                                <span class="fw-bold">{{ $vehicle->year }}</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="d-block">
+                                <span class="fw-bold">{{ $vehicle->make }}</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="d-block">
+                                <span class="fw-bold">{{ $vehicle->model }}</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="d-block">
+                                <span class="fw-bold">{{ $vehicle->vin }}</span>
+                            </div>
+                        </th>
+                        @if($vehicle->driver)
+                        <th>{{ $vehicle->driver->name }}</th>
+                        @else
+                        <th></th>
+                        @endif
                         <th>
                             <span class="my-2 text-xs">
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'see')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">visibility</i>View
                                 </a>
-                                @can('vehicle.update', $vehicle)
+                                @can('vehicle.update')
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'update')" class="btn btn-link text-dark text-gradient px-3 mb-0">
                                     <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit">edit</i>Edit
                                 </a>
                                 @endcan
-                                @can('vehicle.delete', $vehicle)
+                                @can('vehicle.delete')
                                 <a wire:click="selectItem({{ $vehicle->id }}, 'delete')" class="btn btn-link text-danger text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Delete"><i class="material-icons notranslate text-sm me-2">delete</i>Delete</a>
                                 @endcan
                             </span>
@@ -99,9 +123,12 @@
         </div>
         @else
         <div class="d-flex justify-content-center py-6">
-            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no users to show</span>
+            <span class="text-gray-500"><i class="fas fa-archive"></i> There are no vehicle to show</span>
         </div>
         @endif
+        <div class="d-flex justify-content-end py-1 mx-5">
+            {{ $vehicles->links() }}
+        </div>
     </div>
     <!-- Modal Add-->
     <div wire:ignore.self class="modal fade" id="createVehicle" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
@@ -177,6 +204,37 @@
                                         </div>
                                         @endif
                                     </div>
+                                    <div class="mb-3 col-md-12"> 
+                                        <label class="form-label">Image</label>
+                                        <input type="file" wire:model="fileVehicle" wire:key="{{ $image_key }}">
+                                        @if ($errors->has('fileVehicle'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('fileVehicle') }}
+                                        </div>
+                                        @endif
+
+                                        <div class="text-center">
+                                            @if ( $fileVehicle )
+                                                <img class="w-40 shadow-sm" src="{{ $fileVehicle->temporaryUrl() }}" alt="cambia tu foto">
+
+                                                <div class="text-center">
+                                                    <a wire:ignore.self wire:click="deleteImage" class="btn btn-link text-danger text-gradient px-3 mb-0">
+                                                        <i class="material-icons notranslate text-sm me-2">delete</i>Delete
+                                                    </a>
+                                                </div>
+                                            @elseif($this->seeFileVehicle)
+                                                <img class="w-40 shadow-sm" src="{{ Storage::url($seeFileVehicle) }}" alt="cambia tu foto">
+
+                                                <div class="text-center">
+                                                    <a wire:ignore.self wire:click="deleteImage" class="btn btn-link text-danger text-gradient px-3 mb-0">
+                                                        <i class="material-icons notranslate text-sm me-2">delete</i>Delete
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <img class="w-20 rounded-circle shadow-sm" src="{{ asset('assets') }}/img/placeholder.jpg" alt="cambia tu foto">
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -240,7 +298,11 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <img src="https://i.pinimg.com/736x/bc/c8/ee/bcc8ee6f1b51e5d9900a91141105e50c.jpg" alt="cherry" class="mb-3 w-50 border-radius-lg shadow-sm">
+                    @if($this->seeFileVehicle)
+                        <img  src="{{ Storage::url($this->seeFileVehicle) }}" alt="vehicle" class="mb-3 w-50 border-radius-lg shadow-sm">
+                    @else
+                        <img src="{{ asset('assets') }}/img/placeholder.jpg" alt="vehicle" class="mb-3 w-50 border-radius-lg shadow-sm">
+                    @endif
                     <div class="table-responsive ">
                         <table class="table align-items-center mb-0 table-striped">
                             <tbody>

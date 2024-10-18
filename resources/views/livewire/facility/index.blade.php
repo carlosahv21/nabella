@@ -166,19 +166,20 @@ use App\Models\Address;
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         <!-- Add new address -->
-                                        @foreach($inputs as $index => $input)
-                                        <div class="row mb-3 me-3">
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="inputs.{{ $index }}" placeholder="Address and city">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="state.{{ $index }}" placeholder="State">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="text" class="form-control border border-2 p-2" wire:model="zipcode.{{ $index }}" placeholder="Zipcode">
+                                        @foreach ($stops as $index => $stop)
+                                        <div class="mb-3 row">
+                                            <div class="col-md-11">
+                                                <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="New address" wire:input="updateStop({{ $index }}, $event.target.value)">
+                                                @if (!empty($stops[$index]['addresses']))
+                                                <ul class="list-group predictions shadow-sm">
+                                                    @foreach ($stops[$index]['addresses'] as $address)
+                                                    <li class="list-group-item cursor-pointer" wire:click="selectStopAddress({{ $index }}, '{{ $address }}')">{{ $address }}</li>
+                                                    @endforeach
+                                                </ul>
+                                                @endif
                                             </div>
                                             <div class="col-md-1">
-                                                <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeInput({{ $index }})">
+                                                <button type="button" class="btn btn-link text-danger text-gradient p-0 d-flex justify-center" wire:click="removeStop({{ $index }})" style="margin-top: 0.8rem;">
                                                     <i class="material-icons notranslate">delete</i>
                                                 </button>
                                             </div>
