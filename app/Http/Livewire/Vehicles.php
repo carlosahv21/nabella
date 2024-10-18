@@ -223,19 +223,19 @@ class Vehicles extends Component
     public function checkIfUserHasVehicle()
     {
         $user = User::find($this->user_id);
-        
-        if ($user->vehicles) {
-            if ($user->vehicles->count() > 0) {
-                $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
-                $this->sessionAlert([
-                    'message' => 'You already have a vehicle assigned to you!',
-                    'type' => 'danger',
-                    'icon' => 'delete',
-                ]);
-                return true;
-            }
+        if (!$user->vehicles) {
+            return false;
         }
-        return false;
+
+        if ($user->vehicles && $user->vehicles->count() > 0 && $user->vehicles->id != $this->modelId) {
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
+            $this->sessionAlert([
+                'message' => 'You already have a vehicle assigned to you!',
+                'type' => 'danger',
+                'icon' => 'delete',
+            ]);
+            return true;
+        }
     }
 
     public function deleteImage(){
