@@ -140,7 +140,16 @@ class Patients extends Component
         $this->date_end = $model->date_end;
         $this->observations = $model->observations;
 
-        $this->inputs_view = Address::where('patient_id', $this->modelId)->get();
+        $sql = "SELECT * FROM addresses WHERE patient_id = '$this->modelId'";
+        $patient_addresses = DB::select($sql);
+        
+        foreach ($patient_addresses as $address) {
+            $this->inputs_view[] = [
+                'id' => $address->id,
+                'address' => $address->address.', '.$address->description
+            ];
+        }
+
     }
 
     private function clearForm()
@@ -199,7 +208,7 @@ class Patients extends Component
 
         if ($this->stops) {
             for ($i = 0; $i < count($this->stops); $i++) {
-                if (empty($this->stops[$i])) {
+                if (empty($this->stops[$i]['address'])) {
                     continue;
                 }
 

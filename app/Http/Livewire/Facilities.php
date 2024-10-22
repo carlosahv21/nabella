@@ -158,7 +158,7 @@ class Facilities extends Component
     {
         $this->validate();
 
-        if (count($this->inputs) == 0 && count($this->inputs_view) == 0) {
+        if (count($this->stops) == 0 && count($this->inputs_view) == 0) {
             $this->dispatchBrowserEvent('showAlert', [
                 'text' => 'Please add at least one address!',
                 'icon' => 'warning'
@@ -177,11 +177,15 @@ class Facilities extends Component
         $facility->service_contract_id = $this->service_contract_id;
         $facility->save();
 
-        for ($i=0; $i < count($this->inputs); $i++) { 
+        for ($i=0; $i < count($this->stops); $i++) {
+            if (empty($this->stops[$i]['address'])) {
+                continue;
+            }
+
             $address = new Address;
 
             $address->facility_id = $facility->id;
-            $address->address = $this->inputs[$i].', '.$this->state[$i].', '.$this->zipcode[$i];
+            $address->address = $this->stops[$i]['address'];
             $address->entity_type = $this->type;
 
             $address->save();

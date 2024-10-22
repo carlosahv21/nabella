@@ -633,17 +633,24 @@ class Schedulings extends Component
         }
 
         $this->patient_id = $patient->id;
-        if ($patient->billing_code == 'A0100') {
+        
+        if ($patient->billing_code == 'A0130-Wheelchair') {
             $this->wheelchair = true;
-        }elseif ($patient->billing_code == 'A0120-Ambulatory') {
-            $this->ambulatory = true;
-        }else{
-            $this->wheelchair = true;
+            $this->ambulatory = false;
         }
+        
+        if ($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory') {
+            $this->ambulatory = true;
+            $this->wheelchair = false;
+        }
+
         $this->patient_name = $patient->first_name . ' ' . $patient->last_name;
-        $address_patient = Address::where('patient_id', $patientId)->get();
-        foreach ($address_patient as $address) {
-            $this->saved_addresses[] = $address->address;
+        
+        $sql = "SELECT * FROM addresses WHERE patient_id = '$patientId'";
+        $patient_addresses = DB::select($sql);
+
+        foreach ($patient_addresses as $address) {
+            $this->saved_addresses[] = $address->address.', '.$address->description;
         }
 
         if (!$patient->service_contract_id) {
