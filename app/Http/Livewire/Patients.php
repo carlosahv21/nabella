@@ -30,7 +30,11 @@ class Patients extends Component
         ]
     ];
 
-    public $description = [];
+    public $descriptions = [
+        [
+            'description' => ''
+        ]
+    ];
     
     public $inputs_view = [];
     public $type = 'Patient';
@@ -58,8 +62,15 @@ class Patients extends Component
             'last_name' => 'required',
             'phone1' => 'required',
             'medicalid' => ['required', 'unique:patients,medicalid,' . $this->item],
+            'stops.*.address' => 'required',
+            'descriptions.*.description' => 'required',
         ];
     }
+
+    protected $messages = [
+        'stops.*.address.required' => 'This address is required.',
+        'descriptions.*.description.required' => 'This description is required.',
+    ];
 
     public function selectItem($item, $action)
     {
@@ -177,7 +188,11 @@ class Patients extends Component
             ]
         ];
 
-        $this->description = [];
+        $this->descriptions = [
+            [
+                'description' => ''
+            ]
+        ];
     }
 
     public function save()
@@ -216,7 +231,7 @@ class Patients extends Component
 
                 $address->patient_id = $patient->id;
                 $address->address = $this->stops[$i]['address'];
-                $address->description = $this->description[$i];
+                $address->description = $this->descriptions[$i]['description'];
                 $address->entity_type = $this->type;
 
                 $address->save();
