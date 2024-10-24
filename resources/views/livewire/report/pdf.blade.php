@@ -62,7 +62,7 @@
             <div>Invoice no: 1316</div>
             <div>Terms: {{ $terms }}</div>
             <div>Invoice date: {{ Carbon\Carbon::parse(today())->format('m/d/Y') }}</div>
-            <div>Due date: {{ Carbon\Carbon::parse(today()->addDays($terms))->format('m/d/Y') }}</div>
+            <div>Due date: {{ Carbon\Carbon::parse(today()->addDays($day_terms))->format('m/d/Y') }}</div>
         </div>
 
         <table width="100%" style="font-size: 10px; padding: 20px 40px; margin-top: 10px;">

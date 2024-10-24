@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use App\Models\ServiceContract;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class Reports extends Component
 {
@@ -77,12 +78,19 @@ class Reports extends Component
 
         $filePath = 'pdfs/'.time().'-invoice.pdf';
 
+        if( $this->terms == 'Due on receipt'){
+            $day_terms = '0';
+        }else{
+            $day_terms = explode(' ', $this->terms)[1];
+        }
+
         $pdf = Pdf::loadView('livewire.report.pdf', [
             'data' => $data,
             'service_contract' => $service_contract,
             'facility' => $facility[0],
             'total' => array_sum(array_column($data, 'amount')),
-            'terms' => $this->terms
+            'terms' => $this->terms,
+            'day_terms' => $day_terms
         ]);
     
         $pdf->save($filePath);
