@@ -299,7 +299,7 @@ class Schedulings extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
         
         $events = $this->getEventsCalendar('');
-        $this->emit('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents', $events);
 
         $data = ($this->isEdit)
             ? ['message' => 'Scheduling updated successfully!', 'type' => 'success', 'icon' => 'edit']
@@ -547,7 +547,7 @@ class Schedulings extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
         $events = $this->getEventsCalendar('');
-        $this->emit('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents', $events);
 
         $this->sessionAlert([
             'message' => 'Scheduling deleted successfully!',
@@ -747,7 +747,7 @@ class Schedulings extends Component
 
         $events = $this->getEventsCalendar('');
 
-        $this->emit('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents', $events);
 
         $this->sessionAlert([
             'message' => 'Event updated successfully!',
@@ -762,7 +762,7 @@ class Schedulings extends Component
             ? $this->getEventsCalendar($driverIds)
             : $this->getEventsCalendar('');
 
-        $this->emit('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents', $events);
     }
 
     public function updatedCheckIn()
@@ -1006,7 +1006,7 @@ class Schedulings extends Component
 
         $events = $this->getEventsCalendar('');
 
-        $this->emit('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents', $events);
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
         $this->sessionAlert([

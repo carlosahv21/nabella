@@ -406,50 +406,59 @@
             }
         },
         dayMaxEventRows: true, // for all non-TimeGrid views
-        eventoMaxStack: true,
+        eventMaxStack: true,
         eventClick: function(info) {
             Livewire.emit('editEvent', info.event.id);
         },
         eventDrop: function(info) {
             Livewire.emit('updateEventDate', info.event.id, formatDateToYmdHis(info.event.start), formatDateToYmdHis(info.event.end));
+        },
+        datesSet: function(info) {
+            const currentDate = info.view.currentStart;
+            localStorage.setItem('lastViewedMonth', currentDate.toISOString().split('T')[0]);
         }
     });
 
     calendar.render();
 
-    document.addEventListener('livewire:load', function() {
-        Livewire.on('updateEvents', events => {
-            const calendarEl = document.getElementById('calendar');
+    window.addEventListener('updateEvents', events => {
+        const calendarEl = document.getElementById('calendar');
+        let lastViewedMonth = localStorage.getItem('lastViewedMonth');
 
-            if (calendar) {
-                calendar.destroy();
-            }
+        if (calendar) {
+            calendar.destroy();
+        }
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                headerToolbar: {
-                    start: 'dayGridMonth,timeGridWeek,timeGridDay',
-                    center: 'title',
-                    end: 'today prev,next',
-                },
-                dayMaxEventRows: true, // for all non-TimeGrid views
-                views: {
-                    timeGrid: {
-                        dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
-                    }
-                },
-                eventoMaxStack: true,
-                events: events,
-                editable: true,
-                selectable: true,
-                eventClick: function(info) {
-                    Livewire.emit('editEvent', info.event.id);
-                },
-                eventDrop: function(info) {
-                    Livewire.emit('updateEventDate', info.event.id, formatDateToYmdHis(info.event.start), formatDateToYmdHis(info.event.end));
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                start: 'dayGridMonth,timeGridDay',
+                center: 'title',
+                end: 'prev,next',
+            },
+            initialDate: lastViewedMonth,
+            dayMaxEventRows: true, // for all non-TimeGrid views
+            views: {
+                timeGrid: {
+                    dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
                 }
-            });
-            calendar.render();
+            },
+            eventMaxStack: true,
+            events: events.detail,
+            editable: true,
+            selectable: true,
+            eventClick: function(info) {
+                Livewire.emit('editEvent', info.event.id);
+            },
+            eventDrop: function(info) {
+                Livewire.emit('updateEventDate', info.event.id, formatDateToYmdHis(info.event.start), formatDateToYmdHis(info.event.end));
+            },
+            datesSet: function(info) {
+                const currentDate = info.view.currentStart;
+                localStorage.setItem('lastViewedMonth', currentDate.toISOString().split('T')[0]);
+            }
         });
+
+        calendar.render();
     });
 
     window.addEventListener('eventAdded', event => {
