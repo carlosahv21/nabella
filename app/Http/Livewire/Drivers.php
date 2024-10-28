@@ -21,6 +21,7 @@ class Drivers extends Component
     public $item, $action, $search, $title_modal, $countDrivers = '';
     public $selectedAll = false;
     public $selected = [];
+    public $driver_color = '#5e72e4';
     public $role = 'Driver';
     public $isEdit = false;
 
@@ -30,6 +31,7 @@ class Drivers extends Component
         return [
             'name' => 'required|min:3',
             'email' => ['required', 'unique:users,email,' . $this->item],
+            'driver_color' => 'required',
         ];
     }
 
@@ -97,6 +99,7 @@ class Drivers extends Component
         $this->email = $model->email;
         $this->phone = $model->phone;
         $this->dob = $model->dob;
+        $this->driver_color = $model->driver_color;
         $this->dl_state = $model->dl_state;
         $this->dl_number = $model->dl_number;
         $this->date_of_hire = $model->date_of_hire;
@@ -133,6 +136,7 @@ class Drivers extends Component
         $user->email = $this->email;
         $user->phone = $this->phone;
         $user->dob = $this->dob;
+        $user->driver_color = $this->driver_color;
         $user->dl_state = $this->dl_state;
         $user->dl_number = $this->dl_number;
         $user->date_of_hire = $this->date_of_hire;

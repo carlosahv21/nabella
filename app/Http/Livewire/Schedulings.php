@@ -7,6 +7,7 @@ use App\Models\Scheduling;
 use App\Models\Patient;
 use App\Models\Facility;
 use App\Models\Address;
+use App\Models\Driver;
 
 use App\Models\SchedulingAddress;
 use App\Models\SchedulingCharge;
@@ -69,31 +70,6 @@ class Schedulings extends Component
 
     public $distances = [];
     public $addresses = [];
-
-    // Array de colores predefinidos
-    public $colors = [
-        '#D6EEEB',
-        '#C1E9FC',
-        '#ADACCE',
-        '#C7E4D9',
-        '#95DAEE',
-        '#9990BA',
-        '#86D0C6',
-        '#6ACDE5',
-        '#D498C6',
-        '#74CDD1',
-        '#00B6D3',
-        '#C679B4',
-        '#00BCAD',
-        '#0085BD',
-        '#7D4497',
-        '#1294A7',
-        '#2A348E',
-        '#671D67',
-        '#11686B',
-        '#102444',
-        '#401E5B'
-    ];
 
     protected $rules = [
         'patient_id' => 'required',
@@ -1020,7 +996,6 @@ class Schedulings extends Component
     {
         $scheduling = Scheduling::all();
         $events = [];
-        $driverColors = $this->assignColorsToDrivers();
 
         foreach ($scheduling as $event) {
             $sql = "SELECT * FROM scheduling_address WHERE scheduling_id = '$event->id'";
@@ -1040,6 +1015,8 @@ class Schedulings extends Component
             foreach ($scheduling_address as $address) {
                 $driver_id = $address->driver_id;
 
+                $driver = Driver::find($driver_id);
+
                 if($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory'){
                     $prfix = '(A)';
                 }else{
@@ -1052,35 +1029,13 @@ class Schedulings extends Component
                     'title' => $prfix . ' - ' . $patient->first_name . " " . $patient->last_name,
                     'start' => $address->date . " " . $address->pick_up_hour,
                     'end' => $address->date . " " . $address->drop_off_hour,
-                    'color' => $driverColors[$driver_id],
+                    'color' => $driver->driver_color,
                     'className' => ($address->status == 'Canceled') ? 'cancelled-event' : '',
                 ];
             }
         }
 
         return $events;
-    }
-
-    function assignColorsToDrivers() {
-        // Definir una paleta de colores atractivos para un calendario
-        $driverColors = [];
-        $paletteSize = count($this->colors);
-    
-        $drivers = DB::table('users')
-        ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-        ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
-        ->select('users.*')
-        ->where('roles.name', '=', 'Driver')
-        ->where('users.id', '!=', auth()->id())
-        ->get();
-
-        // Asignar colores cíclicamente a cada conductor
-        foreach ($drivers as $index => $driverId) {
-            $colorIndex = $index % $paletteSize; // Ciclar sobre la paleta
-            $driverColors[$driverId->id] = $this->colors[$colorIndex];
-        }
-    
-        return $driverColors;
     }
 
     public function validateFields()

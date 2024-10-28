@@ -184,6 +184,10 @@
                                         </div>
                                         @endif
                                     </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label>Color</label>
+                                        <input type="color" class="form-control" wire:model="driver_color">
+                                    </div>
                                 </div>
                             </form>
                         </div>

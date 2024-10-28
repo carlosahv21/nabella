@@ -4,7 +4,7 @@
             <div class="col-12 col-lg-8 row mt-3">
                 @for($i = 0; $i < count($drivers); $i++) <div class="form-check form-check-inline col-6 col-lg-3" style="margin-right: 0;">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
-                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $colors[$i] }}; min-width: 114px; text-align: center;">
+                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $drivers[$i]->driver_color }}; min-width: 114px; text-align: center;">
                         <b class="text-white"> {{ $drivers[$i]->name }} </b>
                     </label>
             </div>
@@ -48,16 +48,22 @@
                 <div class="d-flex justify-content-between pt-2">
                     <div class="d-flex justify-content-end">
                         @if(!$if_not_cancel)
-                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                        <button wire:click="save" type="button" class="btn btn-primary">Save changes</button>
-                        @elseif($isEdit)
-                        <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                        @if($if_not_cancel)
-                        <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
-                        @endif
+                            @if($isEdit)
+                            <button type="button" class="btn p-1" wire:click="cancelScheduling">
+                                <i class="material-icons notranslate">cancel</i>
+                            </button>
+                            @endif
+                            <button type="button" class="btn p-1" wire:click="save">
+                                <i class="material-icons notranslate">save</i>
+                            </button>
                         @else
-                        <button wire:click="revert" type="button" class="btn btn-primary">Revert cancel</button>
+                            <button type="button" class="btn p-1" wire:click="revert"> 
+                                <i class="material-icons notranslate">undo</i>
+                            </button>
                         @endif
+                        <button type="button" class="btn p-1" data-bs-dismiss="modal" >
+                            <i class="material-icons notranslate">close</i>
+                        </button>
                     </div>
                 </div>
             </div>
