@@ -7,6 +7,7 @@ use App\Models\Facility;
 use App\Models\Address;
 use App\Models\ServiceContract;
 use App\Models\ApisGoogle;
+use Illuminate\Support\Facades\DB;
 
 use Livewire\WithPagination;
 
@@ -29,24 +30,44 @@ class Facilities extends Component
         ]
     ];
 
+    public $descriptions = [
+        [
+            'description' => ''
+        ]
+    ];
+
     public $inputs_view = [];
     public $type = 'Facility';
 
     public $google;
-
-    protected $rules=[
-        'name' => 'required',
-        'service_contract_id' => 'required'
-    ];
 
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
     ];
 
+    protected $messages = [
+        'stops.*.address.required' => 'This address is required.',
+    ];
+
+    protected function rules()
+    {
+        return [
+            'name' => 'required',
+            'service_contract_id' => 'required',
+            'stops.*.address' => $this->hasSavedAddresses() ? 'sometimes' : 'required',
+        ];
+    }
+
     public function __construct()
     {
         $this->google = new ApisGoogle();
+    }
+
+
+    public function hasSavedAddresses()
+    {
+        return count($this->inputs_view) > 0;
     }
     
     public function selectItem($item, $action)
@@ -124,7 +145,15 @@ class Facilities extends Component
         $this->city = $model->city;
         $this->state = $model->state;
 
-        $this->inputs_view = Address::where('facility_id', $this->modelId)->get();
+        $sql = "SELECT * FROM addresses WHERE facility_id = '$this->modelId'";
+        $facility_addresses = DB::select($sql);
+        
+        foreach ($facility_addresses as $address) {
+            $this->inputs_view[] = [
+                'id' => $address->id,
+                'address' => $address->address.', '.$address->description
+            ];
+        }
 
     }
 
@@ -145,6 +174,12 @@ class Facilities extends Component
                 'addresses' => []
             ]
         ];
+
+        $this->descriptions = [
+            [
+                'description' => ''
+            ]
+        ];
     }
 
     public function removeAddress($index, $id)
@@ -157,14 +192,6 @@ class Facilities extends Component
     public function save()
     {
         $this->validate();
-
-        if (count($this->stops) == 0 && count($this->inputs_view) == 0) {
-            $this->dispatchBrowserEvent('showAlert', [
-                'text' => 'Please add at least one address!',
-                'icon' => 'warning'
-            ]);
-            return;
-        }
         
         if($this->modelId){
             $facility = Facility::findOrFail($this->modelId);
@@ -182,10 +209,11 @@ class Facilities extends Component
                 continue;
             }
 
+            $description = ($this->descriptions[$i]['description']) ? $this->descriptions[$i]['description'] : '';
             $address = new Address;
-
             $address->facility_id = $facility->id;
             $address->address = $this->stops[$i]['address'];
+            $address->description = $description;
             $address->entity_type = $this->type;
 
             $address->save();
@@ -315,7 +343,7 @@ class Facilities extends Component
     {
         return view('livewire.facility.index', 
         [
-            'facilities' => Facility::search('name', $this->search)->paginate(10),
+            'facilities' => Facility::search('name', $this->search)->orderBy('name', 'asc')->paginate(10),
             'service_contracts' => ServiceContract::all()
         ],
     );

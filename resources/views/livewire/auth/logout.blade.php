@@ -1,5 +1,10 @@
 <ul class="navbar-nav justify-content-end align-items-center">
-    <li class="nav-item dropdown pe-2">
+    <li>
+        <button class="btn btn-link px-3 mb-0">
+            <img src="{{ asset('assets') }}/img/icons8-whatsapp.svg" alt="Nabella Logo" width="30">
+        </button>
+    </li>
+    <li class="nav-item dropdown pe-2 ocultar-en-movil">
         <a href="javascript:;" class="nav-link p-0 position-relative text-body" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             Hi, {{ Auth::user()->name }}
         </a>

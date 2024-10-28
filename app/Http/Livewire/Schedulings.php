@@ -1040,10 +1040,16 @@ class Schedulings extends Component
             foreach ($scheduling_address as $address) {
                 $driver_id = $address->driver_id;
 
+                if($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory'){
+                    $prfix = '(A)';
+                }else{
+                    $prfix = '(W)';
+                }
+
                 $events[] = [
                     'id' => $event->id,
                     'driver_id' => $driver_id,
-                    'title' => $patient->first_name . " " . $patient->last_name,
+                    'title' => $prfix . ' - ' . $patient->first_name . " " . $patient->last_name,
                     'start' => $address->date . " " . $address->pick_up_hour,
                     'end' => $address->date . " " . $address->drop_off_hour,
                     'color' => $driverColors[$driver_id],

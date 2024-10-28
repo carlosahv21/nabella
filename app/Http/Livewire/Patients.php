@@ -62,15 +62,18 @@ class Patients extends Component
             'last_name' => 'required',
             'phone1' => 'required',
             'medicalid' => ['required', 'unique:patients,medicalid,' . $this->item],
-            'stops.*.address' => 'required',
-            'descriptions.*.description' => 'required',
+            'stops.*.address' => $this->hasSavedAddresses() ? 'sometimes' : 'required',
         ];
     }
 
     protected $messages = [
         'stops.*.address.required' => 'This address is required.',
-        'descriptions.*.description.required' => 'This description is required.',
     ];
+
+    public function hasSavedAddresses()
+    {
+        return count($this->inputs_view) > 0;
+    }
 
     public function selectItem($item, $action)
     {
@@ -227,11 +230,12 @@ class Patients extends Component
                     continue;
                 }
 
-                $address = new Address;
+                $description = ($this->descriptions[$i]['description']) ? $this->descriptions[$i]['description'] : '';
 
+                $address = new Address;                
                 $address->patient_id = $patient->id;
                 $address->address = $this->stops[$i]['address'];
-                $address->description = $this->descriptions[$i]['description'];
+                $address->description = $description;
                 $address->entity_type = $this->type;
 
                 $address->save();
@@ -385,7 +389,7 @@ class Patients extends Component
         return view(
             'livewire.patient.index',
             [
-                'patients' => Patient::search('first_name', $this->search)->paginate(10),
+                'patients' => Patient::search('first_name', $this->search)->orderBy('first_name', 'asc')->paginate(10),
                 'service_contracts' => DB::table('service_contracts')->get()
             ],
         );

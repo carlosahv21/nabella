@@ -168,7 +168,7 @@ use App\Models\Address;
                                         <!-- Add new address -->
                                         @foreach ($stops as $index => $stop)
                                         <div class="mb-3 row">
-                                            <div class="col-md-11">
+                                            <div class="col-md-7">
                                                 <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="New address" wire:input="updateStop({{ $index }}, $event.target.value)">
                                                 @if (!empty($stops[$index]['addresses']))
                                                 <ul class="list-group predictions shadow-sm">
@@ -177,6 +177,19 @@ use App\Models\Address;
                                                     @endforeach
                                                 </ul>
                                                 @endif
+                                                @error('stops.'.$index.'.address') 
+                                                    <div class="text-danger inputerror">
+                                                        {{ $message }}
+                                                    </div>   
+                                                @enderror
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input class="form-control border border-2 p-2" type="text" wire:model="descriptions.{{ $index }}.description" placeholder="Apt/Suit/Office/Floor">
+                                                @error('descriptions.'.$index.'.description')
+                                                    <div class="text-danger inputerror">
+                                                    {{ $message }}
+                                                    </div>    
+                                                @enderror
                                             </div>
                                             <div class="col-md-1">
                                                 <button type="button" class="btn btn-link text-danger text-gradient p-0 d-flex justify-center" wire:click="removeStop({{ $index }})" style="margin-top: 0.8rem;">

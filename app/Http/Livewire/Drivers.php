@@ -226,6 +226,7 @@ class Drivers extends Component
             ->where('roles.name', '=', $roleName)
             ->where('users.id', '!=', auth()->id())
             ->where('users.name', 'like', '%'.$this->search.'%')
+            ->orderBy('users.name', 'asc')
             ->paginate(10);
 
         return view('livewire.drivers.index', [

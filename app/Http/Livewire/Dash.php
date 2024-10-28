@@ -323,6 +323,12 @@ class Dash extends Component
                 $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
                 $driver = Driver::where('id', '=', $event->driver_id)->first();
 
+                if($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory'){
+                    $prfix = '(A)';
+                }else{
+                    $prfix = '(W)';
+                }
+
                 $all_events[] = [
                     'id' => $event->id,
                     'distance' => $event->distance,
@@ -335,7 +341,7 @@ class Dash extends Component
                     'date' => $event->date,
                     'pick_up_hour' => $event->pick_up_hour,
                     'drop_off_hour' => $event->drop_off_hour,
-                    'patient_name' => $patient->first_name . ' ' . $patient->last_name,
+                    'patient_name' => $prfix.' - '.$patient->first_name . ' ' . $patient->last_name,
                     'observations' => $patient->observations,
                     'wheelchair' => $event->wheelchair ? true : false,
                     'ambulatory' => $event->ambulatory ? true : false,
