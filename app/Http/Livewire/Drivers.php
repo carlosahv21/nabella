@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 
 class Drivers extends Component
 {
@@ -17,14 +18,13 @@ class Drivers extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $name, $email, $phone, $password, $dob, $dl_state, $dl_number, $date_of_hire, $modelId = '';
+    public $name, $email, $phone, $password, $dob, $dl_state, $dl_number, $date_of_hire, $prefixs, $phone_prefix, $modelId = '';
     public $item, $action, $search, $title_modal, $countDrivers = '';
     public $selectedAll = false;
     public $selected = [];
     public $driver_color = '#5e72e4';
     public $role = 'Driver';
     public $isEdit = false;
-
 
     public function rules()
     {
@@ -39,35 +39,34 @@ class Drivers extends Component
         'getModelId',
         'forcedCloseModal',
     ];
-    
+
     public function selectItem($item, $action)
     {
         $this->item = $item;
 
-        if($action == 'delete'){
+        if ($action == 'delete') {
             $this->title_modal = 'Delete Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriver']);
-        }else if($action == 'masiveDelete'){
+        } else if ($action == 'masiveDelete') {
             $this->countDrivers = count($this->selected);
-            if($this->countDrivers > 0){
+            if ($this->countDrivers > 0) {
                 $this->title_modal = 'Delete Drivers';
                 $this->dispatchBrowserEvent('openModal', ['name' => 'deleteDriverMasive']);
-            }else{
+            } else {
                 $this->sessionAlert([
                     'message' => 'Please select a driver!',
                     'type' => 'danger',
                     'icon' => 'error',
                 ]);
             }
-        }else if($action == 'create'){
+        } else if ($action == 'create') {
             $this->title_modal = 'Create Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('clearForm');
-        }else{
+        } else {
             $this->title_modal = 'Edit Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
             $this->emit('getModelId', $this->item);
-
         }
     }
 
@@ -76,13 +75,13 @@ class Drivers extends Component
         if ($value) {
             // Si selecciona el checkbox padre, selecciona todas las filas
             $this->selected = DB::table('users')
-            ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->where('roles.name', '=', 'Driver')
-            ->where('users.id', '!=', auth()->id())
-            ->where('users.name', 'like', '%' . $this->search . '%')
-            ->pluck('users.id')
-            ->toArray();
+                ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('roles.name', '=', 'Driver')
+                ->where('users.id', '!=', auth()->id())
+                ->where('users.name', 'like', '%' . $this->search . '%')
+                ->pluck('users.id')
+                ->toArray();
         } else {
             // Si deselecciona el checkbox padre, vacía la selección
             $this->selected = [];
@@ -97,13 +96,28 @@ class Drivers extends Component
         $model = User::find($this->modelId);
         $this->name = $model->name;
         $this->email = $model->email;
-        $this->phone = $model->phone;
+
+        // Valor predeterminado
+        $this->phone_prefix = '+1';
+        $phone = $model->phone;
+
+        foreach (array_keys($this->prefixs) as $prefix) {
+            if (str_starts_with($phone, $prefix)) {
+                $this->phone_prefix = $prefix;
+                $this->phone = substr($phone, strlen($prefix));
+                break;
+            }
+        }
+
+        if (!isset($this->phone)) {
+            $this->phone = $phone;
+        }
+
         $this->dob = $model->dob;
         $this->driver_color = $model->driver_color;
         $this->dl_state = $model->dl_state;
         $this->dl_number = $model->dl_number;
         $this->date_of_hire = $model->date_of_hire;
-
     }
 
     private function clearForm()
@@ -124,24 +138,24 @@ class Drivers extends Component
     {
         $this->validate();
 
-        if($this->modelId){
+        if ($this->modelId) {
             $this->isEdit = true;
             $user = User::findOrFail($this->modelId);
-        }else{
+        } else {
             $user = new User;
             $user->password = ('secret'); //solo cuando es un nuevo usuario 
         }
-        
+
         $user->name = $this->name;
         $user->email = $this->email;
-        $user->phone = $this->phone;
+        $user->phone = $this->phone_prefix . $this->phone;
         $user->dob = $this->dob;
         $user->driver_color = $this->driver_color;
         $user->dl_state = $this->dl_state;
         $user->dl_number = $this->dl_number;
         $user->date_of_hire = $this->date_of_hire;
         $user->syncRoles($this->role);
-        
+
         $user->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createDriver']);
@@ -158,17 +172,15 @@ class Drivers extends Component
                 'type' => 'info',
                 'icon' => 'check',
             ];
-
         }
 
-        Mail::to($user->email)->send(new WelcomeEmail($user));
+        // Mail::to($user->email)->send(new WelcomeEmail($user));
 
         if ($data) {
             $this->sessionAlert($data);
         }
 
         $this->clearForm();
-
     }
 
     public function forcedCloseModal()
@@ -189,7 +201,7 @@ class Drivers extends Component
         $user->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteDriver']);
-        
+
         $data = [
             'message' => 'User deleted successfully!',
             'type' => 'danger',
@@ -213,12 +225,13 @@ class Drivers extends Component
         $this->sessionAlert($data);
     }
 
-    function sessionAlert($data) {
-        session()->flash('alert', $data); 
+    function sessionAlert($data)
+    {
+        session()->flash('alert', $data);
 
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
-    
+
     public function render()
     {
         $roleName = 'Driver';
@@ -229,12 +242,17 @@ class Drivers extends Component
             ->select('users.*')
             ->where('roles.name', '=', $roleName)
             ->where('users.id', '!=', auth()->id())
-            ->where('users.name', 'like', '%'.$this->search.'%')
+            ->where('users.name', 'like', '%' . $this->search . '%')
             ->orderBy('users.name', 'asc')
             ->paginate(10);
 
-        return view('livewire.drivers.index', [
-            'drivers' => $data
+        $this->prefixs = Config::get('phone_prefixes');
+
+        return view(
+            'livewire.drivers.index',
+            [
+                'drivers' => $data,
+                'prefixs' => $this->prefixs
             ]
         );
     }

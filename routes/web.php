@@ -22,6 +22,8 @@ use App\Http\Livewire\ServiceContracts;
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
 
+use App\Http\Controllers\WhatsAppController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -68,4 +70,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', Dash::class)->name('dashboard');
     Route::get('profile/{id}', Profile::class)->name('profile');
     Route::get('destroy', Logout::class)->name('destroy');
+    Route::get('whatsapp-users', [WhatsAppController::class, 'showUsers'])->name('whatsapp-users');
 });

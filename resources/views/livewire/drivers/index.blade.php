@@ -141,7 +141,19 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Phone</label>
-                                        <input wire:model="phone" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+
+                                        <div class="input-group">
+                                            <!-- Campo para el prefijo -->
+                                            <select wire:model="phone_prefix" class="form-select" style="max-width: 90px;">
+                                                @foreach ($prefixs as $prefix => $name)
+                                                    <option value="{{ $prefix }}">{{ $name }}</option>
+                                                @endforeach
+                                                <!-- Agrega más opciones según sea necesario -->
+                                            </select>
+
+                                            <!-- Campo para el número de teléfono -->
+                                            <input wire:model="phone" type="text" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        </div>
                                         @if ($errors->has('phone'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('phone') }}
