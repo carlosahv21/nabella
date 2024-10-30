@@ -60,8 +60,8 @@
                                 <input wire:model="selectedAll" class="form-check-input" type="checkbox" value="true" id="userCheck55">
                             </div>
                         </th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start date - End date</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Start date - End date</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Actions</th>
                     </tr>
                 </thead>
@@ -73,8 +73,8 @@
                                 <input wire:model="selected" class="form-check-input" type="checkbox" value="{{ $servicecontract->id }}" id="servicecontractCheck{{ $servicecontract->id }}">
                             </div>
                         </th>
-                        <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('m-d-Y')}} to {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('m-d-Y')}}</th>
                         <th> {{ $servicecontract->company }}</th>
+                        <th>{{ \Carbon\Carbon::parse($servicecontract->date_start)->format('m-d-Y')}} to {{ \Carbon\Carbon::parse($servicecontract->date_end)->format('m-d-Y')}}</th>
                         <th>
                             <span class="my-2 text-xs">
                                 @can('servicecontract.update')

@@ -263,7 +263,7 @@ class ServiceContracts extends Component
     {
         return view('livewire.servicecontract.index', 
             [
-                'servicecontracts' => ServiceContract::search('company', $this->search)->paginate(10),
+                'servicecontracts' => ServiceContract::search('company', $this->search)->orderBy('company', 'asc')->paginate(10)
             ],
         );
     }
