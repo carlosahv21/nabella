@@ -151,8 +151,8 @@ use App\Models\Address;
                                         <div class="col-md-12">
                                             <label class="form-label">
                                                 <i class="material-icons notranslate">location_on</i>
-                                                {{ $input->address }} </label>
-                                            <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input->id }})">
+                                                {{ $input['address'] }} </label>
+                                            <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0" wire:click="removeAddress({{ $index}}, {{ $input['id'] }})">
                                                 <i class="material-icons notranslate">delete</i>
                                             </button>
                                         </div>
