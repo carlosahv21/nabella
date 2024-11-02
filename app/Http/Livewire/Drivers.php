@@ -59,6 +59,10 @@ class Drivers extends Component
                     'icon' => 'error',
                 ]);
             }
+        } else if ($action == 'see') {
+            $this->title_modal = 'See Details';
+            $this->dispatchBrowserEvent('openModal', ['name' => 'seeDriver']);
+            $this->emit('getModelId', $this->item);
         } else if ($action == 'create') {
             $this->title_modal = 'Create Driver';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createDriver']);
@@ -174,7 +178,7 @@ class Drivers extends Component
             ];
         }
 
-        // Mail::to($user->email)->send(new WelcomeEmail($user));
+        Mail::to($user->email)->send(new WelcomeEmail($user));
 
         if ($data) {
             $this->sessionAlert($data);

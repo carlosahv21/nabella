@@ -196,9 +196,10 @@
                                         <label class="form-label">Billing code</label>
                                         <select wire:model="billing_code" class="form-select" id="billing_code">
                                             <option value="">Select a billing code</option>
-                                            <option value="A0100-Ambulatory">A0100 - Ambulatory</option>
                                             <option value="A0120-Ambulatory">A0120 - Ambulatory</option>
+                                            <option value="A0120-Cane">A0120 - Cane</option>
                                             <option value="A0130-Wheelchair">A0130 - Wheelchair </option>
+                                            <option value="A0130-Walker">A0130 - Walker </option>
                                         </select>
                                         @if ($errors->has('billing_code'))
                                         <div class="text-danger inputerror">

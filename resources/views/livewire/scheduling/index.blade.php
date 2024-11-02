@@ -50,7 +50,10 @@
                         @if(!$if_not_cancel)
                             @if($isEdit)
                             <button type="button" class="btn p-1" wire:click="cancelScheduling">
-                                <i class="material-icons notranslate">cancel</i>
+                                <i class="material-icons notranslate">event_busy</i>
+                            </button>
+                            <button type="button" class="btn p-1"wire:click="showConfirmDelete">
+                                <i class="material-icons notranslate">delete</i>
                             </button>
                             @endif
                             <button type="button" class="btn p-1" wire:click="save">
@@ -59,6 +62,9 @@
                         @else
                             <button type="button" class="btn p-1" wire:click="revert"> 
                                 <i class="material-icons notranslate">undo</i>
+                            </button>
+                            <button type="button" class="btn p-1"wire:click="showConfirmDelete">
+                                <i class="material-icons notranslate">delete</i>
                             </button>
                         @endif
                         <button type="button" class="btn p-1" data-bs-dismiss="modal" >
@@ -399,16 +405,20 @@
 <script>
     let calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
         headerToolbar: {
-            start: 'dayGridMonth,timeGridDay',
+            start: 'dayGridMonth,timeGridDay,listDay',
             center: 'title',
             end: 'prev,next',
         },
+        initialView: 'timeGridDay',
         events: @json($events),
         editable: true,
         selectable: true,
         views: {
             timeGrid: {
                 dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
+            },
+            listDay: {
+                buttonText: 'list day'
             }
         },
         dayMaxEventRows: true, // for all non-TimeGrid views
@@ -437,15 +447,19 @@
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             headerToolbar: {
-                start: 'dayGridMonth,timeGridDay',
+                start: 'dayGridMonth,timeGridDay,listDay',
                 center: 'title',
                 end: 'prev,next',
             },
+            initialView: 'timeGridDay',
             initialDate: lastViewedMonth,
             dayMaxEventRows: true, // for all non-TimeGrid views
             views: {
                 timeGrid: {
                     dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+                },
+                listDay: {
+                    buttonText: 'list day'
                 }
             },
             eventMaxStack: true,

@@ -1017,10 +1017,22 @@ class Schedulings extends Component
 
                 $driver = Driver::find($driver_id);
 
-                if($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory'){
-                    $prfix = '(A)';
-                }else{
-                    $prfix = '(W)';
+                switch ($patient->billing_code) {
+                    case 'A0120-Ambulatory':
+                        $prfix = '(A)';
+                        break;
+                    case 'A0120-Cane':
+                        $prfix = '(C)';
+                        break;
+                    case 'A0130-Wheelchair':
+                        $prfix = '(WC)';
+                        break;
+                    case 'A0130-Walker':
+                        $prfix = '(W)';
+                        break;
+                    default:
+                        $prfix = '(W)';
+                        break;
                 }
 
                 $events[] = [
