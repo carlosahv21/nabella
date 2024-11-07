@@ -9,7 +9,7 @@ class ApisGoogle extends Model
 {
     use HasFactory;
 
-    public $api_key = 'AIzaSyBOx8agvT4F1RjSW4IS_zgkINQzdFZevik';
+    public $api_key = 'AIzaSyD5fI1XDVwgpIKBeoLXVnmCLLNPGazX3gE';
 
     public function getPlacePredictions($query)
     {

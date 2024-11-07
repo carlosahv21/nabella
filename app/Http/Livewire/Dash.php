@@ -170,16 +170,6 @@ class Dash extends Component
             ->where('date', '=', date('Y-m-d'))
             ->get();
 
-        if (count($validate) > 0) {
-            $this->sessionAlert([
-                'message' => 'You are already driving!',
-                'type' => 'danger',
-                'icon' => 'error',
-            ]);
-
-            return;
-        }
-
         $scheduling_address = SchedulingAddress::where('id', '=', $event)->first();
         $scheduling_address->status = 'In Progress';
 
