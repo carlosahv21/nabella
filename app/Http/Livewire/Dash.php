@@ -166,9 +166,9 @@ class Dash extends Component
     {
         $driver_id = SchedulingAddress::where('id', '=', $event)->first()->driver_id;
         $validate = SchedulingAddress::where('status', '=', 'In Progress')
-                                    ->where('driver_id', '=', $driver_id)
-                                    ->where('date', '=', date('Y-m-d'))
-                                    ->get();
+            ->where('driver_id', '=', $driver_id)
+            ->where('date', '=', date('Y-m-d'))
+            ->get();
 
         if (count($validate) > 0) {
             $this->sessionAlert([
@@ -246,7 +246,7 @@ class Dash extends Component
 
         $data = DB::select($sql);
 
-        if(count($data) > 0){
+        if (count($data) > 0) {
             foreach ($data as $comment) {
                 $this->comments[] = [
                     'id' => $comment->id,
@@ -256,7 +256,7 @@ class Dash extends Component
                 ];
             }
             $this->dispatchBrowserEvent('openModal', ['name' => 'seeComments']);
-        }else{
+        } else {
             $this->sessionAlert([
                 'message' => 'No comments found!',
                 'type' => 'info',
@@ -353,7 +353,7 @@ class Dash extends Component
                     'date' => $event->date,
                     'pick_up_hour' => $event->pick_up_hour,
                     'drop_off_hour' => $event->drop_off_hour,
-                    'patient_name' => $prfix.' - '.$patient->first_name . ' ' . $patient->last_name,
+                    'patient_name' => $prfix . ' - ' . $patient->first_name . ' ' . $patient->last_name,
                     'observations' => $patient->observations,
                     'wheelchair' => $event->wheelchair ? true : false,
                     'ambulatory' => $event->ambulatory ? true : false,
@@ -408,27 +408,27 @@ class Dash extends Component
             $last_day_of_month = date('Y-m-t');
 
             $sql_total = "SELECT 
-                    SUM(
-                        CASE 
-                            WHEN sc.wheelchair = 1 THEN svc.wheelchair ELSE 0 END
-                        + CASE 
-                            WHEN sc.ambulatory = 1 THEN svc.ambulatory ELSE 0 END
-                        + CASE 
-                            WHEN sc.out_of_hours = 1 THEN svc.out_of_hours ELSE 0 END
-                        + CASE 
-                            WHEN sc.saturdays = 1 THEN svc.saturdays ELSE 0 END
-                        + CASE 
-                            WHEN sc.sundays_holidays = 1 THEN svc.sundays_holidays ELSE 0 END
-                        + CASE 
-                            WHEN sc.companion = 1 THEN svc.companion ELSE 0 END
-                        + CASE 
-                            WHEN sc.aditional_waiting = 1 THEN svc.additional_waiting ELSE 0 END
-                        + CASE 
-                            WHEN sc.fast_track = 1 THEN svc.fast_track ELSE 0 END
-                        + CASE 
-                            WHEN sc.overcharge = 1 THEN svc.overcharge ELSE 0 END
-                        + (sa.distance + COALESCE(sa.additional_milles, 0)) * svc.rate_per_mile
-                    ) AS total_facturado
+                SUM(
+                    CASE 
+                        WHEN sc.wheelchair = 1 THEN svc.wheelchair ELSE 0 END
+                    + CASE 
+                        WHEN sc.ambulatory = 1 THEN svc.ambulatory ELSE 0 END
+                    + CASE 
+                        WHEN sc.out_of_hours = 1 THEN svc.out_of_hours ELSE 0 END
+                    + CASE 
+                        WHEN sc.saturdays = 1 THEN svc.saturdays ELSE 0 END
+                    + CASE 
+                        WHEN sc.sundays_holidays = 1 THEN svc.sundays_holidays ELSE 0 END
+                    + CASE 
+                        WHEN sc.companion = 1 THEN svc.companion ELSE 0 END
+                    + CASE 
+                        WHEN sc.aditional_waiting = 1 THEN svc.additional_waiting ELSE 0 END
+                    + CASE 
+                        WHEN sc.fast_track = 1 THEN svc.fast_track ELSE 0 END
+                    + CASE 
+                        WHEN sc.overcharge = 1 THEN svc.overcharge ELSE 0 END
+                    + (sa.distance + COALESCE(sa.additional_milles, 0)) * svc.rate_per_mile
+                ) AS total_facturado
                 FROM 
                     schedulings s
                 JOIN 
@@ -440,17 +440,63 @@ class Dash extends Component
                 JOIN 
                     scheduling_address sa ON s.id = sa.scheduling_id
                 WHERE 
-                    sa.date BETWEEN '".$first_day_of_month."' AND '".$last_day_of_month."'
+                    sa.date BETWEEN '" . $first_day_of_month . "' AND '" . $last_day_of_month . "'
                     AND sa.status = 'Completed';";
 
-                $total_facturado = DB::select($sql_total);
-                $total_facturado = ($total_facturado[0]->total_facturado != null) ? $total_facturado[0]->total_facturado : 0;
+            $total_facturado = DB::select($sql_total);
+            $total_facturado = ($total_facturado[0]->total_facturado != null) ? $total_facturado[0]->total_facturado : 0;
+
+            $sql_scheduling_by_service_contract = "SELECT
+                    s.id AS scheduling_id,
+                    sa.date,
+                    sa.pick_up_hour,
+                    sa.drop_off_hour,
+                    CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+                    CASE 
+                        WHEN p.billing_code = 'A0120-Ambulatory' THEN '(A)'
+                        WHEN p.billing_code = 'A0120-Cane' THEN '(C)'
+                        WHEN p.billing_code = 'A0130-Wheelchair' THEN '(WC)'
+                        WHEN p.billing_code = 'A0130-Walker' THEN '(W)'
+                        ELSE '(W)'
+                    END AS prefix,
+                    sc.company AS service_contract_company
+                FROM
+                    schedulings s
+                JOIN 
+                    scheduling_address sa ON s.id = sa.scheduling_id
+                JOIN 
+                    patients p ON s.patient_id = p.id
+                JOIN 
+                    service_contracts sc ON p.service_contract_id = sc.id
+                ORDER BY
+                    sc.company;";
+            $scheduling_by_service_contract = DB::select($sql_scheduling_by_service_contract);
+
+            foreach ($scheduling_by_service_contract as $key) {
+                $company = $key->service_contract_company;
+
+                // Si no existe la compañía en el array resultado, se inicializa con un array vacío
+                if (!isset($result[$company])) {
+                    $result[$company] = [];
+                }
+
+                // Agregar el scheduling al array de la compañía correspondiente
+                $result[$company][] = [
+                    'scheduling_id' => $key->scheduling_id,
+                    'date' => $key->date,
+                    'pick_up_hour' => $key->pick_up_hour,
+                    'drop_off_hour' => $key->drop_off_hour,
+                    'patient_name' => $key->patient_name,
+                    'prefix' => $key->prefix
+                ];
+            }
 
             return view(
                 'livewire.dash.index',
                 [
                     'events' => $events,
                     'drivers' => $drivers,
+                    'scheduling_by_service_contract' => $result,
                     'total_facturado' => $total_facturado,
                 ]
             );

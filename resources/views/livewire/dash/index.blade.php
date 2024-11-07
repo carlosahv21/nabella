@@ -75,7 +75,7 @@
                                     <td>
                                         <div class="d-flex px-3 py-1">
                                             <div style="width: 35px; margin-right: 10px;">
-                                                <img  src="{{ asset('assets') }}/img/placeholder.jpg" alt="avatar" class="w-100 rounded-circle shadow-sm">
+                                                <img src="{{ asset('assets') }}/img/placeholder.jpg" alt="avatar" class="w-100 rounded-circle shadow-sm">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $driver->name }}</h6>
@@ -107,45 +107,73 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal Comments-->
-<div wire:ignore.self class="modal fade" id="seeComments" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{$title_modal}}</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal">
-                    <i class="material-icons notranslate">close</i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="card card-plain h-100">
-                    <div class="card-body p-0">
-                        @foreach($comments as $comment)
-                        <figure>
-                            <blockquote class="blockquote">
-                                <p class="ps-2">
-                                    @if( !empty($comment['observations']) )
-                                        {{ $comment['observations'] }}
-                                    @else
-                                        No comments found!
-                                    @endif
-                                    </p>
-                            </blockquote>
-                            <figcaption class="blockquote-footer ps-3">
-                                <cite title="Source Title">{{ $comment['patient_name'] }}</cite>
-                            </figcaption>
-                        </figure>
-                        @endforeach
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Schedules by service contract</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            @foreach($scheduling_by_service_contract as $company => $schedulings)
+                                <thead>
+                                    <tr class="text-uppercase text-secondary text-md font-weight-bolder">
+                                        <th >{{ $company }}</th>
+                                    </tr>
+                                </thead>
+                                @foreach ($schedulings as $scheduling)
+                                    <tbody>
+                                        <tr>
+                                            <td class="align-middle px-5 text-sm">{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }}</td>
+                                        </tr>
+                                    </tbody>
+                                @endforeach
+                            @endforeach
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+    <!-- Modal Comments-->
+    <div wire:ignore.self class="modal fade" id="seeComments" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{$title_modal}}</h5>
+                    <button type="button" class="btn" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card card-plain h-100">
+                        <div class="card-body p-0">
+                            @foreach($comments as $comment)
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p class="ps-2">
+                                        @if( !empty($comment['observations']) )
+                                        {{ $comment['observations'] }}
+                                        @else
+                                        No comments found!
+                                        @endif
+                                    </p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer ps-3">
+                                    <cite title="Source Title">{{ $comment['patient_name'] }}</cite>
+                                </figcaption>
+                            </figure>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 @elseif(auth()->user()->roles->first()->name == 'Driver')
 <div class="mx-3">
