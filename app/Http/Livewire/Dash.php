@@ -468,6 +468,8 @@ class Dash extends Component
                     patients p ON s.patient_id = p.id
                 JOIN 
                     service_contracts sc ON p.service_contract_id = sc.id
+                WHERE
+                    sa.date = '" . date('Y-m-d') . "'
                 ORDER BY
                     sc.company;";
             $scheduling_by_service_contract = DB::select($sql_scheduling_by_service_contract);
