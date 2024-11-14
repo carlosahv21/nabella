@@ -5,7 +5,7 @@
                 @for($i = 0; $i < count($drivers); $i++)
                     <div class="form-check form-check-inline col-6 col-lg-3" style="margin-right: 0;">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
-                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $drivers[$i]->driver_color }}; min-width: 140px; text-align: center;">
+                    <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $drivers[$i]->driver_color }}; min-width: 140px; text-align: center; border-radius: 5px;">
                         <b class="text-white"> {{ $drivers[$i]->name }} </b>
                     </label>
             </div> <!-- Cierre del div de form-check -->
