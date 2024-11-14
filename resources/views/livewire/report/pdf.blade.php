@@ -93,8 +93,14 @@
                 @endphp
                 @endforeach
                 <tr class="total-row">
-                    <td colspan="5" class="border-bottom" style="padding: 10px; text-align: right; font-size: 15px; font-weight: bold;">
-                        Total <span style=" font-size: 25px; padding-left: 10px;">${{ number_format($total, 2) }}</span>
+                    <td colspan="3" class="border-bottom" style="color: #8d9096; font-size: 8px; font-weight: bold;">
+                        Thank you for the trust you have in our company. We are here because of you, we appreciate you.
+                    </td>
+                    <td colspan="1" class="border-bottom" style="text-align: center; color: #8d9096; font-size: 8px; font-weight: bold;">
+                        BALANCE DUE
+                    </td>
+                    <td colspan="1" class="border-bottom" style="padding: 10px; text-align: right; font-size: 15px; font-weight: bold;">
+                        <span style=" font-size: 20px; padding-left: 10px;">${{ number_format($total, 2) }}</span>
                     </td>
                 </tr>
             </tbody>

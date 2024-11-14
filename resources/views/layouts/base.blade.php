@@ -61,17 +61,17 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
 
+        window.addEventListener('showToast', event => {
+            $('#' + event.detail.name).toast('show'); // Ajusta el retraso si es necesario
+        });
+
         window.addEventListener('closeModal', event => {
             $('#' + event.detail.name).modal('hide');
-        })
+        });
 
         window.addEventListener('openModal', event => {
             $('#' + event.detail.name).modal('show');
-        })
-
-        window.addEventListener('showToast', event => {
-            $('#' + event.detail.name).toast('show');
-        })
+        });
 
         window.addEventListener('showConfirm', event => {
             Swal.fire({
@@ -107,15 +107,45 @@
                     });
                 }
             });
-        })
+        });
+
+        window.addEventListener('showMultipleOptionsConfirm', async (event) => {
+            const {
+                value: selectedOption
+            } = await Swal.fire({
+                title: event.detail.text || "Select an option",
+                html: `
+                <div style="text-align: left;">
+                    <label><input type="radio" name="event-option" value="This-event"> This event</label><br>
+                    <label><input type="radio" name="event-option" value="Same-date"> This event and same date</label><br>
+                    <label><input type="radio" name="event-option" value="All-events"> All events</label>
+                </div>
+            `,
+                showCancelButton: true,
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                focusConfirm: false,
+                preConfirm: () => {
+                    const selected = document.querySelector('input[name="event-option"]:checked');
+                    if (!selected) {
+                        Swal.showValidationMessage("Please select an option");
+                        return false;
+                    }
+                    return selected.value;
+                }
+            });
+
+            if (selectedOption) {
+                Livewire.emit('deleteMultiple', selectedOption);
+            }
+        });
 
         window.addEventListener('showAlert', event => {
             Swal.fire({
                 title: event.detail.text,
                 icon: event.detail.icon,
             });
-        })
-
+        });
 
         $(document).ready(function() {
             var modals = ['createUser', 'createDriver', 'createRole', 'createVehicle', 'createClient', 'createServiceContract', 'createPatient', 'createFacility', 'SeeFileVehicle', 'createScheduling', 'seeEventDetails'];
@@ -127,13 +157,13 @@
             });
 
             flatpickr(".date-input", {
-                enableTime: false, // Si quieres habilitar la selección de hora, cámbialo a true
-                dateFormat: "m-d-Y", // Formato de la fecha
+                enableTime: false,
+                dateFormat: "m-d-Y",
             });
 
             flatpickr(".date-input-range", {
-                mode: "range", // Habilita el modo de rango
-                dateFormat: "Y-m-d", // Formato de la fecha
+                mode: "range",
+                dateFormat: "Y-m-d",
             });
 
             flatpickr(".date-input-time", {
@@ -143,6 +173,7 @@
             });
         });
     </script>
+
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Flatpickr -->

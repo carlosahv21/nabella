@@ -463,7 +463,7 @@ class Dash extends Component
                 ORDER BY
                     sc.company;";
             $scheduling_by_service_contract = DB::select($sql_scheduling_by_service_contract);
-
+            $result = [];
             foreach ($scheduling_by_service_contract as $key) {
                 $company = $key->service_contract_company;
 

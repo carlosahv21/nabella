@@ -20,4 +20,9 @@ class SchedulingAddress extends Model
     {
         return $this->belongsTo('App\Models\Scheduling');
     }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id');
+    }
 }

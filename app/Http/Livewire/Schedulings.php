@@ -15,6 +15,7 @@ use App\Models\SchedulingAutoagend;
 use App\Models\ApisGoogle;
 use App\Models\ApiHoliday;
 use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 use Exception;
 
 use Illuminate\Support\Facades\DB;
@@ -88,7 +89,9 @@ class Schedulings extends Component
         'confirmCollect',
         'continueScheduling',
         'deleteScheduling',
-        'showConfirmDelete'
+        'showConfirmDelete',
+        'deleteMultiple',
+        'openCreateModal'
     ];
 
     public function __construct()
@@ -203,7 +206,6 @@ class Schedulings extends Component
         $this->aditional_waiting = $model_scheduling_charge->aditional_waiting;
         $this->fast_track = $model_scheduling_charge->fast_track;
         $this->if_not_cancel = $model_scheduling_charge->if_not_cancel;
-
     }
 
     private function clearForm()
@@ -258,7 +260,7 @@ class Schedulings extends Component
             // Por ejemplo, asignando una fecha por defecto
             $convertedDate = Carbon::now()->format('Y-m-d');
         }
-        
+
         $this->date = $convertedDate;
 
 
@@ -273,9 +275,7 @@ class Schedulings extends Component
         }
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
-        
-        $events = $this->getEventsCalendar('');
-        $this->dispatchBrowserEvent('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents');
 
         $data = ($this->isEdit)
             ? ['message' => 'Scheduling updated successfully!', 'type' => 'success', 'icon' => 'edit']
@@ -319,19 +319,19 @@ class Schedulings extends Component
         $scheduling_charge->save();
 
         $d_saved_addresses =  SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
-        if(count($d_saved_addresses) > 0){
+        if (count($d_saved_addresses) > 0) {
             foreach ($d_saved_addresses as $address) {
                 $address->delete();
             }
         }
-        
-        if($this->pick_up_address){
+
+        if ($this->pick_up_address) {
             $newStop = [
                 "address" => $this->pick_up_address,
                 "addresses" => [],
                 "distance" => "0",
                 "duration" => "0"
-            ]; 
+            ];
 
             if (!in_array($newStop, $this->stops)) {
                 array_unshift($this->stops, $newStop);
@@ -340,7 +340,7 @@ class Schedulings extends Component
             $this->saveAddresses($this->stops, $scheduling, 'pick_up', '', $this->auto_agend);
         }
 
-        if($this->return_pick_up_address){
+        if ($this->return_pick_up_address) {
             $nerReturnStop = [
                 "address" => $this->return_pick_up_address,
                 "addresses" => [],
@@ -364,7 +364,6 @@ class Schedulings extends Component
                 ->get();
 
             if (count($scheduling_address) > 0) {
-
                 foreach ($scheduling_address as $address) {
                     $d_schedulings = Scheduling::where('id', $address->scheduling_id)->get();
                     foreach ($d_schedulings as $d_scheduling) {
@@ -393,7 +392,7 @@ class Schedulings extends Component
             $end = Carbon::parse($lastDayOfYear->format('Y-m-d'));
         }
 
-        while ($start->lessThanOrEqualTo($end)) {            
+        while ($start->lessThanOrEqualTo($end)) {
             if (in_array($start->format('l'), $this->weekdays)) {
                 if ($this->modelId) {
                     $scheduling = Scheduling::find($this->modelId);
@@ -432,32 +431,36 @@ class Schedulings extends Component
                     $address->delete();
                 }
 
-                $newStop = [
-                    "address" => $this->pick_up_address,
-                    "addresses" => [],
-                    "distance" => "0",
-                    "duration" => "0"
-                ];
+                if ($this->pick_up_address) {
+                    $newStop = [
+                        "address" => $this->pick_up_address,
+                        "addresses" => [],
+                        "distance" => "0",
+                        "duration" => "0"
+                    ];
 
-                if (!in_array($newStop, $this->stops)) {
-                    array_unshift($this->stops, $newStop);
+                    if (!in_array($newStop, $this->stops)) {
+                        array_unshift($this->stops, $newStop);
+                    }
+
+
+                    $this->saveAddresses($this->stops, $scheduling, 'pick_up', $start->format('Y-m-d'), $this->auto_agend);
                 }
 
-                
-                $this->saveAddresses($this->stops, $scheduling, 'pick_up', $start->format('Y-m-d'), $this->auto_agend);
+                if ($this->return_pick_up_address) {
+                    $nerReturnStop = [
+                        "address" => $this->return_pick_up_address,
+                        "addresses" => [],
+                        "distance" => "0",
+                        "duration" => "0"
+                    ];
 
-                $nerReturnStop = [
-                    "address" => $this->return_pick_up_address,
-                    "addresses" => [],
-                    "distance" => "0",
-                    "duration" => "0"
-                ];
+                    if (!in_array($nerReturnStop, $this->r_stops)) {
+                        array_unshift($this->r_stops, $nerReturnStop);
+                    }
 
-                if (!in_array($nerReturnStop, $this->r_stops)) {
-                    array_unshift($this->r_stops, $nerReturnStop);
+                    $this->saveAddresses($this->r_stops, $scheduling, 'return', $start->format('Y-m-d'), $this->auto_agend);
                 }
-
-                $this->saveAddresses($this->r_stops, $scheduling, 'return', $start->format('Y-m-d'), $this->auto_agend);
             }
 
             $start->addDay();
@@ -496,19 +499,56 @@ class Schedulings extends Component
 
     public function showConfirmDelete()
     {
-        $this->dispatchBrowserEvent('showConfirm', [
-            'text' => "Do you want to delete this scheduling? This action cannot be undone!",
-            'icon' => 'warning',
-            'confirmButtonText' => 'Yes',
-            'denyButtonText' => 'No',
-            'livewire' => 'deleteScheduling',
-        ]);
+        if ($this->auto_agend) {
+            $this->dispatchBrowserEvent('showMultipleOptionsConfirm');
+        } else {
+            $this->dispatchBrowserEvent('showConfirm', [
+                'text' => "Do you want to delete this scheduling? This action cannot be undone!",
+                'icon' => 'warning',
+                'confirmButtonText' => 'Yes',
+                'denyButtonText' => 'No',
+                'livewire' => 'deleteScheduling',
+            ]);
+        }
     }
 
-    public function deleteScheduling()
+    public function deleteMultiple($option)
     {
-        $model_scheduling = Scheduling::find($this->modelId);
-        
+        if ($option == 'This-event') {
+            $this->deleteScheduling($this->modelId);
+        } else if ($option == 'Same-date') {
+            // Obtener el día de la semana del agendamiento actual
+            $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
+            $day_of_week = Carbon::parse($format_date)->format('l');
+
+            // Obtener todos los IDs de agendamientos que ocurren el mismo día de la semana
+            $schedulings = Scheduling::select('schedulings.id')
+                ->leftJoin('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
+                ->where('scheduling_autoagend_id', $this->schedule_autoagend_id)
+                ->whereRaw("DAYNAME(date) = ?", [$day_of_week])
+                ->get();
+            foreach ($schedulings as $scheduling) {
+                $this->deleteScheduling($scheduling->id);
+            }
+        } else if ($option == 'All-events') {
+            $schedulings = Scheduling::select('schedulings.id')
+                ->leftJoin('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')->where('scheduling_autoagend_id', $this->schedule_autoagend_id)
+                ->get();
+            foreach ($schedulings as $scheduling) {
+                $this->deleteScheduling($scheduling->id);
+            }
+        }
+    }
+
+    public function deleteScheduling($scheduling_id)
+    {
+
+        $model_scheduling = Scheduling::find($scheduling_id);
+
+        if (!$model_scheduling) {
+            return;
+        }
+
         $scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->get();
         foreach ($scheduling_address as $address) {
             $address->delete();
@@ -522,8 +562,7 @@ class Schedulings extends Component
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
-        $events = $this->getEventsCalendar('');
-        $this->dispatchBrowserEvent('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents');
 
         $this->sessionAlert([
             'message' => 'Scheduling deleted successfully!',
@@ -609,24 +648,24 @@ class Schedulings extends Component
         }
 
         $this->patient_id = $patient->id;
-        
+
         if ($patient->billing_code == 'A0130-Wheelchair') {
             $this->wheelchair = true;
             $this->ambulatory = false;
         }
-        
+
         if ($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory') {
             $this->ambulatory = true;
             $this->wheelchair = false;
         }
 
         $this->patient_name = $patient->first_name . ' ' . $patient->last_name;
-        
+
         $sql = "SELECT * FROM addresses WHERE patient_id = '$patientId'";
         $patient_addresses = DB::select($sql);
 
         foreach ($patient_addresses as $address) {
-            $this->saved_addresses[] = $address->address.', '.$address->description;
+            $this->saved_addresses[] = $address->address . ', ' . $address->description;
         }
 
         if (!$patient->service_contract_id) {
@@ -646,12 +685,20 @@ class Schedulings extends Component
 
     public function checkPatientName($query)
     {
-        if ( strlen($query) >= 3) {
-            $search = Patient::where('first_name', 'LIKE', "%$query%")
-                ->orWhere('last_name', 'LIKE', "%$query%")
-                ->orWhere('medicalid', 'LIKE', "%$query%")
-                ->get();
-                
+        if (strlen($query) >= 3) {
+
+            $keywords = explode(' ', $query);
+
+            $search = Patient::where(function ($query) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    $query->where(function ($subQuery) use ($keyword) {
+                        $subQuery->where('first_name', 'LIKE', "%$keyword%")
+                            ->orWhere('last_name', 'LIKE', "%$keyword%")
+                            ->orWhere('medicalid', 'LIKE', "%$keyword%");
+                    });
+                }
+            })->get();
+
             // Obtener los IDs ya presentes en $this->search_patients
             $existingIds = array_column($this->search_patients, 'id');
 
@@ -721,24 +768,13 @@ class Schedulings extends Component
             $address->save();
         }
 
-        $events = $this->getEventsCalendar('');
-
-        $this->dispatchBrowserEvent('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents');
 
         $this->sessionAlert([
             'message' => 'Event updated successfully!',
             'type' => 'success',
             'icon' => 'edit',
         ]);
-    }
-
-    public function updateEventsCalendar($driverIds)
-    {
-        $events = !empty($driverIds)
-            ? $this->getEventsCalendar($driverIds)
-            : $this->getEventsCalendar('');
-
-        $this->dispatchBrowserEvent('updateEvents', $events);
     }
 
     public function updatedCheckIn()
@@ -770,10 +806,10 @@ class Schedulings extends Component
 
     public function updatedPickUpDriverId()
     {
-        if($this->validateDriverHour() > 0){
+        if ($this->validateDriverHour() > 0) {
             $this->errors_driver = 'Pick up driver must be available between pick up time and check in time';
             return;
-        }else{
+        } else {
             $this->errors_driver = '';
         }
     }
@@ -823,7 +859,7 @@ class Schedulings extends Component
         $this->$type[$index]['address'] = $address;
         $this->$type[$index]['addresses'] = [];
 
-        if($type == 'stops'){
+        if ($type == 'stops') {
             $this->updatedCheckIn();
         }
     }
@@ -936,6 +972,22 @@ class Schedulings extends Component
         return date('H:i', $newTimestamp);
     }
 
+    public function openCreateModal($date)
+    {
+        $dateTime = Carbon::parse($date);
+
+        // Obtener solo la fecha en formato "Y-m-d"
+        $fecha = $dateTime->toDateString();
+        $this->date = $fecha;
+
+        // Obtener solo la hora en formato "H:i:s"
+        $hora = $dateTime->format('H:i');
+        $this->check_in = $hora;
+
+        $this->title_modal = 'Create Scheduling';
+        $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
+    }
+
     public function editEvent($id)
     {
         $this->emit('getModelId', $id);
@@ -976,13 +1028,11 @@ class Schedulings extends Component
         $scheduling_address->status = ($cancel) ? 'Canceled' : 'Waiting';
         $scheduling_address->save();
 
-        $scheduling_charge = SchedulingCharge::findOrFail($scheduling_address->scheduling_id);
+        $scheduling_charge = SchedulingCharge::where('scheduling_id', $scheduling_address->scheduling_id)->first();
         $scheduling_charge->if_not_cancel = ($cancel) ? true : false;
         $scheduling_charge->save();
 
-        $events = $this->getEventsCalendar('');
-
-        $this->dispatchBrowserEvent('updateEvents', $events);
+        $this->dispatchBrowserEvent('updateEvents');
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
         $this->sessionAlert([
@@ -992,53 +1042,55 @@ class Schedulings extends Component
         ]);
     }
 
-    public function getEventsCalendar($driver_ids)
+    public function getEventsCalendar(Request $request)
     {
-        $scheduling = Scheduling::all();
+        // Obtener el rango de fechas y driver_ids de la solicitud
+        $startDate = $request->query('start');
+        $endDate = $request->query('end');
+        $driverIds = $request->query('driver_ids') ? explode(',', $request->query('driver_ids')) : null;
+
+        // Cargar sólo los agendamientos dentro del rango de fechas
+        $schedulings = Scheduling::with([
+            'schedulingAddresses' => function ($query) use ($driverIds, $startDate, $endDate) {
+                if ($driverIds) {
+                    $query->whereIn('driver_id', $driverIds);
+                }
+                $query->whereBetween('date', [$startDate, $endDate])
+                    ->select('id', 'scheduling_id', 'driver_id', 'date', 'pick_up_hour', 'drop_off_hour', 'status');
+            },
+            'patient' => function ($query) {
+                $query->selectRaw("id, 
+                CONCAT(
+                    CASE 
+                        WHEN billing_code = 'A0120-Ambulatory' THEN '(A)'
+                        WHEN billing_code = 'A0120-Cane' THEN '(C)'
+                        WHEN billing_code = 'A0130-Wheelchair' THEN '(WC)'
+                        WHEN billing_code = 'A0130-Walker' THEN '(W)'
+                        ELSE '(W)'
+                    END, 
+                    ' - ', first_name, ' ', last_name
+                ) as full_name, billing_code");
+            },
+            'schedulingAddresses.driver:id,driver_color'
+        ])->whereHas('schedulingAddresses', function ($query) use ($startDate, $endDate, $driverIds) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+            if ($driverIds) {
+                $query->whereIn('driver_id', $driverIds);
+            }
+        })->get();
+
         $events = [];
 
-        foreach ($scheduling as $event) {
-            $sql = "SELECT * FROM scheduling_address WHERE scheduling_id = '$event->id'";
+        foreach ($schedulings as $event) {
+            $patient = $event->patient;
 
-            if($driver_ids){
-                $sql .= " AND scheduling_address.driver_id IN (". implode(',', $driver_ids) . ")";
-            } 
-
-            $scheduling_address = DB::select($sql);
-
-            $patient = Patient::find($event->patient_id);
-            
-            if(!$scheduling_address){
-                continue;
-            }
-
-            foreach ($scheduling_address as $address) {
-                $driver_id = $address->driver_id;
-
-                $driver = Driver::find($driver_id);
-
-                switch ($patient->billing_code) {
-                    case 'A0120-Ambulatory':
-                        $prfix = '(A)';
-                        break;
-                    case 'A0120-Cane':
-                        $prfix = '(C)';
-                        break;
-                    case 'A0130-Wheelchair':
-                        $prfix = '(WC)';
-                        break;
-                    case 'A0130-Walker':
-                        $prfix = '(W)';
-                        break;
-                    default:
-                        $prfix = '(W)';
-                        break;
-                }
+            foreach ($event->schedulingAddresses as $address) {
+                $driver = $address->driver;
 
                 $events[] = [
                     'id' => $event->id,
-                    'driver_id' => $driver_id,
-                    'title' => $prfix . ' - ' . $patient->first_name . " " . $patient->last_name,
+                    'driver_id' => $address->driver_id,
+                    'title' => $patient->full_name,
                     'start' => $address->date . " " . $address->pick_up_hour,
                     'end' => $address->date . " " . $address->drop_off_hour,
                     'color' => $driver->driver_color,
@@ -1047,7 +1099,7 @@ class Schedulings extends Component
             }
         }
 
-        return $events;
+        return response()->json($events);
     }
 
     public function validateFields()
@@ -1091,7 +1143,8 @@ class Schedulings extends Component
         $this->getDistance($addresses, $arrivalTime, 'return');
     }
 
-    public function validateDriverHour(){
+    public function validateDriverHour()
+    {
         $date = Carbon::createFromFormat('m-d-Y', '10-14-2024')->toDateString();
         $sql = "SELECT id FROM scheduling_address 
             WHERE driver_id = '$this->pick_up_driver_id' 
@@ -1123,8 +1176,6 @@ class Schedulings extends Component
 
     public function render()
     {
-        $events = $this->getEventsCalendar('');
-
         $driver = DB::table('users')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
@@ -1134,9 +1185,7 @@ class Schedulings extends Component
             ->get();
 
         return view('livewire.scheduling.index', [
-            'patients' => Patient::all(),
-            'drivers' => $driver,
-            'events' => $events
+            'drivers' => $driver
         ]);
     }
 }
