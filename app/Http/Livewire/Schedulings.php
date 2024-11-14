@@ -1068,7 +1068,7 @@ class Schedulings extends Component
                         WHEN billing_code = 'A0130-Walker' THEN '(W)'
                         ELSE '(W)'
                     END, 
-                    ' - ', first_name, ' ', last_name
+                    ' ', first_name, ' ', last_name
                 ) as full_name, billing_code");
             },
             'schedulingAddresses.driver:id,driver_color'

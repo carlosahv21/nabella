@@ -447,8 +447,22 @@
             eventTitle.style.whiteSpace = 'nowrap';
             eventTitle.style.overflow = 'hidden';
             eventTitle.style.textOverflow = 'ellipsis';
-            eventTitle.innerText = `${arg.timeText} - ${arg.event.title}`;
+            eventTitle.innerText = `${arg.timeText}  ${arg.event.title.replaceAll('&', '&amp;')}`;
 
+
+            if (calendar.view.type === 'dayGridMonth') {
+                eventTitle.style.borderRadius = '8px';
+                eventTitle.style.padding = '0px 5px';
+                eventTitle.style.fontSize = '12px';
+            }
+
+            if (calendar.view.type === 'timeGridDay' || calendar.view.type === 'dayGridMonth') {
+                eventTitle.style.backgroundColor = arg.event.backgroundColor;
+                eventTitle.style.color = arg.event.textColor || 'white';
+                eventTitle.innerText = `${arg.timeText} - ${arg.event.title.replaceAll('&', '&amp;')}`;
+
+            }
+            
             return {
                 domNodes: [eventTitle]
             };

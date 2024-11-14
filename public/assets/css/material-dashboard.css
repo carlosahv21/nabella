@@ -577,8 +577,30 @@ progress {
 .fc-event {
     height: 30px !important; /* Ajusta el tamaño deseado */
     line-height: 30px; /* Centra el texto verticalmente */
+    border-radius: 8px; 
+    padding: 2px 5px;
 }
 
+.fc-dayGridMonth .fc-event:hover {
+    box-shadow: none; /* Elimina el shadow al hacer hover */
+    /* Puedes añadir otros estilos de hover aquí, si deseas */
+    background-color: #f0f0f0; /* Ejemplo de cambio de color de fondo en hover */
+    color: black; /* Ejemplo de cambio de color de texto en hover */
+    border-radius: 8px; /* Mantener el borde redondeado en hover */
+}
+
+.fc-daygrid-dot-event.fc-event-mirror, .fc-daygrid-dot-event:hover{
+    background-color: transparent;
+}
+
+.fc-event-title:hover {
+    color: black !important;
+}
+
+.fc .fc-daygrid-more-link{
+    margin: 5px;
+    font-weight: bold;
+}
 
 .fc-toolbar-title {
     text-align: center;
