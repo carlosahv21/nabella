@@ -263,7 +263,10 @@ class Vehicles extends Component
         return view('livewire.vehicle.index', 
             [
                 'vehicles' => Vehicle::where('make', 'like', '%'.$this->search.'%')
-                ->paginate(10),
+                    ->orWhere('model', 'like', '%'.$this->search.'%')
+                    ->orWhere('year', 'like', '%'.$this->search.'%')
+                    ->orWhere('vin', 'like', '%'.$this->search.'%')
+                    ->paginate(10),
                 'drivers' => $data
             ]
         );

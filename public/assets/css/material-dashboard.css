@@ -608,6 +608,8 @@ progress {
 
 .fc-popover {
     z-index: 1 !important;
+    width: 275px;
+    box-shadow: 0 14px 26px -12px rgba(52, 71, 103, 0.4), 0 4px 23px 0 rgba(52, 71, 103, 0.15), 0 8px 10px -5px rgba(52, 71, 103, 0.2) !important;
 }
 
 @media (max-width: 575.98px) {

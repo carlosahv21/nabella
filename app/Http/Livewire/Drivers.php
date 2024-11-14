@@ -241,14 +241,19 @@ class Drivers extends Component
         $roleName = 'Driver';
 
         $data = DB::table('users')
-            ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->select('users.*')
             ->where('roles.name', '=', $roleName)
             ->where('users.id', '!=', auth()->id())
-            ->where('users.name', 'like', '%' . $this->search . '%')
+            ->where('users.name', '!=', 'Root')
+            ->where(function ($query) {
+                $query->where('users.name', 'like', '%' . $this->search . '%')
+                    ->orWhere('users.email', 'like', '%' . $this->search . '%');
+            })
             ->orderBy('users.name', 'asc')
             ->paginate(10);
+
 
         $this->prefixs = Config::get('phone_prefixes');
 

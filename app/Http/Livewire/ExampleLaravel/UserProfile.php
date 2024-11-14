@@ -54,7 +54,7 @@ class UserProfile extends Component
                 'role' => 'required|string|exists:roles,name',
             ];
         } else {
-            
+
             return [
                 'name' => 'required|min:3',
                 'email' => 'required|email|unique:users,email',
@@ -85,7 +85,6 @@ class UserProfile extends Component
         $this->role = null;
         $this->password = null;
         $this->isEdit = false;
-
     }
 
     public function save()
@@ -130,7 +129,6 @@ class UserProfile extends Component
         }
 
         $this->clearForm();
-
     }
 
     public function forcedCloseModal()
@@ -151,18 +149,18 @@ class UserProfile extends Component
         $user->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteUser']);
-        
+
         $data = [
             'message' => 'User deleted successfully!',
             'type' => 'danger',
             'icon' => 'delete',
         ];
         $this->sessionAlert($data);
-
     }
 
-    function sessionAlert($data) {
-        session()->flash('alert', $data); 
+    function sessionAlert($data)
+    {
+        session()->flash('alert', $data);
 
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
@@ -179,12 +177,18 @@ class UserProfile extends Component
 
     public function render()
     {
+        $users = User::where('name', '!=', 'Root')
+            ->where(function ($query) {
+                $query->where('name', 'like', "%$this->search%")
+                    ->orWhere('email', 'like', "%$this->search%");
+            })
+            ->paginate(10);
+
+
         return view(
             'livewire.user.index',
             [
-                'users' => User::where('name', "like", "%$this->search%")
-                    ->orWhere('email', "like", "%$this->search%")
-                    ->paginate(10),
+                'users' => $users,
                 'roles' => Role::all(),
             ]
         );

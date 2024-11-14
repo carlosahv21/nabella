@@ -508,6 +508,7 @@ class Schedulings extends Component
                 'confirmButtonText' => 'Yes',
                 'denyButtonText' => 'No',
                 'livewire' => 'deleteScheduling',
+                'id' => $this->modelId
             ]);
         }
     }
@@ -542,7 +543,6 @@ class Schedulings extends Component
 
     public function deleteScheduling($scheduling_id)
     {
-
         $model_scheduling = Scheduling::find($scheduling_id);
 
         if (!$model_scheduling) {
