@@ -48,32 +48,26 @@
             <div class="modal-header">
                 <h5 class="modal-title">{{$title_modal}}</h5>
                 <div class="d-flex justify-content-between pt-2">
-                    <div class="d-flex justify-content-end">
-                        @if(!$if_not_cancel)
-                        @if($isEdit)
-                        <button type="button" class="btn p-1" wire:click="cancelScheduling">
-                            <i class="material-icons notranslate">event_busy</i>
-                        </button>
-                        @endif
-                        <button type="button" class="btn p-1" wire:click="showConfirmDelete">
+                    @if($isEdit)
+                        <a type="button" class="btn p-1" wire:click="showConfirmDelete">
                             <i class="material-icons notranslate">delete</i>
-                        </button>
-                        <button type="button" class="btn p-1" wire:click="save">
-                            <i class="material-icons notranslate">save</i>
-                        </button>
+                        </a>
+                        @if($if_not_cancel)
+                            <button type="button" class="btn p-1" wire:click="revert">
+                                <i class="material-icons notranslate">undo</i>
+                            </button>
                         @else
-                        <button type="button" class="btn p-1" wire:click="revert">
-                            <i class="material-icons notranslate">undo</i>
-                        </button>
-                        <button type="button" class="btn p-1" wire:click="showConfirmDelete">
-                            <i class="material-icons notranslate">delete</i>
-                        </button>
+                            <button type="button" class="btn p-1" wire:click="cancelScheduling">
+                                <i class="material-icons notranslate">event_busy</i>
+                            </button>
                         @endif
-
-                        <button type="button" class="btn p-1" data-bs-dismiss="modal">
-                            <i class="material-icons notranslate">close</i>
-                        </button>
-                    </div>
+                    @endif
+                    <button type="button" class="btn p-1" wire:click="save">
+                        <i class="material-icons notranslate">save</i>
+                    </button>
+                    <button type="button" class="btn p-1" data-bs-dismiss="modal">
+                        <i class="material-icons notranslate">close</i>
+                    </button>
                 </div>
             </div>
             <div class="modal-body">
@@ -421,7 +415,7 @@
             },
             listDay: {
                 buttonText: 'list day'
-            }
+            }   
         },
         dayMaxEventRows: true,
         eventMaxStack: true,
@@ -449,7 +443,6 @@
             eventTitle.style.textOverflow = 'ellipsis';
             eventTitle.innerText = `${arg.timeText}  ${arg.event.title.replaceAll('&', '&amp;')}`;
 
-
             if (calendar.view.type === 'dayGridMonth') {
                 eventTitle.style.borderRadius = '8px';
                 eventTitle.style.padding = '0px 5px';
@@ -460,7 +453,6 @@
                 eventTitle.style.backgroundColor = arg.event.backgroundColor;
                 eventTitle.style.color = arg.event.textColor || 'white';
                 eventTitle.innerText = `${arg.timeText} - ${arg.event.title.replaceAll('&', '&amp;')}`;
-
             }
             
             return {

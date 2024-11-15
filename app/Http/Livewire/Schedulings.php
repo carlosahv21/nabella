@@ -668,18 +668,6 @@ class Schedulings extends Component
             $this->saved_addresses[] = $address->address . ', ' . $address->description;
         }
 
-        if (!$patient->service_contract_id) {
-            return;
-        }
-
-        $facilities = Facility::where('service_contract_id', $patient->service_contract_id)->get();
-        foreach ($facilities as $facility) {
-            $address_facility = Address::where('facility_id', $facility->id)->get();
-            foreach ($address_facility as $address) {
-                $this->saved_addresses[] = $address->address;
-            }
-        }
-
         $this->search_patients = [];
     }
 
@@ -1056,7 +1044,7 @@ class Schedulings extends Component
                     $query->whereIn('driver_id', $driverIds);
                 }
                 $query->whereBetween('date', [$startDate, $endDate])
-                    ->select('id', 'scheduling_id', 'driver_id', 'date', 'pick_up_hour', 'drop_off_hour', 'status');
+                    ->select('id', 'scheduling_id', 'driver_id', 'date', 'pick_up_hour', 'drop_off_hour', 'status', 'type_of_trip');
             },
             'patient' => function ($query) {
                 $query->selectRaw("id, 
@@ -1077,20 +1065,26 @@ class Schedulings extends Component
             if ($driverIds) {
                 $query->whereIn('driver_id', $driverIds);
             }
-        })->get();
+        })->get()->map(function ($scheduling) {
+            $scheduling->schedulingAddresses->each(function ($address) use ($scheduling) {
+                $address->full_name = ($address->type_of_trip === 'pick_up' ? '(G)' : '(R)') . ' ' . $scheduling->patient->full_name;
+            });
+            return $scheduling;
+        });
+        
 
         $events = [];
 
         foreach ($schedulings as $event) {
             $patient = $event->patient;
-
             foreach ($event->schedulingAddresses as $address) {
                 $driver = $address->driver;
+                $tripPrefix = ($address->type_of_trip === 'pick_up') ? '(G)' : '(R)';
 
                 $events[] = [
                     'id' => $event->id,
                     'driver_id' => $address->driver_id,
-                    'title' => $patient->full_name,
+                    'title' => "{$tripPrefix} - {$patient->full_name}", // Incluye el prefijo en el título
                     'start' => $address->date . " " . $address->pick_up_hour,
                     'end' => $address->date . " " . $address->drop_off_hour,
                     'color' => $driver->driver_color,

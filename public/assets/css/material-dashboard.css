@@ -612,6 +612,16 @@ progress {
     box-shadow: 0 14px 26px -12px rgba(52, 71, 103, 0.4), 0 4px 23px 0 rgba(52, 71, 103, 0.15), 0 8px 10px -5px rgba(52, 71, 103, 0.2) !important;
 }
 
+.fc .fc-list-event-dot {
+    --fc-list-event-dot-width: 15px;
+    border: calc(var(--fc-list-event-dot-width) / 2) solid var(--fc-event-border-color); 
+    border-radius: 50%;
+    box-sizing: content-box;
+    display: inline-block;
+    height: 0;
+    width: 0;
+}
+
 @media (max-width: 575.98px) {
     .fc-daygrid-more-link {
         padding: 0;
