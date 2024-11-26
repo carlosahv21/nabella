@@ -423,8 +423,6 @@
                 buttonText: 'Day'
             }
         },
-        dayMaxEventRows: true,
-        eventMaxStack: true,
         events: function(fetchInfo, successCallback, failureCallback) {
             // Obtener los driverIds seleccionados
             const driverIds = Array.from(document.querySelectorAll('.drivers:checked')).map(checkbox => checkbox.value);
