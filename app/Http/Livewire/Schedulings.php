@@ -515,17 +515,19 @@ class Schedulings extends Component
 
     public function deleteMultiple($option)
     {
+        $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
+
         if ($option == 'This-event') {
             $this->deleteScheduling($this->modelId);
         } else if ($option == 'Same-date') {
             // Obtener el día de la semana del agendamiento actual
-            $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
             $day_of_week = Carbon::parse($format_date)->format('l');
 
             // Obtener todos los IDs de agendamientos que ocurren el mismo día de la semana
-            $schedulings = Scheduling::select('schedulings.id')
+            $schedulings = Scheduling::select('schedulings.id', 'scheduling_address.date') 
                 ->leftJoin('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
                 ->where('scheduling_autoagend_id', $this->schedule_autoagend_id)
+                ->where('date', '>=', $format_date)
                 ->whereRaw("DAYNAME(date) = ?", [$day_of_week])
                 ->get();
             foreach ($schedulings as $scheduling) {
@@ -534,6 +536,7 @@ class Schedulings extends Component
         } else if ($option == 'All-events') {
             $schedulings = Scheduling::select('schedulings.id')
                 ->leftJoin('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')->where('scheduling_autoagend_id', $this->schedule_autoagend_id)
+                ->where('date', '>=', $format_date)
                 ->get();
             foreach ($schedulings as $scheduling) {
                 $this->deleteScheduling($scheduling->id);
@@ -582,7 +585,7 @@ class Schedulings extends Component
     public function subtractTime($pick_up_hour, $duration)
     {
         $hora = Carbon::parse($pick_up_hour)->format('H:i');
-        $minutosASumar = $duration + 30;
+        $minutosASumar = $duration + 0;
 
         return Carbon::createFromFormat('H:i', $hora)->subMinutes($minutosASumar)->format('H:i');
     }

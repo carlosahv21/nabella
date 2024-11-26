@@ -361,7 +361,7 @@
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label>Facility pickup time</label><br>
+                                        <label>@if($type_of_trip == 'pick_up') Facility @else Home @endif pickup time</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons notranslate text-sm me-1">schedule</i>
                                             {{ \Carbon\Carbon::parse($check_in)->format('H:i A') }}

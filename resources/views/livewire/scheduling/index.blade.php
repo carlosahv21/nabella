@@ -165,7 +165,7 @@
                                 <!-- GOING -->
                                 <hr class="dark horizontal">
                                 @endif
-                                <h6 class="text-center">GOING</h6>
+                                <h6 class="text-center">PICK UP</h6>
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_pick_up_address))
@@ -241,7 +241,7 @@
 
                                 <!-- RETURN -->
                                 @if($type_of_trip == 'round_trip')
-                                <h6 class="text-center">RETURN</h6>
+                                <h6 class="text-center">DROP OFF</h6>
                                 <div class="mb-3 col-md-12">
                                     <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Driver´s Location" @if($if_not_cancel) disabled @endif>
                                     @if (!empty($prediction_location_driver))
@@ -414,8 +414,14 @@
                 dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
             },
             listDay: {
-                buttonText: 'list day'
-            }   
+                buttonText: 'List Day'
+            },
+            dayGridMonth: {
+                buttonText: 'Month'
+            },
+            timeGridDay: {
+                buttonText: 'Day'
+            }
         },
         dayMaxEventRows: true,
         eventMaxStack: true,

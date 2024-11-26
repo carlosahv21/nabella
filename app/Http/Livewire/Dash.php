@@ -22,7 +22,7 @@ class Dash extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $modelId = '';
+    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $type_of_trip, $modelId = '';
 
     public $observations, $additional_milles = 0;
 
@@ -85,6 +85,7 @@ class Dash extends Component
         $this->pick_up = $scheduling_address->pick_up_address;
         $this->drop_off = $scheduling_address->drop_off_address;
         $this->drop_off_hours = $scheduling_address->drop_off_hour;
+        $this->type_of_trip = $scheduling_address->type_of_trip;
 
         $this->wheelchair = $scheduling_charge->wheelchair;
         $this->ambulatory = $scheduling_charge->ambulatory;
@@ -476,8 +477,8 @@ class Dash extends Component
                 $result[$company][] = [
                     'scheduling_id' => $key->scheduling_id,
                     'date' => $key->date,
-                    'pick_up_hour' => $key->pick_up_hour,
-                    'drop_off_hour' => $key->drop_off_hour,
+                    'pick_up_hour' => Carbon::parse($key->pick_up_hour)->format('g:iA'),
+                    'drop_off_hour' => Carbon::parse($key->drop_off_hour)->format('g:iA'),
                     'patient_name' => $key->patient_name,
                     'prefix' => $key->prefix
                 ];

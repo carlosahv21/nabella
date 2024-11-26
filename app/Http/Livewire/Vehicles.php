@@ -30,7 +30,7 @@ class Vehicles extends Component
         'make' => 'required|min:3',
         'model' => 'required|min:3',
         'year' => 'required|numeric|min_digits:4',
-        'fileVehicle' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
+        'fileVehicle' => 'image|mimes:jpeg,png,jpg,svg|max:2048'
     ];
 
     protected $listeners = [

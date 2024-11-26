@@ -117,7 +117,7 @@
                 html: `
                 <div style="text-align: left;">
                     <label><input type="radio" name="event-option" value="This-event"> This event</label><br>
-                    <label><input type="radio" name="event-option" value="Same-date"> This event and same date</label><br>
+                    <label><input type="radio" name="event-option" value="Same-date"> This and following events</label><br>
                     <label><input type="radio" name="event-option" value="All-events"> All events</label>
                 </div>
             `,
