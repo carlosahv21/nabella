@@ -1082,7 +1082,7 @@ class Schedulings extends Component
             $patient = $event->patient;
             foreach ($event->schedulingAddresses as $address) {
                 $driver = $address->driver;
-                $tripPrefix = ($address->type_of_trip === 'pick_up') ? '(G)' : '(R)';
+                $tripPrefix = ($address->type_of_trip === 'pick_up') ? '(P)' : '(R)';
 
                 $events[] = [
                     'id' => $event->id,

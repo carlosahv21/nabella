@@ -414,7 +414,7 @@
                 dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
             },
             listDay: {
-                buttonText: 'List Day'
+                buttonText: 'Day List'
             },
             dayGridMonth: {
                 buttonText: 'Month'

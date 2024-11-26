@@ -579,7 +579,20 @@ progress {
     line-height: 30px; /* Centra el texto verticalmente */
     border-radius: 8px; 
     padding: 2px 5px;
+    max-width: 400px;
+    overflow: hidden;
 }
+
+.fc-event:hover {
+    z-index: 1000; /* Un valor alto para asegurarte que esté encima */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Agregar un efecto visual opcional */
+    background-color: #f0f8ff; /* Cambiar el fondo para destacarlo (opcional) */
+}
+
+.fc-event:hover {
+    transform: scale(1.1); /* Aumentar el tamaño en un 20% */
+    transition: transform 0.2s ease-in-out; /* Transición suave */
+}  
 
 .fc-dayGridMonth .fc-event:hover {
     box-shadow: none; /* Elimina el shadow al hacer hover */
