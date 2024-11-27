@@ -595,10 +595,6 @@ progress {
     background-color: transparent;
 }
 
-.fc-event-title:hover {
-    color: black !important;
-}
-
 .fc .fc-daygrid-more-link{
     margin: 5px;
     font-weight: bold;

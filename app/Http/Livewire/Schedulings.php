@@ -496,7 +496,7 @@ class Schedulings extends Component
     public function showConfirmDelete()
     {
         $this->dispatchBrowserEvent('closeModal', ['name' => 'viewScheduling']);
-        
+
         if ($this->auto_agend) {
             $this->dispatchBrowserEvent('showMultipleOptionsConfirm');
         } else {
