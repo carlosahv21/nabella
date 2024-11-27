@@ -22,7 +22,7 @@ class Dash extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $type_of_trip, $modelId = '';
+    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $type_of_trip, $ends_date, $modelId = '';
 
     public $observations, $additional_milles = 0;
 
@@ -39,6 +39,10 @@ class Dash extends Component
     // variables para la API Google Maps
     public $map_api_key = 'AIzaSyBOx8agvT4F1RjSW4IS_zgkINQzdFZevik';
     public $url_map = 'https://maps.googleapis.com/maps/api/';
+
+    public function __construct() {
+        $this->ends_date = Carbon::today()->format('Y-m-d');
+    }
 
     public function selectItem($item, $action)
     {
@@ -163,23 +167,17 @@ class Dash extends Component
         $this->dispatchBrowserEvent('showMap', ['routes' => $routes]);
     }
 
-    function startDriving($event)
+    function changeStatus($event, $status)
     {
-        $driver_id = SchedulingAddress::where('id', '=', $event)->first()->driver_id;
-        $validate = SchedulingAddress::where('status', '=', 'In Progress')
-            ->where('driver_id', '=', $driver_id)
-            ->where('date', '=', date('Y-m-d'))
-            ->get();
-
         $scheduling_address = SchedulingAddress::where('id', '=', $event)->first();
-        $scheduling_address->status = 'In Progress';
+        $scheduling_address->status = $status;
 
         $scheduling_address->save();
 
         $this->sessionAlert([
-            'message' => 'You are driving!',
-            'type' => 'info',
-            'icon' => 'info',
+            'message' => ($status == 'Waiting') ? 'You are stopped!' : 'You are driving!',
+            'type' => ($status == 'Waiting') ? 'warning' : 'info',
+            'icon' => ($status == 'Waiting') ? 'warning' : 'info',
         ]);
     }
 
@@ -283,6 +281,8 @@ class Dash extends Component
         $all_events = [];
 
         if (auth()->user()->roles->first()->name == 'Driver') {
+            $date = $this->ends_date ? Carbon::createFromFormat('Y-m-d', $this->ends_date)->format('Y-m-d') : Carbon::today()->format('Y-m-d');
+
             $sql = "SELECT scheduling_address.*,
             schedulings.patient_id, 
             scheduling_charge.wheelchair,
@@ -298,7 +298,7 @@ class Dash extends Component
             scheduling_charge.overcharge FROM scheduling_address 
             inner join schedulings on schedulings.id = scheduling_address.scheduling_id 
             inner join scheduling_charge  on schedulings.id = scheduling_charge.scheduling_id 
-            WHERE scheduling_address.driver_id = " . auth()->user()->id . " AND scheduling_address.date = '" . Carbon::today()->format('Y-m-d') . "' ORDER BY scheduling_address.pick_up_hour";
+            WHERE scheduling_address.driver_id = " . auth()->user()->id . " AND scheduling_address.date = '" . $date . "' ORDER BY scheduling_address.pick_up_hour";
 
             $events = DB::select($sql);
 

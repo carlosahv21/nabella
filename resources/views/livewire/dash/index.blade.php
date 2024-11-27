@@ -220,12 +220,15 @@
         <div>
             <div class="card-header pb-0">
                 <div class="row">
-                    <div class="col-lg-6 col-7">
+                    <div class="col-lg-10 col-7">
                         <h6>Schedule of the day</h6>
                         <p class="text-sm mb-0">
                             <i class="fa fa-check text-info" aria-hidden="true"></i>
                             <span class="font-weight-bold ms-1">{{ count($events) }} route</span> this day
                         </p>
+                    </div>
+                    <div class="col-lg-2 col-7">
+                        <input type="date" class="form-control" id="date_end" wire:model="ends_date" >
                     </div>
                 </div>
             </div>
@@ -240,8 +243,9 @@
                                     Patient name</th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     Status</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Details</th>
+                                <th class="text-uppercase text-secondary text-center text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Actions
+                                </th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                 </th>
                             </tr>
@@ -271,7 +275,9 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{ $event['patient_name'] }}
+                                    {{ $event['patient_name'] }} <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">
+                                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip">visibility</i>
+                                    </a>
                                 </td>
                                 <td class="align-middle text-center">
                                     <span class="badge {{ $event['status_color'] }}">
@@ -279,20 +285,20 @@
                                     </span>
                                 </td>
                                 <td class="align-middle">
-                                    <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">
-                                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip">visibility</i> See details
-                                    </a>
-                                </td>
-                                <td class="align-middle">
                                     @if($event['status'] == 'Waiting')
-                                    <a wire:click="startDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
+                                    <a wire:click="changeStatus({{ $event['id'] }}, 'In Progress')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
                                         <i class="material-icons notranslate text-sm me-2">directions_car</i> Start driving
                                     </a>
                                     @elseif($event['status'] == 'In Progress')
-                                    <a wire:click="completeDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving">
-                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Finish driving
+                                    <a wire:click="changeStatus({{ $event['id'] }}, 'Waiting')" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Stop driving
                                     </a>
                                     @endif
+                                </td>
+                                <td class="align-middle">
+                                    <button wire:click="completeDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving" @if($event['status'] == 'Waiting') disabled @endif>
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Finish driving
+                                    </button>
                                 </td>
                             </tr>
                             @endforeach
