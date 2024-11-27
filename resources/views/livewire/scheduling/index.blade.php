@@ -463,6 +463,20 @@
                 domNodes: [eventTitle]
             };
         },
+        eventDidMount: function (info) {
+            // Agrega listeners al elemento de evento
+            const eventEl = info.el;
+
+            eventEl.addEventListener('mouseover', function(event) {
+                eventEl.closest('.fc-timegrid-event-harness').style.zIndex = 1000;
+                eventEl.style.transform = 'scale(1.1)';
+            });
+            
+            eventEl.addEventListener('mouseout', function(event) {
+                eventEl.closest('.fc-timegrid-event-harness').style.zIndex = 1;
+                eventEl.style.transform = 'scale(1)';
+            });
+        },
         dateClick: function(info) {
             Livewire.emit('openCreateModal', info.date);
         },
