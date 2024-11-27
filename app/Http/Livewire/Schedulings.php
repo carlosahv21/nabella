@@ -5,7 +5,6 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Scheduling;
 use App\Models\Patient;
-use App\Models\User;
 
 use App\Models\SchedulingAddress;
 use App\Models\SchedulingCharge;
@@ -29,7 +28,7 @@ class Schedulings extends Component
     public $google;
 
     // Campos de la tabla scheduling_address
-    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver, $schedule_autoagend_id, $patient_name, $driver_name = '';
+    public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver, $schedule_autoagend_id, $patient_name = '';
 
     // Campos de la tabla scheduling_charge
     public $wheelchair = false;
@@ -44,6 +43,7 @@ class Schedulings extends Component
     public $type_of_trip = 'one_way';
 
     public $item, $action, $search, $title_modal, $countSchedulings, $modelId, $modelIdCharge = '';
+    public $modelIdAddress = [];
     public $isEdit = false;
 
     public $saved_addresses = [];
@@ -88,8 +88,7 @@ class Schedulings extends Component
         'deleteScheduling',
         'showConfirmDelete',
         'deleteMultiple',
-        'openCreateModal',
-        'openViewModal'
+        'openCreateModal'
     ];
 
     public function __construct()
@@ -162,10 +161,9 @@ class Schedulings extends Component
         $count_r = 0;
         foreach ($model_scheduling_address as $address) {
             $this->date = Carbon::createFromFormat('Y-m-d', $address->date)->format('m-d-Y');
-            $this->type_of_trip = $address->type_of_trip;
-
             $this->schedule_autoagend_id = $address->scheduling_autoagend_id;
             if ($address->type_of_trip == 'pick_up') {
+                $this->modelIdAddress[$address->type_of_trip] = $address->id;
                 if (!$this->pick_up_address) {
                     $this->pick_up_address = $address->pick_up_address;
                 }
@@ -180,6 +178,7 @@ class Schedulings extends Component
 
                 $count++;
             } elseif ($address->type_of_trip == 'return') {
+                $this->modelIdAddress[$address->type_of_trip] = $address->id;
                 $this->return_pick_up_address = $address->pick_up_address;
                 $this->r_check_in = $address->drop_off_hour;
                 $this->r_pick_up_time = $address->pick_up_hour;
@@ -194,6 +193,7 @@ class Schedulings extends Component
 
         $model_scheduling_charge = SchedulingCharge::where('scheduling_id', $model_scheduling->id)->first();
         $this->modelIdCharge = $model_scheduling_charge->id;
+        $this->type_of_trip = $model_scheduling_charge->type_of_trip;
         $this->wheelchair = $model_scheduling_charge->wheelchair;
         $this->ambulatory = $model_scheduling_charge->ambulatory;
         $this->out_of_hours = $model_scheduling_charge->out_of_hours;
@@ -495,8 +495,6 @@ class Schedulings extends Component
 
     public function showConfirmDelete()
     {
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'viewScheduling']);
-
         if ($this->auto_agend) {
             $this->dispatchBrowserEvent('showMultipleOptionsConfirm');
         } else {
@@ -522,7 +520,7 @@ class Schedulings extends Component
             $day_of_week = Carbon::parse($format_date)->format('l');
 
             // Obtener todos los IDs de agendamientos que ocurren el mismo día de la semana
-            $schedulings = Scheduling::select('schedulings.id', 'scheduling_address.date') 
+            $schedulings = Scheduling::select('schedulings.id')
                 ->leftJoin('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
                 ->where('scheduling_autoagend_id', $this->schedule_autoagend_id)
                 ->where('date', '>=', $format_date)
@@ -961,26 +959,6 @@ class Schedulings extends Component
         return date('H:i', $newTimestamp);
     }
 
-    public function openViewModal($eventId)
-    {
-        $model = SchedulingAddress::find($eventId);
-
-        $scheduling = Scheduling::where('id', $model->scheduling_id)->first();
-        $patient = Patient::find($scheduling->patient_id);
-        $driver_name = User::find($model->driver_id)->name;
-
-        $this->modelId = $scheduling->id;
-        $this->patient_name = $patient->first_name . ' ' . $patient->last_name;
-        $this->type_of_trip = $model->type_of_trip;
-        $this->pick_up_time = $model->pick_up_hour;
-        $this->check_in = $model->drop_off_hour;
-        $this->date = $model->date;
-        $this->driver_name = $driver_name;
-
-        $this->title_modal = 'Scheduling Details';
-        $this->dispatchBrowserEvent('openModal', ['name' => 'viewScheduling']);
-    }
-
     public function openCreateModal($date)
     {
         $dateTime = Carbon::parse($date);
@@ -999,8 +977,6 @@ class Schedulings extends Component
 
     public function editEvent($id)
     {
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'viewScheduling']);
-
         $this->emit('getModelId', $id);
 
         $this->title_modal = 'Edit Scheduling';
@@ -1104,7 +1080,7 @@ class Schedulings extends Component
                 $tripPrefix = ($address->type_of_trip === 'pick_up') ? '(P)' : '(R)';
 
                 $events[] = [
-                    'id' => $address->id,
+                    'id' => $event->id,
                     'driver_id' => $address->driver_id,
                     'title' => "{$tripPrefix} - {$patient->full_name}", // Incluye el prefijo en el título
                     'start' => $address->date . " " . $address->pick_up_hour,
