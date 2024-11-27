@@ -442,6 +442,7 @@ class Dash extends Component
                     sa.date,
                     sa.pick_up_hour,
                     sa.drop_off_hour,
+                    sa.status,
                     CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
                     CASE 
                         WHEN p.billing_code = 'A0120-Ambulatory' THEN '(A)'
@@ -480,7 +481,8 @@ class Dash extends Component
                     'pick_up_hour' => Carbon::parse($key->pick_up_hour)->format('g:iA'),
                     'drop_off_hour' => Carbon::parse($key->drop_off_hour)->format('g:iA'),
                     'patient_name' => $key->patient_name,
-                    'prefix' => $key->prefix
+                    'prefix' => $key->prefix,
+                    'status' => $key->status
                 ];
             }
 
