@@ -963,13 +963,11 @@ class Schedulings extends Component
     {
         $dateTime = Carbon::parse($date);
 
-        // Obtener solo la fecha en formato "Y-m-d"
-        $fecha = $dateTime->toDateString();
-        $this->date = $fecha;
+        // Obtener la fecha en formato "m-d-Y"
+        $this->date = $dateTime->format('m-d-Y');
 
-        // Obtener solo la hora en formato "H:i:s"
-        $hora = $dateTime->format('H:i');
-        $this->check_in = $hora;
+        // Obtener solo la hora en formato "H:i"
+        $this->check_in = $dateTime->format('H:i');
 
         $this->title_modal = 'Create Scheduling';
         $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);
