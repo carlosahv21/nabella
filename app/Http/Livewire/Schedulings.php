@@ -1083,7 +1083,7 @@ class Schedulings extends Component
                     'title' => "{$tripPrefix} - {$patient->full_name}", // Incluye el prefijo en el título
                     'start' => $address->date . " " . $address->pick_up_hour,
                     'end' => $address->date . " " . $address->drop_off_hour,
-                    'color' => $driver->driver_color,
+                    'color' => ($driver->driver_color) ? $driver->driver_color : '#a5c3f5',
                     'className' => ($address->status == 'Canceled') ? 'cancelled-event' : '',
                 ];
             }

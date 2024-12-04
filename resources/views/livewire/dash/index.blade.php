@@ -117,18 +117,18 @@
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             @foreach($scheduling_by_service_contract as $company => $schedulings)
-                                <thead>
-                                    <tr class="text-uppercase text-secondary text-md font-weight-bolder">
-                                        <th >{{ $company }}</th>
-                                    </tr>
-                                </thead>
-                                @foreach ($schedulings as $scheduling)
-                                    <tbody>
-                                        <tr>
-                                            <td class="align-middle px-5 text-sm" >{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }} @if($scheduling['status'] == 'Canceled') -  <span class="badge bg-danger">Canceled</span> @endif</td>
-                                        </tr>
-                                    </tbody>
-                                @endforeach
+                            <thead>
+                                <tr class="text-uppercase text-secondary text-md font-weight-bolder">
+                                    <th>{{ $company }}</th>
+                                </tr>
+                            </thead>
+                            @foreach ($schedulings as $scheduling)
+                            <tbody>
+                                <tr>
+                                    <td class="align-middle px-5 text-sm">{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }} @if($scheduling['status'] == 'Canceled') - <span class="badge bg-danger">Canceled</span> @endif</td>
+                                </tr>
+                            </tbody>
+                            @endforeach
                             @endforeach
                         </table>
                     </div>
@@ -220,18 +220,77 @@
         <div>
             <div class="card-header pb-0">
                 <div class="row">
-                    <div class="col-lg-10 col-7">
+                    <div class="col-lg-10 col-6">
                         <h6>Schedule of the day</h6>
                         <p class="text-sm mb-0">
                             <i class="fa fa-check text-info" aria-hidden="true"></i>
                             <span class="font-weight-bold ms-1">{{ count($events) }} route</span> this day
                         </p>
                     </div>
-                    <div class="col-lg-2 col-7">
-                        <input type="date" class="form-control" id="date_end" wire:model="ends_date" >
+                    <div class="col-lg-2 col-6">
+                        <input type="date" class="form-control" id="date_end" wire:model="ends_date">
                     </div>
                 </div>
             </div>
+            @if($isMobile)
+            <div class="card-body px-0 pb-2">
+                @foreach($events as $event)
+                <div class="mx-4">
+                    <div class="accordion" id="accordionRental">
+                        <div class="accordion-item mb-3">
+                            <h6 class="accordion-header" id="headingOne">
+                                <button class="accordion-button border-bottom font-weight-bold collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{$event['id']}}" aria-expanded="false" aria-controls="collapse{{$event['id']}}">
+                                        {{ $event['patient_name'] }}
+                                        <span class="offset-1 badge {{ $event['status_color'] }}">
+                                            {{ $event['status'] }}
+                                        </span>
+                                </button>
+                            </h6>
+                            <div id="collapse{{$event['id']}}" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                                data-bs-parent="#accordionRental">
+                                <div class="accordion-body text-sm opacity-8 text-center">
+                                    <div class="timeline timeline-one-side">
+                                        <div class="timeline-block">
+                                            <span class="timeline-step">
+                                                <i class="material-icons notranslate text-success text-gradient">location_on</i>
+                                            </span>
+                                            <div class="timeline-content">
+                                                <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
+                                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Estimated Pickup time {{ \Carbon\Carbon::parse($event['date'])->format('m-d-Y') }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
+                                            </div>
+                                            <div class="timeline-content pt-3">
+                                                <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['drop_off_address'] }}</h6>
+                                            </div>
+                                            <span class="timeline-step" style="margin-top: -25px;">
+                                                <i class="material-icons notranslate text-warning text-gradient">location_on</i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @if($event['status'] == 'Waiting')
+                                    <a wire:click="changeStatus({{ $event['id'] }}, 'In Progress')" class="btn btn-link text-dark text-gradient px-3 pt-4 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Start driving
+                                    </a>
+                                    @elseif($event['status'] == 'In Progress')
+                                    <a wire:click="changeStatus({{ $event['id'] }}, 'Waiting')" class="btn btn-link text-dark text-gradient px-3 pt-4 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Start driving">
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Stop driving
+                                    </a>
+                                    @endif
+                                    <button wire:click="completeDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 pt-4 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving" @if($event['status']=='Waiting' ) disabled @endif>
+                                        <i class="material-icons notranslate text-sm me-2">directions_car</i> Finish driving
+                                    </button>
+                                    <a wire:click="selectItem({{ $event['id'] }}, 'seeDetails')" class="btn btn-link text-dark text-gradient px-3 pt-4 mb-0" data-bs-toggle="tooltip" data-bs-original-title="See details">
+                                        <i class="material-icons notranslate text-sm me-2" data-bs-toggle="tooltip">visibility</i>
+                                        See details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive">
                     <table class="table driver-table align-items-center">
@@ -296,7 +355,7 @@
                                     @endif
                                 </td>
                                 <td class="align-middle">
-                                    <button wire:click="completeDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving" @if($event['status'] == 'Waiting') disabled @endif>
+                                    <button wire:click="completeDriving({{ $event['id'] }})" class="btn btn-link text-dark text-gradient px-3 mb-0" data-bs-toggle="tooltip" data-bs-original-title="Finish driving" @if($event['status']=='Waiting' ) disabled @endif>
                                         <i class="material-icons notranslate text-sm me-2">directions_car</i> Finish driving
                                     </button>
                                 </td>
@@ -306,6 +365,7 @@
                     </table>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <!-- Modal Details-->
@@ -654,3 +714,15 @@
     </div>
 </div>
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isMobile = window.innerWidth <= 768;
+        Livewire.emit('setResponsiveView', isMobile);
+
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth <= 768;
+            Livewire.emit('setResponsiveView', isMobile);
+        });
+    });
+</script>

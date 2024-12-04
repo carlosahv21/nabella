@@ -24,6 +24,8 @@ class Dash extends Component
 
     public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $type_of_trip, $ends_date, $modelId = '';
 
+    public $isMobile = false;
+
     public $observations, $additional_milles = 0;
 
     public $comments = [];
@@ -33,7 +35,8 @@ class Dash extends Component
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
-        'showMap'
+        'showMap',
+        'setResponsiveView'
     ];
 
     // variables para la API Google Maps
@@ -42,6 +45,11 @@ class Dash extends Component
 
     public function __construct() {
         $this->ends_date = Carbon::today()->format('Y-m-d');
+    }
+
+    public function setResponsiveView($isMobile)
+    {
+        $this->isMobile = $isMobile;
     }
 
     public function selectItem($item, $action)
