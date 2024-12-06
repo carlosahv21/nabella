@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use App\Models\SchedulingAddress;
 
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +39,7 @@ class Drivers extends Component
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
+        'reassignDriverAndDelete'
     ];
 
     public function selectItem($item, $action)
@@ -202,8 +204,39 @@ class Drivers extends Component
     public function delete()
     {
         $user = User::findOrFail($this->item);
-        $user->delete();
 
+        $validation = SchedulingAddress::where('driver_id', $user->id)->get();
+        if (count($validation) > 0) {
+            $drivers = DB::table('users')
+            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->select('users.*')
+            ->where('roles.name', '=', 'Driver')
+            ->where('users.id', '!=', $user->id)
+            ->get();
+
+            $this->dispatchBrowserEvent('showReasignedDriver', ['options' => $drivers, 'id' => $user->id]);
+            return;
+        }else{
+            $this->deleteDriver($user);
+        }
+    }
+
+    public function reassignDriverAndDelete($driverId, $userId)
+    {
+        $scheduling_address = SchedulingAddress::where('driver_id', $userId)->get();
+        foreach ($scheduling_address as $address) {
+            $address->driver_id = $driverId;
+            $address->save();
+        }
+
+        $user = User::findOrFail($userId);
+        $this->deleteDriver($user);
+    }
+
+    public function deleteDriver($user){
+        $user->delete();
+        
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteDriver']);
 
         $data = [

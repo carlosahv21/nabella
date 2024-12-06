@@ -140,6 +140,50 @@
             }
         });
 
+        window.addEventListener('showReasignedDriver', async (event) => {
+            // Filtramos las opciones para excluir la que se está intentando borrar
+            const optionsHTML = (event.detail.options || [])
+                .map(option => `
+                    <div>
+                        <label>
+                            <input type="radio" name="driver-radio" value="${option.id}">
+                            ${option.name}
+                        </label>
+                    </div>
+                `)
+                .join('');
+
+            const {
+                value: selectedOption,
+            } = await Swal.fire({
+                title: "Reassign scheduling to another driver",
+                html: `
+                    <div style="text-align: left;">
+                        ${optionsHTML}
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+                focusConfirm: false,
+                preConfirm: () => {
+                    const selectedRadio = document.querySelector('input[name="driver-radio"]:checked');
+
+                    if (!selectedRadio) {
+                        Swal.showValidationMessage("Please select one driver.");
+                        return false;
+                    }
+                    // Retornamos el valor seleccionado
+                    return selectedRadio.value;
+                }
+            });
+
+            if (selectedOption) {
+                Livewire.emit('reassignDriverAndDelete', selectedOption, event.detail.id);
+            }
+        });
+
+
         window.addEventListener('showAlert', event => {
             Swal.fire({
                 title: event.detail.text,
