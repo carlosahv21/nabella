@@ -581,6 +581,7 @@ progress {
     padding: 2px 5px;
     max-width: 400px;
     overflow: hidden;
+    font-size: 12px;
 }
 
 .fc-dayGridMonth .fc-event:hover {
