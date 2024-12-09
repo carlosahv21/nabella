@@ -248,7 +248,7 @@
                                 </button>
                             </h6>
                             <div id="collapse{{$event['id']}}" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                                data-bs-parent="#accordionRental" wire:ignore>
+                                data-bs-parent="#accordionRental" wire:ignore.self>
                                 <div class="accordion-body text-sm opacity-8 text-center">
                                     <div class="timeline timeline-one-side">
                                         <div class="timeline-block">

@@ -26,50 +26,60 @@ class Vehicles extends Component
     public $make, $model, $year, $vin = '';
     public $action, $isEdit = false;
 
-    protected $rules=[
-        'make' => 'required|min:3',
-        'model' => 'required|min:3',
-        'year' => 'required|numeric|min_digits:4',
-        'fileVehicle' => 'image|mimes:jpeg,png,jpg,svg|max:2048'
-    ];
-
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
     ];
 
+    protected function rules()
+    {
+        $rules = [
+            'make' => 'required|min:3',
+            'model' => 'required|min:3',
+            'year' => 'required|numeric|min_digits:4',
+        ];
+
+        // Solo aplicar la regla de imagen si no existe una imagen previa
+        if (!$this->seeFileVehicle) {
+            $rules['fileVehicle'] = 'required|image|mimes:jpeg,png,jpg,svg|max:2048';
+        } else {
+            $rules['fileVehicle'] = 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048';
+        }
+
+        return $rules;
+    }
+
     public function selectItem($item, $action)
     {
         $this->item = $item;
 
-        if($action == 'delete'){
+        if ($action == 'delete') {
             $this->title_modal = 'Delete Vehicle';
             $this->dispatchBrowserEvent('openModal', ['name' => 'deleteVehicle']);
-        }else if($action == 'masiveDelete'){
+        } else if ($action == 'masiveDelete') {
             $this->countVehicles = count($this->selected);
-            if($this->countVehicles > 0){
+            if ($this->countVehicles > 0) {
                 $this->title_modal = 'Delete Vehicles';
                 $this->dispatchBrowserEvent('openModal', ['name' => 'deleteVehicleMasive']);
-            }else{
+            } else {
                 $this->sessionAlert([
                     'message' => 'Please select a vehicle!',
                     'type' => 'danger',
                     'icon' => 'error',
                 ]);
             }
-        }else if($action == 'create'){
+        } else if ($action == 'create') {
             $this->title_modal = 'Create Vehicle';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createVehicle']);
             $this->emit('clearForm');
-        }else if($action == 'see'){
+        } else if ($action == 'see') {
             $this->title_modal = 'See File';
             $this->dispatchBrowserEvent('openModal', ['name' => 'SeeFileVehicle']);
             $this->emit('getModelId', $this->item);
-        }else{
+        } else {
             $this->title_modal = 'Edit Vehicle';
             $this->dispatchBrowserEvent('openModal', ['name' => 'createVehicle']);
             $this->emit('getModelId', $this->item);
-
         }
     }
 
@@ -86,7 +96,6 @@ class Vehicles extends Component
         $this->image_key = rand();
         $this->driver = null;
         $this->isEdit = false;
-
     }
 
     public function updatedSelectedAll($value)
@@ -119,25 +128,30 @@ class Vehicles extends Component
 
     public function save()
     {
-        if($this->user_id){
-            if($this->checkIfUserHasVehicle()){
+        if ($this->user_id) {
+            if ($this->checkIfUserHasVehicle()) {
                 return;
             }
         }
 
         $this->validate();
 
-        if($this->modelId){
+        if ($this->modelId) {
             $vehicle = Vehicle::findOrFail($this->modelId);
             $this->isEdit = true;
-            // Delete old image
-            if($vehicle->image){
-                Storage::delete('public/' . $vehicle->image);
-            }
-        }else{
+        } else {
             $vehicle = new Vehicle;
         }
-        $filename = $this->fileVehicle->store('images/vehicle', 'public');
+
+        if ($this->fileVehicle) {
+            // Delete old image
+            if ($vehicle->image) {
+                Storage::delete('public/' . $vehicle->image);
+            }
+            $filename = $this->fileVehicle->store('images/vehicle', 'public');
+        }else{
+            $filename = $vehicle->image ?? null;
+        }
 
         $vehicle->make = $this->make;
         $vehicle->model = $this->model;
@@ -169,7 +183,6 @@ class Vehicles extends Component
         }
 
         $this->clearForm();
-
     }
 
     public function delete()
@@ -178,7 +191,7 @@ class Vehicles extends Component
         $vehicle->delete();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteVehicle']);
-        
+
         $data = [
             'message' => 'Vehicle deleted successfully!',
             'type' => 'danger',
@@ -213,8 +226,9 @@ class Vehicles extends Component
         $this->resetValidation();
     }
 
-    function sessionAlert($data) {
-        session()->flash('alert', $data); 
+    function sessionAlert($data)
+    {
+        session()->flash('alert', $data);
 
         $this->dispatchBrowserEvent('showToast', ['name' => 'toast']);
     }
@@ -223,9 +237,7 @@ class Vehicles extends Component
     public function checkIfUserHasVehicle()
     {
         $user = User::find($this->user_id);
-        if (!$user->vehicles) {
-            return false;
-        }
+        if (!$user || !$user->vehicles) return false;
 
         if ($user->vehicles && $user->vehicles->count() > 0 && $user->vehicles->id != $this->modelId) {
             $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
@@ -238,12 +250,13 @@ class Vehicles extends Component
         }
     }
 
-    public function deleteImage(){
-        if($this->fileVehicle){
+    public function deleteImage()
+    {
+        if ($this->fileVehicle) {
             $this->fileVehicle = null;
         }
 
-        if($this->seeFileVehicle){
+        if ($this->seeFileVehicle) {
             $this->seeFileVehicle = null;
         }
         $this->image_key = rand();
@@ -254,18 +267,19 @@ class Vehicles extends Component
         $roleName = 'Driver';
 
         $data = DB::table('users')
-        ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-        ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
-        ->select('users.*')
-        ->where('roles.name', '=', $roleName)
-        ->get();
+            ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->select('users.*')
+            ->where('roles.name', '=', $roleName)
+            ->get();
 
-        return view('livewire.vehicle.index', 
+        return view(
+            'livewire.vehicle.index',
             [
-                'vehicles' => Vehicle::where('make', 'like', '%'.$this->search.'%')
-                    ->orWhere('model', 'like', '%'.$this->search.'%')
-                    ->orWhere('year', 'like', '%'.$this->search.'%')
-                    ->orWhere('vin', 'like', '%'.$this->search.'%')
+                'vehicles' => Vehicle::where('make', 'like', '%' . $this->search . '%')
+                    ->orWhere('model', 'like', '%' . $this->search . '%')
+                    ->orWhere('year', 'like', '%' . $this->search . '%')
+                    ->orWhere('vin', 'like', '%' . $this->search . '%')
                     ->paginate(10),
                 'drivers' => $data
             ]

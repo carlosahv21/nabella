@@ -1,15 +1,24 @@
 <div>
     <div class="table-settings mx-4 my-4">
         <div class="row justify-content-between align-items-center bg-white rounded-3">
-            <div class="col-12 col-lg-9 row mt-3">
+            <div class="col-12 col-lg-6 row mt-3">
                 @for($i = 0; $i < count($drivers); $i++)
-                    <div class="form-check form-check-inline col-6 col-lg-3" style="margin-right: 0;">
+                    <div class="form-check form-check-inline col-6 col-lg-6" style="margin-right: 0;">
                     <input class="form-check-input drivers" type="checkbox" id="driver{{ $drivers[$i]->id }}" value="{{ $drivers[$i]->id }}">
                     <label class="form-check-label" for="driver{{ $drivers[$i]->id }}" style="background-color: {{ $drivers[$i]->driver_color }}; min-width: 140px; text-align: center; border-radius: 5px;">
                         <b class="text-white"> {{ $drivers[$i]->name }} </b>
                     </label>
             </div> <!-- Cierre del div de form-check -->
             @endfor
+        </div>
+        <div class="col-12 col-lg-3 d-flex justify-content-end">
+            <select class="form-select" id="select_contract"> 
+                <option value="">Select services contract</option>
+                @foreach($service_contracts as $service_contract)
+                    <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
+                @endforeach
+
+            </select>
         </div>
         <div class="col-12 col-lg-3 d-flex justify-content-end mt-3">
             <button class="btn bg-gradient-dark " wire:click="selectItem('', 'create')">
@@ -426,9 +435,10 @@
         events: function(fetchInfo, successCallback, failureCallback) {
             // Obtener los driverIds seleccionados
             const driverIds = Array.from(document.querySelectorAll('.drivers:checked')).map(checkbox => checkbox.value);
+            const contractId = document.getElementById('select_contract').value; 
 
             // Hacer una solicitud AJAX para obtener eventos según el rango visible y los drivers seleccionados
-            fetch(`/api/calendar-events?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}&driver_ids=${driverIds.join(',')}`)
+            fetch(`/api/calendar-events?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}&driver_ids=${driverIds.join(',')}&contract_id=${contractId}`)
                 .then(response => response.json())
                 .then(data => successCallback(data))
                 .catch(error => failureCallback(error));
@@ -524,6 +534,18 @@
             driverCheckbox.addEventListener('change', function() {
                 calendar.refetchEvents(); // Refresca los eventos cuando se selecciona un nuevo driver
             });
+        });
+
+        $('#select_contract').on('change', function() {
+            calendar.refetchEvents(); // Refresca los eventos con el nuevo contrato seleccionado
+        });
+
+        document.addEventListener('click', function(event) {
+            const predictionsElement = document.querySelector('.predictions');
+
+            if (predictionsElement && !predictionsElement.contains(event.target)) {
+                Livewire.emit('closePredictions');
+            }
         });
     });
 </script>

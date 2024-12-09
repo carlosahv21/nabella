@@ -88,7 +88,8 @@ class Schedulings extends Component
         'deleteScheduling',
         'showConfirmDelete',
         'deleteMultiple',
-        'openCreateModal'
+        'openCreateModal',
+        'closePredictions'
     ];
 
     public function __construct()
@@ -605,6 +606,23 @@ class Schedulings extends Component
         }
     }
 
+    public function closePredictions()
+    {
+        $this->search_patients = [];
+        $this->prediction_pick_up_address = [];
+        $this->prediction_drop_off = [];
+        $this->prediction_location_driver = [];
+        $this->prediction_return_pick_up_address = [];
+
+        foreach ($this->stops as $index => $stop) {
+            $this->stops[$index]['addresses'] = [];
+        }
+
+        foreach ($this->r_stops as $index => $stop) {
+            $this->r_stops[$index]['addresses'] = [];
+        }
+    }
+
     // Funciones que validan la actualización de algun campo
     public function updated()
     {
@@ -1033,6 +1051,7 @@ class Schedulings extends Component
         $startDate = $request->query('start');
         $endDate = $request->query('end');
         $driverIds = $request->query('driver_ids') ? explode(',', $request->query('driver_ids')) : null;
+        $contractId = $request->query('contract_id'); // Nuevo parámetro
 
         // Cargar sólo los agendamientos dentro del rango de fechas
         $schedulings = Scheduling::with([
@@ -1054,20 +1073,28 @@ class Schedulings extends Component
                         ELSE '(W)'
                     END, 
                     ' ', first_name, ' ', last_name
-                ) as full_name, billing_code");
+                ) as full_name, billing_code, service_contract_id");
             },
             'schedulingAddresses.driver:id,driver_color'
-        ])->whereHas('schedulingAddresses', function ($query) use ($startDate, $endDate, $driverIds) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-            if ($driverIds) {
-                $query->whereIn('driver_id', $driverIds);
-            }
-        })->get()->map(function ($scheduling) {
-            $scheduling->schedulingAddresses->each(function ($address) use ($scheduling) {
-                $address->full_name = ($address->type_of_trip === 'pick_up' ? '(G)' : '(R)') . ' ' . $scheduling->patient->full_name;
+        ])
+            ->whereHas('schedulingAddresses', function ($query) use ($startDate, $endDate, $driverIds) {
+                $query->whereBetween('date', [$startDate, $endDate]);
+                if ($driverIds) {
+                    $query->whereIn('driver_id', $driverIds);
+                }
+            })
+            ->when($contractId, function ($query) use ($contractId) {
+                $query->whereHas('patient', function ($query) use ($contractId) {
+                    $query->where('service_contract_id', $contractId);
+                });
+            })
+            ->get()
+            ->map(function ($scheduling) {
+                $scheduling->schedulingAddresses->each(function ($address) use ($scheduling) {
+                    $address->full_name = ($address->type_of_trip === 'pick_up' ? '(G)' : '(R)') . ' ' . $scheduling->patient->full_name;
+                });
+                return $scheduling;
             });
-            return $scheduling;
-        });
 
         $events = [];
 
@@ -1091,6 +1118,7 @@ class Schedulings extends Component
 
         return response()->json($events);
     }
+
 
     public function validateFields()
     {
@@ -1174,8 +1202,13 @@ class Schedulings extends Component
             ->where('users.id', '!=', auth()->id())
             ->get();
 
+        $service_contracts = DB::table('service_contracts')
+            ->select('service_contracts.id', 'service_contracts.company')
+            ->get();
+
         return view('livewire.scheduling.index', [
-            'drivers' => $driver
+            'drivers' => $driver,
+            'service_contracts' => $service_contracts
         ]);
     }
 }
