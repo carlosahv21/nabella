@@ -104,17 +104,14 @@ class Schedulings extends Component
         switch ($action) {
             case 'create':
                 if (cache()->get('autoagendamiento_form')) {
-                    $this->dispatchBrowserEvent(
-                        'showConfirm',
-                        [
+                    $this->dispatchBrowserEvent('showConfirm', [
                             'text' => 'You have unsaved changes! Do you want to continue?',
                             'icon' => 'info',
                             'confirmButtonText' => 'Yes',
                             'denyButtonText' => 'No',
                             'livewire' => 'continueScheduling',
                             'id' => false,
-                        ]
-                    );
+                    ]);
                 } else {
                     $this->title_modal = 'Create Scheduling';
                     $this->dispatchBrowserEvent('openModal', ['name' => 'createScheduling']);

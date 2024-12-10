@@ -96,10 +96,20 @@
                                 <span class="fw-bold">{{ $vehicle->vin }}</span>
                             </div>
                         </th>
-                        @if($vehicle->driver)
-                        <th>{{ $vehicle->driver->name }}</th>
+                        @if($vehicle->user_id)
+                            <th>
+                                <div class="d-block">
+                                    <span class="fw-bold">
+                                        {{ $vehicle->user->name }}
+                                    </span>
+                                </div>
+                            </th>
                         @else
-                        <th></th>
+                            <th>
+                                <div class="d-block">
+                                    <span class="fw-bold">No assigned</span>
+                                </div>
+                            </th>
                         @endif
                         <th>
                             <span class="my-2 text-xs">

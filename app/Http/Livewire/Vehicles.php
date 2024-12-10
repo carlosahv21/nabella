@@ -19,7 +19,7 @@ class Vehicles extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle, $fileVehicle, $seeFileVehicle, $image_key = '';
+    public $search, $title_modal, $item, $countVehicles, $user_id, $driver, $modelId, $number_vehicle, $fileVehicle, $seeFileVehicle, $image_key, $existingVehicle = '';
 
     public $selected = [];
     public $selectedAll = false;
@@ -29,6 +29,7 @@ class Vehicles extends Component
     protected $listeners = [
         'getModelId',
         'forcedCloseModal',
+        'confirmChangeDriver'
     ];
 
     protected function rules()
@@ -130,59 +131,11 @@ class Vehicles extends Component
     {
         if ($this->user_id) {
             if ($this->checkIfUserHasVehicle()) {
-                return;
+                return; // Si el usuario ya tiene un vehículo asignado, no hacer nada
             }
         }
 
-        $this->validate();
-
-        if ($this->modelId) {
-            $vehicle = Vehicle::findOrFail($this->modelId);
-            $this->isEdit = true;
-        } else {
-            $vehicle = new Vehicle;
-        }
-
-        if ($this->fileVehicle) {
-            // Delete old image
-            if ($vehicle->image) {
-                Storage::delete('public/' . $vehicle->image);
-            }
-            $filename = $this->fileVehicle->store('images/vehicle', 'public');
-        }else{
-            $filename = $vehicle->image ?? null;
-        }
-
-        $vehicle->make = $this->make;
-        $vehicle->model = $this->model;
-        $vehicle->year = $this->year;
-        $vehicle->vin = $this->vin;
-        $vehicle->image = $filename;
-        $vehicle->user_id = $this->user_id;
-        
-        $vehicle->save();
-
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
-
-        if ($this->isEdit) {
-            $data = [
-                'message' => 'Vehicle updated successfully!',
-                'type' => 'success',
-                'icon' => 'edit',
-            ];
-        } else {
-            $data = [
-                'message' => 'Vehicle created successfully!',
-                'type' => 'info',
-                'icon' => 'check',
-            ];
-        }
-
-        if ($data) {
-            $this->sessionAlert($data);
-        }
-
-        $this->clearForm();
+        $this->continueSaving();
     }
 
     public function delete()
@@ -237,17 +190,90 @@ class Vehicles extends Component
     public function checkIfUserHasVehicle()
     {
         $user = User::find($this->user_id);
-        if (!$user || !$user->vehicles) return false;
 
-        if ($user->vehicles && $user->vehicles->count() > 0 && $user->vehicles->id != $this->modelId) {
-            $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
-            $this->sessionAlert([
-                'message' => 'You already have a vehicle assigned to you!',
-                'type' => 'danger',
-                'icon' => 'delete',
+        if (!$user || !$user->vehicles) {
+            return false;
+        }
+
+        $existingVehicle = Vehicle::where('user_id', $user->id)->first();
+
+        $this->existingVehicle = $existingVehicle->id;
+
+        if ($existingVehicle && $existingVehicle->id != $this->modelId) {
+            $this->dispatchBrowserEvent('showConfirm', [
+                'text' => 'This user already has a vehicle assigned. Do you want to reassign it?',
+                'icon' => 'warning',
+                'confirmButtonText' => 'Yes, reassign',
+                'denyButtonText' => 'No, cancel',
+                'livewire' => 'confirmChangeDriver',
+                'id' => false, // ID del vehículo existente
             ]);
             return true;
         }
+        return false;
+    }
+
+    public function confirmChangeDriver($comfirm)
+    {
+        if ($comfirm) {
+            $existingVehicle = Vehicle::find($this->existingVehicle);
+            if ($existingVehicle) {
+                $existingVehicle->user_id = null;
+                $existingVehicle->save();
+            }
+            $this->continueSaving();
+        }else{
+            $this->sessionAlert([
+                'message' => 'You already have a vehicle assigned to you!',
+                'type' => 'danger',
+                'icon' => 'error',
+            ]);
+            
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
+        }
+
+    }
+
+    function continueSaving()
+    {
+        $this->validate();
+
+        if ($this->modelId) {
+            $vehicle = Vehicle::findOrFail($this->modelId);
+            $this->isEdit = true;
+        } else {
+            $vehicle = new Vehicle;
+        }
+
+        if ($this->fileVehicle) {
+            if ($vehicle->image) {
+                Storage::delete('public/' . $vehicle->image);
+            }
+            $filename = $this->fileVehicle->store('images/vehicle', 'public');
+        } else {
+            $filename = $vehicle->image ?? null;
+        }
+
+        $vehicle->make = $this->make;
+        $vehicle->model = $this->model;
+        $vehicle->year = $this->year;
+        $vehicle->vin = $this->vin;
+        $vehicle->image = $filename;
+        $vehicle->user_id = $this->user_id;
+
+        $vehicle->save();
+
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
+
+        $data = [
+            'message' => $this->isEdit ? 'Vehicle updated successfully!' : 'Vehicle created successfully!',
+            'type' => $this->isEdit ? 'success' : 'info',
+            'icon' => $this->isEdit ? 'edit' : 'check',
+        ];
+
+        $this->sessionAlert($data);
+
+        $this->clearForm();
     }
 
     public function deleteImage()

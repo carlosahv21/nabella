@@ -84,7 +84,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (event.detail.livewire) {
-                        Livewire.emit(event.detail.livewire, event.detail.id);
+                        Livewire.emit(event.detail.livewire, result.isConfirmed);
                     } else {
                         Swal.fire({
                             title: "Success!",
@@ -92,7 +92,7 @@
                         });
                     }
                 } else if (result.isDenied) {
-                    if (event.detail.livewire == 'continueScheduling' || event.detail.livewire == 'confirmCollect') {
+                    if (event.detail.livewire) {
                         Livewire.emit(event.detail.livewire, result.isConfirmed);
                     } else {
                         Swal.fire({
