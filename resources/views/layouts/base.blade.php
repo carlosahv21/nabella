@@ -84,7 +84,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (event.detail.livewire) {
-                        Livewire.emit(event.detail.livewire, result.isConfirmed);
+                        Livewire.emit(event.detail.livewire, result.isConfirmed, event.detail.id);
                     } else {
                         Swal.fire({
                             title: "Success!",

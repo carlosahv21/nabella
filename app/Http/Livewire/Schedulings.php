@@ -512,7 +512,7 @@ class Schedulings extends Component
         $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
 
         if ($option == 'This-event') {
-            $this->deleteScheduling($this->modelId);
+            $this->deleteScheduling('', $this->modelId);
         } else if ($option == 'Same-date') {
             // Obtener el día de la semana del agendamiento actual
             $day_of_week = Carbon::parse($format_date)->format('l');
@@ -525,7 +525,7 @@ class Schedulings extends Component
                 ->whereRaw("DAYNAME(date) = ?", [$day_of_week])
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling($scheduling->id);
+                $this->deleteScheduling('',$scheduling->id);
             }
         } else if ($option == 'All-events') {
             $schedulings = Scheduling::select('schedulings.id')
@@ -533,12 +533,12 @@ class Schedulings extends Component
                 ->where('date', '>=', $format_date)
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling($scheduling->id);
+                $this->deleteScheduling('',$scheduling->id);
             }
         }
     }
 
-    public function deleteScheduling($scheduling_id)
+    public function deleteScheduling($confim, $scheduling_id)
     {
         $model_scheduling = Scheduling::find($scheduling_id);
 
