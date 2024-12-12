@@ -207,7 +207,7 @@
 
             flatpickr(".date-input-range", {
                 mode: "range",
-                dateFormat: "Y-m-d",
+                dateFormat: "m-d-Y",
             });
 
             flatpickr(".date-input-time", {

@@ -228,7 +228,7 @@
                         </p>
                     </div>
                     <div class="col-lg-2 col-6">
-                        <input type="date" class="form-control" id="date_end" wire:model="ends_date">
+                        <input class="form-control date-input" id="date_end" wire:model="ends_date">
                     </div>
                 </div>
             </div>

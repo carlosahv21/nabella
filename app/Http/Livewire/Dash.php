@@ -44,7 +44,7 @@ class Dash extends Component
     public $url_map = 'https://maps.googleapis.com/maps/api/';
 
     public function __construct() {
-        $this->ends_date = Carbon::today()->format('Y-m-d');
+        $this->ends_date = Carbon::today()->format('m-d-Y');
     }
 
     public function setResponsiveView($isMobile)
@@ -289,8 +289,8 @@ class Dash extends Component
         $all_events = [];
 
         if (auth()->user()->roles->first()->name == 'Driver') {
-            $date = $this->ends_date ? Carbon::createFromFormat('Y-m-d', $this->ends_date)->format('Y-m-d') : Carbon::today()->format('Y-m-d');
-
+            $date = Carbon::createFromFormat('m-d-Y', $this->ends_date)->format('Y-m-d');
+            
             $sql = "SELECT scheduling_address.*,
             schedulings.patient_id, 
             scheduling_charge.wheelchair,
