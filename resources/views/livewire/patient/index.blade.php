@@ -200,7 +200,7 @@
                                             <option value="A0120-Cane">A0120 - Cane</option>
                                             <option value="A0130-Wheelchair">A0130 - Wheelchair </option>
                                             <option value="A0130-Walker">A0130 - Walker </option>
-                                            <option value="A0140-Wheelchair">A0140 - Broda chair </option>
+                                            <option value="A0140-BrodaChair">A0140 - Broda chair </option>
                                         </select>
                                         @if ($errors->has('billing_code'))
                                         <div class="text-danger inputerror">

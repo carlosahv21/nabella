@@ -457,6 +457,7 @@ class Dash extends Component
                         WHEN p.billing_code = 'A0120-Cane' THEN '(C)'
                         WHEN p.billing_code = 'A0130-Wheelchair' THEN '(WC)'
                         WHEN p.billing_code = 'A0130-Walker' THEN '(W)'
+                        WHEN p.billing_code = 'A0140-BrodaChair' THEN '(BC)'
                         ELSE '(W)'
                     END AS prefix,
                     sc.company AS service_contract_company

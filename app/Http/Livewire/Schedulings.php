@@ -806,16 +806,6 @@ class Schedulings extends Component
         }
     }
 
-    public function updatedPickUpDriverId()
-    {
-        if ($this->validateDriverHour() > 0) {
-            $this->errors_driver = 'Pick up driver must be available between pick up time and check in time';
-            return;
-        } else {
-            $this->errors_driver = '';
-        }
-    }
-
     public function addPickUp($address, $input, $prediction)
     {
         $this->$input = $address;
@@ -1067,6 +1057,7 @@ class Schedulings extends Component
                         WHEN billing_code = 'A0120-Cane' THEN '(C)'
                         WHEN billing_code = 'A0130-Wheelchair' THEN '(WC)'
                         WHEN billing_code = 'A0130-Walker' THEN '(W)'
+                        WHEN billing_code = 'A0140-BrodaChair' THEN '(BC)'
                         ELSE '(W)'
                     END, 
                     ' ', first_name, ' ', last_name
@@ -1158,20 +1149,6 @@ class Schedulings extends Component
         $this->getDistance($addresses, $arrivalTime, 'return');
     }
 
-    public function validateDriverHour()
-    {
-        $date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
-        $sql = "SELECT id FROM scheduling_address 
-            WHERE driver_id = '$this->pick_up_driver_id' 
-                AND date = '$date' 
-                AND pick_up_hour >= '$this->pick_up_time'
-                AND pick_up_hour <= '$this->check_in'
-                AND status = 'Waiting'";
-        $validation = DB::select($sql);
-
-        return count($validation);
-    }
-
     public function calculateTimeDriver()
     {
         if ($this->location_driver == null && $this->return_pick_up_address == null && $this->date == null) {
@@ -1197,10 +1174,12 @@ class Schedulings extends Component
             ->select('users.*')
             ->where('roles.name', '=', 'Driver')
             ->where('users.id', '!=', auth()->id())
+            ->orderBy('users.name', 'asc')
             ->get();
 
         $service_contracts = DB::table('service_contracts')
             ->select('service_contracts.id', 'service_contracts.company')
+            ->orderBy('service_contracts.company', 'asc')
             ->get();
 
         return view('livewire.scheduling.index', [

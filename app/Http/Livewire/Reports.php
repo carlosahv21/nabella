@@ -199,9 +199,18 @@ class Reports extends Component
         }
 
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {
-            $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'] . '. ';
+            $pickUpAddress = $scheduling['address']['pick_up']['pick_up_address'] ?? null;
+            $description .= 'Pick up: ' . ($pickUpAddress ?? 'No especificado');
+
+            $dropOffAddress = $scheduling['address']['pick_up']['drop_off_address'] ?? null;
+            $description .= '. Drop off: ' . ($dropOffAddress.". " ?? 'No especificado. ');
         }else{
-            $description .= 'Pick up: ' . $scheduling['address']['pick_up']['pick_up_address'] . '. Drop off: ' . $scheduling['address']['pick_up']['drop_off_address'];
+            $pickUpAddress = $scheduling['address']['pick_up']['pick_up_address'] ?? null;
+            $description .= 'Pick up: ' . ($pickUpAddress ?? 'No especificado');
+
+            $dropOffAddress = $scheduling['address']['pick_up']['drop_off_address'] ?? null;
+            $description .= '. Drop off: ' . ($dropOffAddress.". " ?? 'No especificado. ');
+
             if(in_array('return', $scheduling['address'])){
                 $description .= '. And return to: ' . $scheduling['address']['return']['drop_off_address'] . '. ';
             }
@@ -242,7 +251,7 @@ class Reports extends Component
 
         $distance_number = array_sum(array_column($scheduling['address'], 'distance'));
 
-        $description .= ($scheduling['charge']['type_of_trip'] == 'round_trip') ? $distance_number  . ' miles round trip.' : $distance_number . 'miles.';
+        $description .= ($scheduling['charge']['type_of_trip'] == 'round_trip') ? $distance_number  . ' miles round trip.' : $distance_number . ' miles.';
 
         return $description;
     }
@@ -255,18 +264,13 @@ class Reports extends Component
 
     public function render()
     {
-        $driver = DB::table('users')
-            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->select('users.*')
-            ->where('roles.name', '=', 'Driver')
-            ->where('users.id', '!=', auth()->id())
+        $service_contracts = DB::table('service_contracts')
+            ->select('service_contracts.id', 'service_contracts.company')
+            ->orderBy('service_contracts.company', 'asc')
             ->get();
 
         return view('livewire.report.index', [
-            'patients' => Patient::all(),
-            'service_contracts' => ServiceContract::all(),
-            'drivers' => $driver,
+            'service_contracts' => $service_contracts
         ]);
     }
 }

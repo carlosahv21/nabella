@@ -14,7 +14,7 @@ class ApisGoogle extends Model
     public function getPlacePredictions($query)
     {
         $query = urlencode($query);
-        $url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key={$this->api_key}";
+        $url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&components=country:US&key={$this->api_key}";
 
         $response = file_get_contents($url);
         $predictions = json_decode($response, true)['predictions'];
@@ -57,7 +57,7 @@ class ApisGoogle extends Model
 
             return array('distance' => $this->distance, 'duration' => $this->duration);
         } else {
-            return false;
+            return array('distance' => 0, 'duration' => 0);
         }
     }
 }
