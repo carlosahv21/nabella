@@ -40,6 +40,7 @@ class Schedulings extends Component
     public $out_of_hours = false;
     public $aditional_waiting = false;
     public $if_not_cancel = false;
+    public $flat_rate = false;
     public $type_of_trip = 'one_way';
 
     public $item, $action, $search, $title_modal, $countSchedulings, $modelId, $modelIdCharge = '';
