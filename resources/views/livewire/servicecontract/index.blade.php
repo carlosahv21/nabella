@@ -241,18 +241,6 @@
                                     </div>
                                     <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
-                                            <label class="form-label">After</label>
-                                            <span class="input-group-text">Min</span>
-                                            <input wire:model="after" type="text" class="form-control">
-                                        </div>
-                                        @if ($errors->has('after'))
-                                        <div class="text-danger inputerror">
-                                            {{ $errors->first('after') }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="mb-3 col-md-3 col-3">
-                                        <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <span class="input-group-text">$</span>
                                             <label class="form-label">Quick Pass</label>
                                             <input wire:model="fast_track" type="text" class="form-control" min="0" placeholder="0">
@@ -297,6 +285,18 @@
                                         @if ($errors->has('overcharge'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('overcharge') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3 col-3">
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
+                                            <label class="form-label">Flat Rate</label>
+                                            <input wire:model="flat_rate" type="text" class="form-control" min="0" placeholder="0">
+                                        </div>
+                                        @if ($errors->has('flat_rate" type="text" class="form-control" min="0" placeholder="0">'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('flat_rate" type="text" class="form-control" min="0" placeholder="0">') }}
                                         </div>
                                         @endif
                                     </div>

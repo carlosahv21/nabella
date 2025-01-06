@@ -367,6 +367,10 @@
                                         <input wire.ignore.self="" wire:model="out_of_hours" class="form-check-input" type="checkbox" id="customOutOfHours">
                                         <label class="custom-control-label text-10" for="customOutOfHours">After hours</label>
                                     </div>
+                                    <div class="form-check mb-3 col-md-3 p-1">
+                                        <input wire.ignore.self="" wire:model="flat_rate" class="form-check-input" type="checkbox" id="customFlatRate">
+                                        <label class="custom-control-label text-10" for="customFlatRate">Flat Rate</label>
+                                    </div>
                                 </div>
                                 <div class="mb-3 col-md-12">
                                     <label class="form-label">Request by</label>

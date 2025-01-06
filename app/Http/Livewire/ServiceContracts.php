@@ -16,7 +16,7 @@ class ServiceContracts extends Component
     
     protected $paginationTheme = 'bootstrap';
 
-    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $address, $phone, $state, $email, $date_start, $date_end, $modelId = '';
+    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $flat_rate, $address, $phone, $state, $email, $date_start, $date_end, $modelId = '';
     public $selectedAll = false;
     public $selected = [];
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
@@ -67,7 +67,6 @@ class ServiceContracts extends Component
 
     public function getModelId($modelId)
     {
-
         $this->modelId = $modelId;
 
         $model = ServiceContract::find($this->modelId);
@@ -85,6 +84,7 @@ class ServiceContracts extends Component
         $this->if_not_cancel = $model->if_not_cancel;
         $this->rate_per_mile = $model->rate_per_mile;
         $this->overcharge = $model->overcharge;
+        $this->flat_rate = $model->flat_rate;
         $this->address = $model->address;
         $this->phone = $model->phone;
         $this->state = $model->state;
@@ -123,6 +123,7 @@ class ServiceContracts extends Component
         $this->contact_name = null;
         $this->rate_per_mile = null;
         $this->overcharge = null;
+        $this->flat_rate = null;
         $this->address = null;
         $this->phone = null;
         $this->state = null;
@@ -179,6 +180,7 @@ class ServiceContracts extends Component
         $servicecontract->if_not_cancel = ($this->if_not_cancel) ? $this->if_not_cancel : 0;
         $servicecontract->rate_per_mile = ($this->rate_per_mile) ? $this->rate_per_mile : 0;
         $servicecontract->overcharge = ($this->overcharge) ? $this->overcharge : 0;
+        $servicecontract->flat_rate = ($this->flat_rate) ? $this->flat_rate : 0;
         $servicecontract->address = $this->address;
         $servicecontract->phone = $this->phone;
         $servicecontract->date_start = $convertedDateStart;

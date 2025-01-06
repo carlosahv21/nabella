@@ -4,8 +4,6 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
-use App\Models\Patient;
-use App\Models\ServiceContract;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
@@ -122,6 +120,7 @@ class Reports extends Component
             'aditional_waiting' => $scheduling_charge->aditional_waiting,
             'saturdays' => $scheduling_charge->saturdays,
             'sundays_holidays' => $scheduling_charge->sundays_holidays,
+            'flat_rate' => $scheduling_charge->flat_rate,
         ];
     }
 
@@ -143,6 +142,10 @@ class Reports extends Component
     public function getAmount($scheduling){
         $service_contract = DB::table('service_contracts')->where('id', $scheduling['service_contract'])->get()->first();
 
+        if ($scheduling['charge']['flat_rate']) {
+            return $service_contract->flat_rate;
+        }
+
         if ($scheduling['charge']['wheelchair']) {
             $base_amount = $service_contract->wheelchair;
         }
@@ -155,8 +158,9 @@ class Reports extends Component
             $distance_number = array_sum(array_column($scheduling['address'], 'distance'));
             $amount = $distance_number * $service_contract->rate_per_mile;
         }else{
-            $pick_up = $scheduling['address']['pick_up']['distance'] * $service_contract->rate_per_mile;
-            $drop_off = $scheduling['address']['pick_up']['distance'] * $service_contract->rate_per_mile;
+            $distance = $scheduling['address']['pick_up']['distance'] ?? 0;
+            $pick_up = $distance * $service_contract->rate_per_mile;
+            $drop_off = $distance * $service_contract->rate_per_mile;;
             
             $amount = $pick_up + $drop_off;
         }
@@ -200,16 +204,16 @@ class Reports extends Component
 
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {
             $pickUpAddress = $scheduling['address']['pick_up']['pick_up_address'] ?? null;
-            $description .= 'Pick up: ' . ($pickUpAddress ?? 'No especificado');
+            $description .= 'Pick up: ' . ($pickUpAddress ?? 'Not specified');
 
             $dropOffAddress = $scheduling['address']['pick_up']['drop_off_address'] ?? null;
-            $description .= '. Drop off: ' . ($dropOffAddress.". " ?? 'No especificado. ');
+            $description .= '. Drop off: ' . ($dropOffAddress.". " ?? 'Not specified. ');
         }else{
             $pickUpAddress = $scheduling['address']['pick_up']['pick_up_address'] ?? null;
-            $description .= 'Pick up: ' . ($pickUpAddress ?? 'No especificado');
+            $description .= 'Pick up: ' . ($pickUpAddress ?? 'Not specified');
 
             $dropOffAddress = $scheduling['address']['pick_up']['drop_off_address'] ?? null;
-            $description .= '. Drop off: ' . ($dropOffAddress.". " ?? 'No especificado. ');
+            $description .= '. Drop off: ' . ($dropOffAddress.". " ?? 'Not specified. ');
 
             if(in_array('return', $scheduling['address'])){
                 $description .= '. And return to: ' . $scheduling['address']['return']['drop_off_address'] . '. ';
