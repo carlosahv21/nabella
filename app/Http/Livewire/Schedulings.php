@@ -202,6 +202,7 @@ class Schedulings extends Component
         $this->aditional_waiting = $model_scheduling_charge->aditional_waiting;
         $this->fast_track = $model_scheduling_charge->fast_track;
         $this->if_not_cancel = $model_scheduling_charge->if_not_cancel;
+        $this->flat_rate = $model_scheduling_charge->flat_rate;
     }
 
     private function clearForm()
@@ -312,6 +313,7 @@ class Schedulings extends Component
         $scheduling_charge->aditional_waiting = $this->aditional_waiting;
         $scheduling_charge->fast_track = $this->fast_track;
         $scheduling_charge->if_not_cancel = $this->if_not_cancel;
+        $scheduling_charge->flat_rate = $this->flat_rate;
         $scheduling_charge->save();
 
         $d_saved_addresses =  SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
@@ -419,6 +421,7 @@ class Schedulings extends Component
                 $scheduling_charge->aditional_waiting = $this->aditional_waiting;
                 $scheduling_charge->fast_track = $this->fast_track;
                 $scheduling_charge->if_not_cancel = $this->if_not_cancel;
+                $scheduling_charge->flat_rate = $this->flat_rate;
                 $scheduling_charge->save();
 
                 $d_saved_addresses =  SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
