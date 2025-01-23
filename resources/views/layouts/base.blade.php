@@ -113,17 +113,11 @@
             const {
                 value: selectedOption
             } = await Swal.fire({
-                title: event.detail.text || "Select an option",
-                html: `
-                <div style="text-align: left;">
-                    <label><input type="radio" name="event-option" value="This-event"> This event</label><br>
-                    <label><input type="radio" name="event-option" value="Same-date"> This and following events</label><br>
-                    <label><input type="radio" name="event-option" value="All-events"> All events</label>
-                </div>
-            `,
+                title: event.detail.title || "Select an option",
+                html: event.detail.html,
                 showCancelButton: true,
-                confirmButtonText: "Confirm",
-                cancelButtonText: "Cancel",
+                confirmButtonText: event.detail.confirmButtonText,
+                cancelButtonText: event.detail.denyButtonText,
                 focusConfirm: false,
                 preConfirm: () => {
                     const selected = document.querySelector('input[name="event-option"]:checked');
@@ -136,7 +130,7 @@
             });
 
             if (selectedOption) {
-                Livewire.emit('deleteMultiple', selectedOption);
+                Livewire.emit(event.detail.livewire, selectedOption);
             }
         });
 

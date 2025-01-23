@@ -8,7 +8,7 @@
 
         </ul>
     </li>
-    <li class="nav-item dropdown pe-2 ocultar-en-movil">
+    <li class="nav-item dropdown pe-2">
         <a href="javascript:;" class="nav-link p-0 position-relative text-body" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             Hi, {{ Auth::user()->name }}
         </a>

@@ -12,10 +12,10 @@
             @endfor
         </div>
         <div class="col-12 col-lg-3 d-flex justify-content-end">
-            <select class="form-select" id="select_contract"> 
+            <select class="form-select" id="select_contract">
                 <option value="">Select services contract</option>
                 @foreach($service_contracts as $service_contract)
-                    <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
+                <option value="{{ $service_contract->id }}">{{ $service_contract->company }}</option>
                 @endforeach
 
             </select>
@@ -61,11 +61,13 @@
                         <a type="button" class="btn p-1" wire:click="showConfirmDelete">
                             <i class="material-icons notranslate">delete</i>
                         </a>
-                        @if($if_not_cancel)
+                        @if($pick_up_cancel || $drop_off_cancel)
                             <button type="button" class="btn p-1" wire:click="revert">
                                 <i class="material-icons notranslate">undo</i>
                             </button>
-                        @else
+                        @endif
+
+                        @if(!$pick_up_cancel || !$drop_off_cancel)
                             <button type="button" class="btn p-1" wire:click="cancelScheduling">
                                 <i class="material-icons notranslate">event_busy</i>
                             </button>
@@ -111,72 +113,74 @@
                                     @endif
                                 </div>
                                 <div class="form-check mb-3 col-md-4 ">
-                                    <input wire.ignore.self wire:model="auto_agend" class="form-check-input" type="checkbox" id="auto_agend" @if($if_not_cancel) disabled @endif>
-                                    <label class="custom-control-label" for="auto_agend">Auto Agend</label>
-                                    <br>
                                     <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip">
                                     <label class="custom-control-label text-10" for="one_way">OW</label>
                                     <br>
                                     <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip">
                                     <label class="custom-control-label text-10" for="round_trip">RT</label>
                                 </div>
-                                @if($auto_agend)
                                 <hr class="dark horizontal">
-                                <label class="form-label">Select Days</label>
-                                <div class="row">
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customMon day" value="Monday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customMonday">Monday</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customTuesday" value="Tuesday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customTuesday">Tuesday</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customWednesday" value="Wednesday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customWednesday">Wednesday</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customThursday" value="Thursday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customThursday">Thursday</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customFriday" value="Friday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customFriday">Friday</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customSaturday" value="Saturday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customSaturday">Saturday</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-3">
-                                        <input class="form-check-input" type="checkbox" id="customSunday" value="Sunday" wire:model="weekdays">
-                                        <label class="form-check-label" for="customSunday">Sunday</label>
-                                    </div>
+                                <div class="text-center">
+                                    <a class="btn btn-link" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" wire:click="toggleAutoAgend">
+                                        Auto Agend
+                                    </a>
                                 </div>
-                                <hr class="dark horizontal">
-                                <label class="form-label">Ends</label>
-                                <div class="row">
-                                    <div class="form-check col-md-3">
-                                        <input class="form-check-input" type="radio" name="ends_date" id="customRadio1" value="never" wire:model="ends_schedule">
-                                        <label class="custom-control-label" for="customRadio1">Never</label>
+                                <div class="collapse {{ $auto_agend ? 'show' : '' }}" id="collapseExample">
+                                    <label class="form-label">Select Days</label>
+                                    <div class="row">
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customMon day" value="Monday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customMonday">Monday</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customTuesday" value="Tuesday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customTuesday">Tuesday</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customWednesday" value="Wednesday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customWednesday">Wednesday</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customThursday" value="Thursday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customThursday">Thursday</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customFriday" value="Friday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customFriday">Friday</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customSaturday" value="Saturday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customSaturday">Saturday</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-3">
+                                            <input class="form-check-input" type="checkbox" id="customSunday" value="Sunday" wire:model="weekdays">
+                                            <label class="form-check-label" for="customSunday">Sunday</label>
+                                        </div>
                                     </div>
-                                    <div class="form-check col-md-3">
-                                        <input class="form-check-input" type="radio" name="ends_date" id="customRadio2" value="ends_check" wire:model="ends_schedule">
-                                        <label class="custom-control-label" for="customRadio2">End Date</label>
-                                    </div>
-                                    <div class="form-check mb-3 col-md-6">
-                                        <div class="input-group input-group-static">
-                                            <label>Date</label>
-                                            <input type="date" class="form-control" id="date_end" wire:model="ends_date" {{ $ends_schedule !== 'ends_check' ? 'disabled' : '' }}>
+                                    <hr class="dark horizontal">
+                                    <label class="form-label">Ends</label>
+                                    <div class="row">
+                                        <div class="form-check col-md-3">
+                                            <input class="form-check-input" type="radio" name="ends_date" id="customRadio1" value="never" wire.ignore_self="" wire:model="ends_schedule" selected>
+                                            <label class="custom-control-label" for="customRadio1">Never</label>
+                                        </div>
+                                        <div class="form-check col-md-3">
+                                            <input class="form-check-input" type="radio" name="ends_date" id="customRadio2" value="ends_check" wire.ignore_self="" wire:model="ends_schedule">
+                                            <label class="custom-control-label" for="customRadio2">End Date</label>
+                                        </div>
+                                        <div class="form-check mb-3 col-md-6">
+                                            <div class="input-group input-group-static">
+                                                <label>Date</label>
+                                                <input class="form-control date-input" id="date_end" wire:model="ends_date" placeholder="MM-DD-YYYY">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- GOING -->
                                 <hr class="dark horizontal">
-                                @endif
                                 <h6 class="text-center">PICK UP</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="pick_up_address" wire:click="getAddresses('prediction_pick_up_address')" placeholder="Pick up address" @if($pick_up_cancel) disabled @endif>
                                     @if (!empty($prediction_pick_up_address))
                                     <ul class="list-group predictions shadow-sm">
                                         @foreach ($prediction_pick_up_address as $address_pick_up)
@@ -188,7 +192,7 @@
                                 @foreach ($stops as $index => $stop)
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value, 'stops')" @if($if_not_cancel) disabled @endif>
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="stops.{{ $index }}.address" placeholder="Drop off Address Stop {{ $index + 1 }}" wire:input="updateStopQuery({{ $index }}, $event.target.value, 'stops')" @if($pick_up_cancel) disabled @endif>
                                         @if (!empty($stops[$index]['addresses']))
                                         <ul class="list-group predictions shadow-sm">
                                             @foreach ($stops[$index]['addresses'] as $address)
@@ -199,12 +203,12 @@
                                     </div>
                                     <div class="col-md-2 d-flex">
                                         @if ($index == count($stops) - 1)
-                                        <button type="button" wire:click="addStop('stops')" class="btn btn-link text-dark text-gradient px-3 mb-0" @if($if_not_cancel) disabled @endif>
+                                        <button type="button" wire:click="addStop('stops')" class="btn btn-link text-dark text-gradient px-3 mb-0" @if($pick_up_cancel) disabled @endif>
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif
                                         @if ($index > 0)
-                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }}, 'stops')" @if($if_not_cancel) disabled @endif>
+                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $index }}, 'stops')" @if($pick_up_cancel) disabled @endif>
                                             <i class="material-icons notranslate">delete</i>
                                         </button>
                                         @endif
@@ -214,7 +218,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check In</label>
-                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="check_in" @if($pick_up_cancel) disabled @endif>
                                         @if ($errors->has('check_in'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('check_in') }}
@@ -225,12 +229,12 @@
                                 <div class="mb-3 col-md-4">
                                     <div class="input-group input-group-static my-1">
                                         <label>Estimated Pickup Time</label>
-                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="pick_up_time" @if($pick_up_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label">Pick up driver</label>
-                                    <select wire.ignore.self wire:model="pick_up_driver_id" class="form-select" id="pick_up_driver_id" @if($if_not_cancel) disabled @endif>
+                                    <select wire.ignore.self wire:model="pick_up_driver_id" class="form-select" id="pick_up_driver_id" @if($pick_up_cancel) disabled @endif>
                                         <option value="">Select a Driver</option>
                                         @foreach($drivers as $drive)
                                         <option value="{{ $drive->id }}">{{ $drive->name }}</option>
@@ -252,7 +256,7 @@
                                 @if($type_of_trip == 'round_trip')
                                 <h6 class="text-center">DROP OFF</h6>
                                 <div class="mb-3 col-md-12">
-                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Driver´s Location" @if($if_not_cancel) disabled @endif>
+                                    <input class="form-control border border-2 p-2" type="text" wire:model="location_driver" wire:click="getAddresses('prediction_location_driver')" placeholder="Driver´s Location" @if($drop_off_cancel) disabled @endif>
                                     @if (!empty($prediction_location_driver))
                                     <ul class="list-group predictions shadow-sm">
                                         @foreach ($prediction_location_driver as $address_location_driver)
@@ -263,7 +267,7 @@
                                 </div>
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($if_not_cancel) disabled @endif>
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="return_pick_up_address" wire:click="getAddresses('prediction_return_pick_up_address')" placeholder="Pick up address" @if($drop_off_cancel) disabled @endif>
                                         @if (!empty($prediction_return_pick_up_address))
                                         <ul class="list-group predictions shadow-sm">
                                             @foreach ($prediction_return_pick_up_address as $address_pick_up)
@@ -281,7 +285,7 @@
                                 @foreach ($r_stops as $r_index => $r_stop)
                                 <div class="mb-3 row">
                                     <div class="col-md-10">
-                                        <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQuery({{ $r_index }}, $event.target.value, 'r_stops')" @if($if_not_cancel) disabled @endif>
+                                        <input class="form-control border border-2 p-2" type="text" wire:model="r_stops.{{ $r_index }}.address" placeholder="Drop off Address Stop {{ $r_index + 1 }}" wire:input="updateStopQuery({{ $r_index }}, $event.target.value, 'r_stops')" @if($drop_off_cancel) disabled @endif>
                                         @if (!empty($r_stops[$r_index]['addresses']))
                                         <ul class="list-group predictions shadow-sm">
                                             @foreach ($r_stops[$r_index]['addresses'] as $address)
@@ -292,12 +296,12 @@
                                     </div>
                                     <div class="col-md-2 d-flex">
                                         @if ($r_index == count($r_stops) - 1)
-                                        <button type="button" wire:click="addStop('r_stops')" class="btn btn-link text-dark text-gradient px-3 mb-0" @if($if_not_cancel) disabled @endif>
+                                        <button type="button" wire:click="addStop('r_stops')" class="btn btn-link text-dark text-gradient px-3 mb-0" @if($drop_off_cancel) disabled @endif>
                                             <i class="material-icons notranslate">add</i>
                                         </button>
                                         @endif
                                         @if ($r_index > 0)
-                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $r_index }}, 'r_stops')">
+                                        <button type="button" class="btn btn-link text-dark text-gradient px-3 mb-0" wire:click="removeStop({{ $r_index }}, 'r_stops')" @if($drop_off_cancel) disabled @endif>
                                             <i class="material-icons notranslate">delete</i>
                                         </button>
                                         @endif
@@ -307,7 +311,7 @@
                                 <div class="mb-3 col-md-3">
                                     <div class="input-group input-group-static my-1">
                                         <label>Check Out</label>
-                                        <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in" @if($drop_off_cancel) disabled @endif>
                                     </div>
                                     @if ($errors_r_check_in)
                                     <div class="text-danger inputerror">
@@ -318,12 +322,12 @@
                                 <div class="mb-3 col-md-4">
                                     <div class="input-group input-group-static my-1">
                                         <label>Estimated Pickup Time</label>
-                                        <input type="time" wire.ignore.self wire:model="r_pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_pick_up_time" @if($if_not_cancel) disabled @endif>
+                                        <input type="time" wire.ignore.self wire:model="r_pick_up_time" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_pick_up_time" @if($drop_off_cancel) disabled @endif>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label">Drop off driver</label>
-                                    <select wire.ignore.self wire:model="drop_off_driver_id" class="form-select" id="drop_off_driver_id" @if($if_not_cancel) disabled @endif>
+                                    <select wire.ignore.self wire:model="drop_off_driver_id" class="form-select" id="drop_off_driver_id" @if($drop_off_cancel) disabled @endif>
                                         <option value="">Select a Driver</option>
                                         @foreach($drivers as $drive)
                                         <option value="{{ $drive->id }}">{{ $drive->name }}</option>
@@ -439,7 +443,7 @@
         events: function(fetchInfo, successCallback, failureCallback) {
             // Obtener los driverIds seleccionados
             const driverIds = Array.from(document.querySelectorAll('.drivers:checked')).map(checkbox => checkbox.value);
-            const contractId = document.getElementById('select_contract').value; 
+            const contractId = document.getElementById('select_contract').value;
 
             // Hacer una solicitud AJAX para obtener eventos según el rango visible y los drivers seleccionados
             fetch(`/api/calendar-events?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}&driver_ids=${driverIds.join(',')}&contract_id=${contractId}`)
@@ -472,12 +476,12 @@
                 eventTitle.style.color = arg.event.textColor || 'white';
                 eventTitle.innerText = `${arg.timeText} - ${arg.event.title.replaceAll('&', '&amp;')}`;
             }
-            
+
             return {
                 domNodes: [eventTitle]
             };
         },
-        eventDidMount: function (info) {
+        eventDidMount: function(info) {
             // Agrega listeners al elemento de evento
             const eventEl = info.el;
 
@@ -485,7 +489,7 @@
                 eventEl.closest('.fc-timegrid-event-harness').style.zIndex = 1000;
                 eventEl.style.transform = 'scale(1.1)';
             });
-            
+
             eventEl.addEventListener('mouseout', function(event) {
                 eventEl.closest('.fc-timegrid-event-harness').style.zIndex = 1;
                 eventEl.style.transform = 'scale(1)';

@@ -31,16 +31,8 @@ class Schedulings extends Component
     public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver, $schedule_autoagend_id, $patient_name = '';
 
     // Campos de la tabla scheduling_charge
-    public $wheelchair = false;
-    public $ambulatory = false;
-    public $saturdays = false;
-    public $companion = false;
-    public $fast_track = false;
-    public $sundays_holidays = false;
-    public $out_of_hours = false;
-    public $aditional_waiting = false;
-    public $if_not_cancel = false;
-    public $flat_rate = false;
+    public $wheelchair, $ambulatory, $saturdays, $companion, $fast_track, $sundays_holidays, $out_of_hours, $aditional_waiting, $if_not_cancel, $flat_rate, $pick_up_cancel, $drop_off_cancel = false;
+
     public $type_of_trip = 'one_way';
 
     public $item, $action, $search, $title_modal, $countSchedulings, $modelId, $modelIdCharge = '';
@@ -90,7 +82,8 @@ class Schedulings extends Component
         'showConfirmDelete',
         'deleteMultiple',
         'openCreateModal',
-        'closePredictions'
+        'closePredictions',
+        'showConfirmCollet'
     ];
 
     public function __construct()
@@ -122,7 +115,7 @@ class Schedulings extends Component
         }
     }
 
-    function continueScheduling($comfirm)
+    public function continueScheduling($comfirm)
     {
         if ($comfirm) {
             $data = cache()->get('autoagendamiento_form');
@@ -174,7 +167,7 @@ class Schedulings extends Component
                 $this->stops[$count]['address'] = $address->drop_off_address;
                 $this->stops[$count]['duration'] = $address->duration;
                 $this->stops[$count]['distance'] = $address->distance;
-
+                $this->pick_up_cancel = $address->cancel_drive;
                 $count++;
             } elseif ($address->type_of_trip == 'return') {
                 $this->modelIdAddress[$address->type_of_trip] = $address->id;
@@ -186,6 +179,7 @@ class Schedulings extends Component
                 $this->r_stops[$count_r]['address'] = $address->drop_off_address;
                 $this->r_stops[$count_r]['duration'] = $address->duration;
                 $this->r_stops[$count_r]['distance'] = $address->distance;
+                $this->drop_off_cancel = $address->cancel_drive;
                 $count_r++;
             }
         }
@@ -201,7 +195,6 @@ class Schedulings extends Component
         $this->companion = $model_scheduling_charge->companion;
         $this->aditional_waiting = $model_scheduling_charge->aditional_waiting;
         $this->fast_track = $model_scheduling_charge->fast_track;
-        $this->if_not_cancel = $model_scheduling_charge->if_not_cancel;
         $this->flat_rate = $model_scheduling_charge->flat_rate;
     }
 
@@ -232,6 +225,20 @@ class Schedulings extends Component
         $this->errors_r_check_in = '';
     }
 
+    public function formatDate($date)
+    {
+        $formats = ['Y-m-d', 'm-d-Y', 'd-m-Y', 'Y/m/d', 'm/d/Y', 'd/m/Y']; // Lista de formatos comunes
+        foreach ($formats as $format) {
+            try {
+                $convertedDate = Carbon::createFromFormat($format, $date)->format('Y-m-d');
+                break;
+            } catch (Exception $e) {
+                continue;
+            }
+        }
+        return $convertedDate;
+    }
+
     public function save()
     {
         $this->validate();
@@ -239,27 +246,14 @@ class Schedulings extends Component
         if ($this->modelId) {
             $this->isEdit = true;
         }
-        $formats = ['Y-m-d', 'm-d-Y', 'd-m-Y', 'Y/m/d', 'm/d/Y', 'd/m/Y']; // Lista de formatos comunes
 
-        foreach ($formats as $format) {
-            try {
-                // Intentamos crear la fecha con cada formato
-                $convertedDate = Carbon::createFromFormat($format, $this->date)->format('Y-m-d');
-                break; // Si logra convertir, se sale del ciclo
-            } catch (Exception $e) {
-                // Si falla, continúa con el siguiente formato
-                continue;
-            }
-        }
+        $convertedDate = $this->formatDate($this->date);
 
         if (!$convertedDate) {
-            // Si no logró convertir la fecha, puedes manejar el error de alguna forma
-            // Por ejemplo, asignando una fecha por defecto
             $convertedDate = Carbon::now()->format('Y-m-d');
         }
 
         $this->date = $convertedDate;
-
 
         if ($this->auto_agend) {
             $this->saveAutoAgend();
@@ -363,17 +357,7 @@ class Schedulings extends Component
 
             if (count($scheduling_address) > 0) {
                 foreach ($scheduling_address as $address) {
-                    $d_schedulings = Scheduling::where('id', $address->scheduling_id)->get();
-                    foreach ($d_schedulings as $d_scheduling) {
-                        $d_scheduling->delete();
-                    }
-
-                    $d_scheduling_charge = SchedulingCharge::where('scheduling_id', $address->scheduling_id)->get();
-                    foreach ($d_scheduling_charge as $charge) {
-                        $charge->delete();
-                    }
-
-                    $address->delete();
+                    $this->deleteScheduling($address->scheduling_id);
                 }
 
                 $this->modelId = '';
@@ -383,7 +367,7 @@ class Schedulings extends Component
 
         $start = Carbon::parse($this->date);
         if ($this->ends_schedule == 'ends_check') {
-            $end = Carbon::parse($this->ends_date);
+            $end = $this->formatDate($this->ends_date);
         } else {
             $lastDayOfYear = Carbon::now()->endOfYear();
             $end = Carbon::parse($lastDayOfYear->format('Y-m-d'));
@@ -420,7 +404,6 @@ class Schedulings extends Component
                 $scheduling_charge->companion = $this->companion;
                 $scheduling_charge->aditional_waiting = $this->aditional_waiting;
                 $scheduling_charge->fast_track = $this->fast_track;
-                $scheduling_charge->if_not_cancel = $this->if_not_cancel;
                 $scheduling_charge->flat_rate = $this->flat_rate;
                 $scheduling_charge->save();
 
@@ -498,7 +481,20 @@ class Schedulings extends Component
     public function showConfirmDelete()
     {
         if ($this->auto_agend) {
-            $this->dispatchBrowserEvent('showMultipleOptionsConfirm');
+            $this->dispatchBrowserEvent('showMultipleOptionsConfirm',
+                [
+                    'html' => '<div style="text-align: left;">
+                            <label><input type="radio" name="event-option" value="This-event" selected> This event</label><br>
+                            <label><input type="radio" name="event-option" value="Same-date"> This and following events</label><br>
+                            <label><input type="radio" name="event-option" value="All-events"> All events</label>
+                        </div>',
+                    'title' => 'Select an option',
+                    'confirmButtonText' => 'Confirm',
+                    'denyButtonText' => 'Cancel',
+                    'livewire' => 'deleteMultiple',
+                    'id' => $this->modelId
+                ]
+            );
         } else {
             $this->dispatchBrowserEvent('showConfirm', [
                 'text' => "Do you want to delete this scheduling? This action cannot be undone!",
@@ -516,7 +512,7 @@ class Schedulings extends Component
         $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
 
         if ($option == 'This-event') {
-            $this->deleteScheduling('', $this->modelId);
+            $this->deleteScheduling($this->modelId, true);
         } else if ($option == 'Same-date') {
             // Obtener el día de la semana del agendamiento actual
             $day_of_week = Carbon::parse($format_date)->format('l');
@@ -529,7 +525,7 @@ class Schedulings extends Component
                 ->whereRaw("DAYNAME(date) = ?", [$day_of_week])
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling('',$scheduling->id);
+                $this->deleteScheduling($scheduling->id, true);
             }
         } else if ($option == 'All-events') {
             $schedulings = Scheduling::select('schedulings.id')
@@ -537,12 +533,14 @@ class Schedulings extends Component
                 ->where('date', '>=', $format_date)
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling('',$scheduling->id);
+                $this->deleteScheduling($scheduling->id, true);
             }
         }
+
+        $this->dispatchBrowserEvent('updateEvents');
     }
 
-    public function deleteScheduling($confim, $scheduling_id)
+    public function deleteScheduling($scheduling_id, $show_message = false)
     {
         $model_scheduling = Scheduling::find($scheduling_id);
 
@@ -561,15 +559,17 @@ class Schedulings extends Component
 
         $model_scheduling->delete();
 
-        $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
+        if($show_message){
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
-        $this->dispatchBrowserEvent('updateEvents');
-
-        $this->sessionAlert([
-            'message' => 'Scheduling deleted successfully!',
-            'type' => 'success',
-            'icon' => 'check',
-        ]);
+            $this->dispatchBrowserEvent('updateEvents');
+    
+            $this->sessionAlert([
+                'message' => 'Scheduling deleted successfully!',
+                'type' => 'success',
+                'icon' => 'check',
+            ]);
+        }
     }
 
     public function sumWaitTime($pick_up_hour, $duration)
@@ -596,7 +596,6 @@ class Schedulings extends Component
         $this->resetValidation();
     }
 
-    // Click en el input para obtener las direcciones guardadas
     public function getAddresses($input)
     {
         $this->$input = $this->saved_addresses;
@@ -624,7 +623,11 @@ class Schedulings extends Component
         }
     }
 
-    // Funciones que validan la actualización de algun campo
+    public function toggleAutoAgend()
+    {
+        $this->auto_agend = !$this->auto_agend;
+    }
+
     public function updated()
     {
         $data = [
@@ -879,7 +882,7 @@ class Schedulings extends Component
         }
     }
 
-    function sessionAlert($data)
+    public function sessionAlert($data)
     {
         session()->flash('alert', $data);
 
@@ -991,8 +994,62 @@ class Schedulings extends Component
         $this->isEdit = true;
     }
 
+    public function revert()
+    {
+        $sql = "SELECT * FROM scheduling_address WHERE scheduling_id = '{$this->modelId}' AND cancel_drive = 1";
+
+        $scheduling_address = DB::select($sql);
+
+        foreach ($scheduling_address as $address) {
+            $address = SchedulingAddress::find($address->id);
+            $address->status = 'Waiting';
+            $address->cancel_drive = 0;
+            $address->save();
+        }
+
+        $this->dispatchBrowserEvent('updateEvents');
+        $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
+
+        $this->confirmCollect(false);
+    }
+
     public function cancelScheduling()
     {
+        $this->dispatchBrowserEvent('showMultipleOptionsConfirm',
+            [
+                'html' => '<div style="text-align: left;">
+                    <label><input type="radio" name="event-option" value="pick-up" selected> Cancel Pick Up</label><br>
+                    <label><input type="radio" name="event-option" value="drop-off"> Cancel Drop Off</label><br>
+                    <label><input type="radio" name="event-option" value="both"> Cancel Both</label>
+                </div>',
+                'title' => 'Select an option',
+                'confirmButtonText' => 'Confirm',
+                'denyButtonText' => 'Cancel',
+                'livewire' => 'showConfirmCollet',
+                'id' => $this->modelId
+            ]
+        );
+    }
+
+    public function showConfirmCollet($option){
+        $sql = "SELECT * FROM scheduling_address WHERE scheduling_id = '{$this->modelId}'";
+        if($option == 'pick-up'){
+            $sql.= " AND type_of_trip = 'pick_up'";
+        }elseif($option == 'drop-off'){
+            $sql.= " AND type_of_trip = 'return'";
+        }
+
+        $scheduling_address = DB::select($sql);
+
+        if(count($scheduling_address) > 0){
+            foreach($scheduling_address as $address){
+                $model_scheduling = SchedulingAddress::find($address->id);
+                $model_scheduling->status = 'Canceled';
+                $model_scheduling->cancel_drive = 1;
+                $model_scheduling->save();
+            }
+        }
+
         $this->dispatchBrowserEvent('showConfirm', [
             'text' => "This scheduling will be canceled! Do you want to collect the cancellation?",
             'icon' => 'warning',
@@ -1002,28 +1059,11 @@ class Schedulings extends Component
         ]);
     }
 
-    public function revert()
-    {
-        $this->saveStatus(false);
-    }
 
     public function confirmCollect($cancel)
     {
         $scheduling_charge = SchedulingCharge::where('scheduling_id', $this->modelId)->first();
         $scheduling_charge->collect_cancel = ($cancel) ? true : false;
-        $scheduling_charge->save();
-
-        $this->saveStatus(true);
-    }
-
-    private function saveStatus($cancel)
-    {
-        $scheduling_address = SchedulingAddress::where('scheduling_id', $this->modelId)->first();
-        $scheduling_address->status = ($cancel) ? 'Canceled' : 'Waiting';
-        $scheduling_address->save();
-
-        $scheduling_charge = SchedulingCharge::where('scheduling_id', $scheduling_address->scheduling_id)->first();
-        $scheduling_charge->if_not_cancel = ($cancel) ? true : false;
         $scheduling_charge->save();
 
         $this->dispatchBrowserEvent('updateEvents');
@@ -1110,7 +1150,6 @@ class Schedulings extends Component
 
         return response()->json($events);
     }
-
 
     public function validateFields()
     {
