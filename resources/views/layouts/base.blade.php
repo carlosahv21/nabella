@@ -83,8 +83,8 @@
                 denyButtonText: event.detail.denyButtonText,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    if (event.detail.livewire) {
-                        Livewire.emit(event.detail.livewire, result.isConfirmed, event.detail.id);
+                    if (event.detail.livewire) {                        
+                        Livewire.emit(event.detail.livewire, result.isConfirmed, event.detail.id, true);
                     } else {
                         Swal.fire({
                             title: "Success!",

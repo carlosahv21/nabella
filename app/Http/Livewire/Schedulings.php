@@ -357,7 +357,7 @@ class Schedulings extends Component
 
             if (count($scheduling_address) > 0) {
                 foreach ($scheduling_address as $address) {
-                    $this->deleteScheduling($address->scheduling_id);
+                    $this->deleteScheduling(false, $address->scheduling_id, false);
                 }
 
                 $this->modelId = '';
@@ -512,7 +512,7 @@ class Schedulings extends Component
         $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
 
         if ($option == 'This-event') {
-            $this->deleteScheduling($this->modelId, true);
+            $this->deleteScheduling(false, $this->modelId, true);
         } else if ($option == 'Same-date') {
             // Obtener el día de la semana del agendamiento actual
             $day_of_week = Carbon::parse($format_date)->format('l');
@@ -525,7 +525,7 @@ class Schedulings extends Component
                 ->whereRaw("DAYNAME(date) = ?", [$day_of_week])
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling($scheduling->id, true);
+                $this->deleteScheduling(false, $scheduling->id, true);
             }
         } else if ($option == 'All-events') {
             $schedulings = Scheduling::select('schedulings.id')
@@ -533,14 +533,14 @@ class Schedulings extends Component
                 ->where('date', '>=', $format_date)
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling($scheduling->id, true);
+                $this->deleteScheduling(false, $scheduling->id, true);
             }
         }
 
         $this->dispatchBrowserEvent('updateEvents');
     }
 
-    public function deleteScheduling($scheduling_id, $show_message = false)
+    public function deleteScheduling($comfirm = false, $scheduling_id, $show_message = false)
     {
         $model_scheduling = Scheduling::find($scheduling_id);
 
