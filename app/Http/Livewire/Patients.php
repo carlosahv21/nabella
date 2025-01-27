@@ -393,7 +393,7 @@ class Patients extends Component
                     ->orWhere('last_name', 'like', "%$this->search%")
                     ->orderBy('first_name', 'asc')
                     ->paginate(10),
-                'service_contracts' => DB::table('service_contracts')->get()
+                'service_contracts' => DB::table('service_contracts')->orderBy('company', 'asc')->get()
             ],
         );
     }

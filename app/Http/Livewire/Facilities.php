@@ -344,7 +344,7 @@ class Facilities extends Component
         return view('livewire.facility.index', 
         [
             'facilities' => Facility::search('name', $this->search)->orderBy('name', 'asc')->paginate(10),
-            'service_contracts' => ServiceContract::all()
+            'service_contracts' => DB::table('service_contracts')->orderBy('company', 'asc')->get()
         ],
     );
     }

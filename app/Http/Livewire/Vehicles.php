@@ -297,6 +297,7 @@ class Vehicles extends Component
             ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->select('users.*')
             ->where('roles.name', '=', $roleName)
+            ->orderBy('users.name', 'asc')
             ->get();
 
         return view(
