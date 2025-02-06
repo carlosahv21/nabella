@@ -125,7 +125,7 @@
                             @foreach ($schedulings as $scheduling)
                             <tbody>
                                 <tr>
-                                    <td class="align-middle px-5 text-sm">{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }} @if($scheduling['status'] == 'Canceled') - <span class="badge bg-danger">Canceled</span> @endif</td>
+                                    <td class="align-middle px-5 text-sm">{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }} - <span class="badge {{ $scheduling['status_color'] }}">{{ $scheduling['status'] }}</span></td>
                                 </tr>
                             </tbody>
                             @endforeach

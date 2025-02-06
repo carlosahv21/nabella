@@ -24,8 +24,6 @@ class ServiceContracts extends Component
 
     protected $rules=[
         'state' => 'required',
-        'date_start' => 'required',
-        'date_end' => 'required',
         'email' => 'email'
     ];
 
@@ -149,7 +147,7 @@ class ServiceContracts extends Component
             try {
                 // Intentamos crear la fecha con cada formato
                 $convertedDateStart = Carbon::createFromFormat($format, $this->date_start)->format('Y-m-d');
-                $convertedDateEnd = Carbon::createFromFormat($format, $this->date_start)->format('Y-m-d');
+                $convertedDateEnd = Carbon::createFromFormat($format, $this->date_end)->format('Y-m-d');
 
                 break; // Si logra convertir, se sale del ciclo
             } catch (Exception $e) {

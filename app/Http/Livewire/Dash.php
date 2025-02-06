@@ -282,6 +282,28 @@ class Dash extends Component
         }
     }
 
+    private function getPrefix($billing_code){
+        switch ($billing_code) {
+            case 'A0120-Ambulatory':
+                $prfix = '(A)';
+                break;
+            case 'A0120-Cane':
+                $prfix = '(C)';
+                break;
+            case 'A0130-Wheelchair':
+                $prfix = '(WC)';
+                break;
+            case 'A0130-Walker':
+                $prfix = '(W)';
+                break;
+            default:
+                $prfix = '(W)';
+                break;
+        }
+
+        return $prfix;
+    }
+
     public function render()
     {
         $routes = [];
@@ -313,38 +335,17 @@ class Dash extends Component
             $cars = DB::table('vehicles')
                 ->where('user_id', '=', auth()->user()->id)
                 ->get();
+
             foreach ($events as $event) {
-                $pick_up_address = $event->pick_up_address;
-
-                $drop_off_address = $event->drop_off_address;
-
                 $patient = Patient::where('id', '=', $event->patient_id)->first();
                 $facility = Facility::where('service_contract_id', '=', $patient->service_contract_id)->first();
                 $driver = Driver::where('id', '=', $event->driver_id)->first();
 
-                switch ($patient->billing_code) {
-                    case 'A0120-Ambulatory':
-                        $prfix = '(A)';
-                        break;
-                    case 'A0120-Cane':
-                        $prfix = '(C)';
-                        break;
-                    case 'A0130-Wheelchair':
-                        $prfix = '(WC)';
-                        break;
-                    case 'A0130-Walker':
-                        $prfix = '(W)';
-                        break;
-                    default:
-                        $prfix = '(W)';
-                        break;
-                }
-
                 $all_events[] = [
                     'id' => $event->id,
                     'distance' => $event->distance,
-                    'pick_up_address' => $pick_up_address,
-                    'drop_off_address' => $drop_off_address,
+                    'pick_up_address' => $event->pick_up_address,
+                    'drop_off_address' => $event->drop_off_address,
                     'hospital_name' => ($facility->name) ? $facility->name : 'No assigned',
                     'driver_name' => $driver->name,
                     'status' => $event->status,
@@ -352,7 +353,7 @@ class Dash extends Component
                     'date' => $event->date,
                     'pick_up_hour' => $event->pick_up_hour,
                     'drop_off_hour' => $event->drop_off_hour,
-                    'patient_name' => $prfix . ' - ' . $patient->first_name . ' ' . $patient->last_name,
+                    'patient_name' => $this->getPrefix($patient->billing_code) . ' - ' . $patient->first_name . ' ' . $patient->last_name,
                     'observations' => $patient->observations,
                     'wheelchair' => $event->wheelchair ? true : false,
                     'ambulatory' => $event->ambulatory ? true : false,
@@ -363,8 +364,7 @@ class Dash extends Component
                     'out_of_hours' => $event->out_of_hours ? true : false,
                 ];
             }
-
-
+            
             return view(
                 'livewire.dash.index',
                 [
@@ -491,7 +491,8 @@ class Dash extends Component
                     'drop_off_hour' => Carbon::parse($key->drop_off_hour)->format('g:iA'),
                     'patient_name' => $key->patient_name,
                     'prefix' => $key->prefix,
-                    'status' => $key->status
+                    'status' => $key->status,
+                    'status_color' => $this->statusColor($key->status),
                 ];
             }
 

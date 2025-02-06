@@ -19,7 +19,7 @@ class ApisGoogle extends Model
         $response = file_get_contents($url);
         $predictions = json_decode($response, true)['predictions'];
 
-        return array_slice(array_map(function($prediction) {
+        return array_slice(array_map(function ($prediction) {
             return $prediction['description'];
         }, $predictions), 0, 5);
     }
@@ -38,26 +38,65 @@ class ApisGoogle extends Model
         }
     }
 
-    public function getDistance($origin, $destination, $arrivalTimestamp)
+    public function getDistance($origin = null, $destination = null, $arrivalTimestamp = null)
     {
+        // Validar que los parámetros no sean nulos y tengan la estructura esperada
+        if (
+            !is_array($origin) || !isset($origin['lat'], $origin['lng']) ||
+            !is_array($destination) || !isset($destination['lat'], $destination['lng']) ||
+            empty($arrivalTimestamp)
+        ) {
+            return ['distance' => 0, 'duration' => 0];
+        }
+
         $_origin = "{$origin['lat']},{$origin['lng']}";
-        $_destination = "{$destination['lat']},{$destination['lng']}"; 
+        $_destination = "{$destination['lat']},{$destination['lng']}";
 
         $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$_origin&destinations=$_destination&key={$this->api_key}&units=imperial&arrival_time={$arrivalTimestamp}";
 
-        $response = file_get_contents($url);
+        $response = @file_get_contents($url); // Utiliza @ para evitar warnings si la API no responde
+
+        if ($response === false) {
+            return ['distance' => 0, 'duration' => 0]; // Manejo de error si la API falla
+        }
+
         $data = json_decode($response, true);
 
-        if ($data['status'] == 'OK' && $data['rows'][0]['elements'][0]['status'] == 'OK') {
+        // Validar si la respuesta de la API es correcta
+        if (
+            isset($data['status']) && $data['status'] == 'OK' &&
+            isset($data['rows'][0]['elements'][0]['status']) &&
+            $data['rows'][0]['elements'][0]['status'] == 'OK'
+        ) {
+
             $distance = $data['rows'][0]['elements'][0]['distance']['text'];
             $duration = $data['rows'][0]['elements'][0]['duration']['text'];
 
             $this->distance = explode(' ', $distance)[0];
-            $this->duration = explode(' ', $duration)[0];
+            $this->duration = $this->convertToMinutes($duration);
 
-            return array('distance' => $this->distance, 'duration' => $this->duration);
+            return ['distance' => $this->distance, 'duration' => $this->duration];
         } else {
-            return array('distance' => 0, 'duration' => 0);
+            return ['distance' => 0, 'duration' => 0]; // Respuesta predeterminada en caso de error
         }
+    }
+
+
+    function convertToMinutes($timeString)
+    {
+        $totalMinutes = 0;
+
+        // Expresiones regulares para extraer horas y minutos
+        preg_match('/(\d+)\s*hour/', $timeString, $hoursMatch);
+        preg_match('/(\d+)\s*min/', $timeString, $minutesMatch);
+
+        if (!empty($hoursMatch)) {
+            $totalMinutes += intval($hoursMatch[1]) * 60;
+        }
+
+        if (!empty($minutesMatch)) {
+            $totalMinutes += intval($minutesMatch[1]);
+        }
+        return $totalMinutes;
     }
 }

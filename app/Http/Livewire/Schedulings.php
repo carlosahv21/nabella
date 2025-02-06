@@ -144,7 +144,7 @@ class Schedulings extends Component
         $this->auto_agend = $model_scheduling->auto_agend;
         $this->weekdays = explode(',', $model_scheduling->select_date);
         $this->ends_schedule = $model_scheduling->ends_schedule;
-        $this->ends_date = $model_scheduling->end_date;
+        $this->ends_date = ($model_scheduling->end_date) ? Carbon::createFromFormat('Y-m-d', $model_scheduling->end_date)->format('m-d-Y') : '';
         $this->status = $model_scheduling->status;
 
         $model_scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->get();
@@ -357,7 +357,7 @@ class Schedulings extends Component
 
             if (count($scheduling_address) > 0) {
                 foreach ($scheduling_address as $address) {
-                    $this->deleteScheduling(false, $address->scheduling_id, false);
+                    $this->deleteScheduling(true, $address->scheduling_id, false);
                 }
 
                 $this->modelId = '';
@@ -512,7 +512,7 @@ class Schedulings extends Component
         $format_date = Carbon::createFromFormat('m-d-Y', $this->date)->toDateString();
 
         if ($option == 'This-event') {
-            $this->deleteScheduling(false, $this->modelId, true);
+            $this->deleteScheduling(true, $this->modelId, true);
         } else if ($option == 'Same-date') {
             // Obtener el día de la semana del agendamiento actual
             $day_of_week = Carbon::parse($format_date)->format('l');
@@ -525,7 +525,7 @@ class Schedulings extends Component
                 ->whereRaw("DAYNAME(date) = ?", [$day_of_week])
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling(false, $scheduling->id, true);
+                $this->deleteScheduling(true, $scheduling->id, true);
             }
         } else if ($option == 'All-events') {
             $schedulings = Scheduling::select('schedulings.id')
@@ -533,15 +533,20 @@ class Schedulings extends Component
                 ->where('date', '>=', $format_date)
                 ->get();
             foreach ($schedulings as $scheduling) {
-                $this->deleteScheduling(false, $scheduling->id, true);
+                $this->deleteScheduling(true, $scheduling->id, true);
             }
         }
 
         $this->dispatchBrowserEvent('updateEvents');
     }
 
-    public function deleteScheduling($comfirm = false, $scheduling_id, $show_message = false)
+    public function deleteScheduling($comfirm, $scheduling_id, $show_message = false)
     {
+        if(!$comfirm){
+            $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
+            return;
+        }
+
         $model_scheduling = Scheduling::find($scheduling_id);
 
         if (!$model_scheduling) {
