@@ -321,7 +321,7 @@
                                                 </span>
                                                 <div class="timeline-content">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['pick_up_address'] }}</h6>
-                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Estimated Pickup time {{ \Carbon\Carbon::parse($event['date'])->format('m-d-Y') }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('H:i A') }} </p>
+                                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Estimated Pickup time {{ \Carbon\Carbon::parse($event['date'])->format('m-d-Y') }} {{ \Carbon\Carbon::parse($event['pick_up_hour'])->format('h:i A') }} </p>
                                                 </div>
                                                 <div class="timeline-content pt-3">
                                                     <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $event['drop_off_address'] }}</h6>
