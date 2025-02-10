@@ -67,6 +67,15 @@ class Schedulings extends Component
         'date' => 'required',
         'check_in' => 'required',
         'pick_up_driver_id' => 'required',
+        'pick_up_address' => 'required',
+        'stops.*.address' => 'required',
+        'return_pick_up_address' => 'required',
+        'r_stops.*.address' => 'required',
+    ];
+
+    protected $messages = [
+        'stops.*.address.required' => 'This address is required.',
+        'r_stops.*.address.required' => 'This return address is required.',
     ];
 
     protected $listeners = [
@@ -99,12 +108,12 @@ class Schedulings extends Component
             case 'create':
                 if (cache()->get('autoagendamiento_form')) {
                     $this->dispatchBrowserEvent('showConfirm', [
-                            'text' => 'You have unsaved changes! Do you want to continue?',
-                            'icon' => 'info',
-                            'confirmButtonText' => 'Yes',
-                            'denyButtonText' => 'No',
-                            'livewire' => 'continueScheduling',
-                            'id' => false,
+                        'text' => 'You have unsaved changes! Do you want to continue?',
+                        'icon' => 'info',
+                        'confirmButtonText' => 'Yes',
+                        'denyButtonText' => 'No',
+                        'livewire' => 'continueScheduling',
+                        'id' => false,
                     ]);
                 } else {
                     $this->title_modal = 'Create Scheduling';
@@ -481,7 +490,8 @@ class Schedulings extends Component
     public function showConfirmDelete()
     {
         if ($this->auto_agend) {
-            $this->dispatchBrowserEvent('showMultipleOptionsConfirm',
+            $this->dispatchBrowserEvent(
+                'showMultipleOptionsConfirm',
                 [
                     'html' => '<div style="text-align: left;">
                             <label><input type="radio" name="event-option" value="This-event" selected> This event</label><br>
@@ -542,7 +552,7 @@ class Schedulings extends Component
 
     public function deleteScheduling($comfirm, $scheduling_id, $show_message = false)
     {
-        if(!$comfirm){
+        if (!$comfirm) {
             $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
             return;
         }
@@ -564,11 +574,11 @@ class Schedulings extends Component
 
         $model_scheduling->delete();
 
-        if($show_message){
+        if ($show_message) {
             $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
             $this->dispatchBrowserEvent('updateEvents');
-    
+
             $this->sessionAlert([
                 'message' => 'Scheduling deleted successfully!',
                 'type' => 'success',
@@ -730,6 +740,11 @@ class Schedulings extends Component
         }
     }
 
+    public function updatedDate()
+    {
+        $this->validateFields();
+    }
+
     public function updatedPickUpAddress()
     {
         $this->predictionLocation('pick_up_address');
@@ -864,7 +879,7 @@ class Schedulings extends Component
         $this->$type[$index]['addresses'] = [];
 
         if ($type == 'stops') {
-            $this->updatedCheckIn();
+            $this->validateFields();
         }
     }
 
@@ -919,61 +934,73 @@ class Schedulings extends Component
 
     public function getDistance($addresses, $arrivalTime, $type, $showDistance = false)
     {
-        $arrivalTimestamp = strtotime($arrivalTime);
+        if (count($addresses) < 2) {
+            return;
+        }
 
         for ($i = 0; $i < count($addresses) - 1; $i++) {
             $origin = $this->google->getCoordinates($addresses[$i]);
-            $destination = $this->google->getCoordinates($addresses[$i + 1]);
 
-            if (!$origin || !$destination) {
-                return false;
+            if (isset($origin['error'])) {
+                $this->dispatchBrowserEvent('showAlert', [
+                    'text' => $origin['error'],
+                    'icon' => 'error'
+                ]);
+                return;
             }
 
-            $data = $this->google->getDistance($origin, $destination, $arrivalTimestamp);
+            $destination = $this->google->getCoordinates($addresses[$i + 1]);
+            if (isset($destination['error'])) {
+                $this->dispatchBrowserEvent('showAlert', [
+                    'text' => $destination['error'],
+                    'icon' => 'error'
+                ]);
+                return;
+            }
+
+            $data = $this->google->getDistance($origin, $destination, strtotime($arrivalTime));
+
+            if (isset($data['error'])) {
+                $this->dispatchBrowserEvent('showAlert', [
+                    'text' => $data['error'],
+                    'icon' => 'error'
+                ]);
+
+                $distance = 0;
+                $duration = 0;
+            } else {
+                $distance = $data['distance'];
+                $duration = $data['duration'];
+            }
 
             if ($type == 'return') {
-                if ($data['distance']) {
-                    $this->r_stops[$i]['distance'] = $data['distance'];
-                } else {
-                    $this->r_stops[$i]['distance'] = 0;
-                }
-
-                if ($data['duration']) {
+                $this->r_stops[$i]['distance'] = $distance;
+                if ($duration) {
                     if ($showDistance) {
-                        $this->r_start_drive = $data['duration'] . "min";
+                        $this->r_start_drive = $duration . "min";
                     }
-
-                    $this->r_stops[$i]['duration'] = $data['duration'];
+                    $this->r_stops[$i]['duration'] = $duration;
                 }
             } else {
-                if ($data['distance']) {
-                    $this->stops[$i]['distance'] = $data['distance'];
-                } else {
-                    $this->stops[$i]['distance'] = 0;
-                }
-
-                if ($data['duration']) {
+                $this->stops[$i]['distance'] = $distance;
+                if ($duration) {
                     if ($i == 0) {
-                        $this->pick_up_time = $this->getTime($data['duration'], $arrivalTime);
+                        $this->pick_up_time = $this->getTime($duration, $arrivalTime);
                     }
-                    $this->stops[$i]['duration'] = $data['duration'];
+                    $this->stops[$i]['duration'] = $duration;
                 }
             }
         }
     }
 
     public function getTime($duration, $arrivalTime)
-    {
+    {   
         $totalMinutesToSubtract = $duration + 30;
 
-        list($date, $time) = explode(' ', $arrivalTime);
-        list($year, $month, $day) = explode('-', $date);
-        list($hour, $minute) = explode(':', $time);
+        $arrivalTime = Carbon::createFromFormat('m-d-Y H:i', $arrivalTime);
+        $newTime = $arrivalTime->subMinutes($totalMinutesToSubtract);
 
-        $arrivalTimestamp = mktime($hour, $minute, 0, $month, $day, $year);
-        $newTimestamp = $arrivalTimestamp - ($totalMinutesToSubtract * 60);
-
-        return date('H:i', $newTimestamp);
+        return $newTime->format('H:i');
     }
 
     public function openCreateModal($date)
@@ -1020,7 +1047,8 @@ class Schedulings extends Component
 
     public function cancelScheduling()
     {
-        $this->dispatchBrowserEvent('showMultipleOptionsConfirm',
+        $this->dispatchBrowserEvent(
+            'showMultipleOptionsConfirm',
             [
                 'html' => '<div style="text-align: left;">
                     <label><input type="radio" name="event-option" value="pick-up" selected> Cancel Pick Up</label><br>
@@ -1036,18 +1064,19 @@ class Schedulings extends Component
         );
     }
 
-    public function showConfirmCollet($option){
+    public function showConfirmCollet($option)
+    {
         $sql = "SELECT * FROM scheduling_address WHERE scheduling_id = '{$this->modelId}'";
-        if($option == 'pick-up'){
-            $sql.= " AND type_of_trip = 'pick_up'";
-        }elseif($option == 'drop-off'){
-            $sql.= " AND type_of_trip = 'return'";
+        if ($option == 'pick-up') {
+            $sql .= " AND type_of_trip = 'pick_up'";
+        } elseif ($option == 'drop-off') {
+            $sql .= " AND type_of_trip = 'return'";
         }
 
         $scheduling_address = DB::select($sql);
 
-        if(count($scheduling_address) > 0){
-            foreach($scheduling_address as $address){
+        if (count($scheduling_address) > 0) {
+            foreach ($scheduling_address as $address) {
                 $model_scheduling = SchedulingAddress::find($address->id);
                 $model_scheduling->status = 'Canceled';
                 $model_scheduling->cancel_drive = 1;
@@ -1158,15 +1187,12 @@ class Schedulings extends Component
 
     public function validateFields()
     {
-        if (!$this->date) {
-            $this->date = Carbon::now()->format('Y-m-d');
-        }
-        if (!$this->check_in) {
-            $this->check_in = Carbon::now()->format('H:i');
-        }
+        $hasValidAddress = collect($this->stops)->some(function ($location) {
+            return !empty($location['address']) || !empty($location['addresses']);
+        });
 
-        if (count($this->stops) == 0 || $this->pick_up_address == null) {
-            return false;
+        if ($this->date == null || $this->check_in == null || empty($this->pick_up_address) || !$hasValidAddress) {
+            return;
         }
 
         $addresses = [];
@@ -1182,9 +1208,15 @@ class Schedulings extends Component
 
     public function validateFieldsReturn()
     {
-        if (count($this->r_stops) == 0 || $this->return_pick_up_address == null || $this->r_check_in == null || $this->date == null) {
-            return false;
+        $hasValidAddress = collect($this->r_stops)->some(function ($location) {
+            return !empty($location['address']) || !empty($location['addresses']);
+        });
+
+        if ($this->date == null || $this->r_check_in == null || empty($this->return_pick_up_address) || !$hasValidAddress) {
+            return;
         }
+
+        dd([$this->r_stops, $this->return_pick_up_address, $this->r_check_in, $this->date]);
 
         $addresses = [];
         $addresses[] = $this->return_pick_up_address;

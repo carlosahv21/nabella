@@ -188,6 +188,11 @@
                                         @endforeach
                                     </ul>
                                     @endif
+                                    @if ($errors->has('pick_up_address'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('pick_up_address') }}
+                                        </div>
+                                    @endif
                                 </div>
                                 @foreach ($stops as $index => $stop)
                                 <div class="mb-3 row">
@@ -213,6 +218,11 @@
                                         </button>
                                         @endif
                                     </div>
+                                    @if($errors->has('stops.'.$index.'.address'))
+                                        <div class="text-danger inputerror mt-1">
+                                            {{ $errors->first('stops.'.$index.'.address') }}
+                                        </div>
+                                    @endif
                                 </div>
                                 @endforeach
                                 <div class="mb-3 col-md-3">
@@ -275,6 +285,11 @@
                                             @endforeach
                                         </ul>
                                         @endif
+                                        @if ($errors->has('return_pick_up_address'))
+                                            <div class="text-danger inputerror">
+                                                {{ $errors->first('return_pick_up_address') }}
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="col-md-2">
                                         <div class="input-group input-group-static my-1">
@@ -306,6 +321,11 @@
                                         </button>
                                         @endif
                                     </div>
+                                    @if($errors->has('r_stops.'.$r_index.'.address'))
+                                        <div class="text-danger inputerror mt-1">
+                                            {{ $errors->first('r_stops.'.$r_index.'.address') }}
+                                        </div>
+                                    @endif
                                 </div>
                                 @endforeach
                                 <div class="mb-3 col-md-3">
