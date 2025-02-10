@@ -31,7 +31,7 @@ class Schedulings extends Component
     public $pick_up_driver_id, $drop_off_driver_id, $pick_up_address, $drop_off_address, $pick_up_hour, $drop_off_hour, $distance, $location_driver, $return_pick_up_address, $r_check_in, $r_start_drive, $r_pick_up_time, $request_by, $errors_r_check_in, $errors_driver, $schedule_autoagend_id, $patient_name = '';
 
     // Campos de la tabla scheduling_charge
-    public $wheelchair, $ambulatory, $saturdays, $companion, $fast_track, $sundays_holidays, $out_of_hours, $aditional_waiting, $if_not_cancel, $flat_rate, $pick_up_cancel, $drop_off_cancel = false;
+    public $wheelchair, $ambulatory, $cane, $walker, $bchair, $saturdays, $companion, $fast_track, $sundays_holidays, $out_of_hours, $aditional_waiting, $if_not_cancel, $flat_rate, $pick_up_cancel, $drop_off_cancel = false;
 
     public $type_of_trip = 'one_way';
 
@@ -317,6 +317,9 @@ class Schedulings extends Component
         $scheduling_charge->fast_track = $this->fast_track;
         $scheduling_charge->if_not_cancel = $this->if_not_cancel;
         $scheduling_charge->flat_rate = $this->flat_rate;
+        $scheduling_charge->cane = $this->cane;
+        $scheduling_charge->walker = $this->walker;
+        $scheduling_charge->bchair = $this->bchair;
         $scheduling_charge->save();
 
         $d_saved_addresses =  SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
@@ -685,14 +688,45 @@ class Schedulings extends Component
 
         $this->patient_id = $patient->id;
 
+        if ($patient->billing_code == 'A0120-Ambulatory') {
+            $this->ambulatory = true;
+            $this->wheelchair= false;
+            $this->cane = false;
+            $this->walker = false;
+            $this->bchair = false;
+        }
+
+        if ($patient->billing_code == 'A0120-Cane') {
+            $this->cane = true;
+            $this->ambulatory = false;
+            $this->wheelchair= false;
+            $this->walker = false;
+            $this->bchair = false;
+
+        }
+
         if ($patient->billing_code == 'A0130-Wheelchair') {
             $this->wheelchair = true;
             $this->ambulatory = false;
+            $this->cane = false;
+            $this->walker = false;
+            $this->bchair = false;
         }
 
-        if ($patient->billing_code == 'A0120-Ambulatory' || $patient->billing_code == 'A0100-Ambulatory') {
-            $this->ambulatory = true;
+        if ($patient->billing_code == 'A0130-Walker') {
+            $this->walker = true;
             $this->wheelchair = false;
+            $this->cane = false;
+            $this->ambulatory = false;
+            $this->bchair = false;
+        }
+
+        if ($patient->billing_code == 'A0140-BrodaChair') {
+            $this->bchair = true;
+            $this->wheelchair = false;
+            $this->cane = false;
+            $this->walker = false;
+            $this->ambulatory = false;
         }
 
         $this->patient_name = $patient->first_name . ' ' . $patient->last_name;
@@ -1215,8 +1249,6 @@ class Schedulings extends Component
         if ($this->date == null || $this->r_check_in == null || empty($this->return_pick_up_address) || !$hasValidAddress) {
             return;
         }
-
-        dd([$this->r_stops, $this->return_pick_up_address, $this->r_check_in, $this->date]);
 
         $addresses = [];
         $addresses[] = $this->return_pick_up_address;

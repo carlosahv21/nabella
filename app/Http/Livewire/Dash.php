@@ -22,7 +22,7 @@ class Dash extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $type_of_trip, $ends_date, $modelId = '';
+    public $patient_id, $hospital_name, $hospital_address, $driver_name, $distance, $duration, $date, $check_in, $pick_up, $pick_up_time, $wheelchair, $ambulatory, $cane, $walker, $bchair, $saturdays, $sundays_holidays, $companion, $fast_track, $out_of_hours, $aditional_waiting, $if_not_cancel, $drop_off, $drop_off_hours, $type_of_trip, $ends_date, $modelId = '';
 
     public $isMobile = false;
 
@@ -101,6 +101,9 @@ class Dash extends Component
 
         $this->wheelchair = $scheduling_charge->wheelchair;
         $this->ambulatory = $scheduling_charge->ambulatory;
+        $this->cane = $scheduling_charge->cane;
+        $this->walker = $scheduling_charge->walker;
+        $this->bchair = $scheduling_charge->bchair;
         $this->saturdays = $scheduling_charge->saturdays;
         $this->sundays_holidays = $scheduling_charge->sundays_holidays;
         $this->companion = $scheduling_charge->companion;
@@ -207,6 +210,9 @@ class Dash extends Component
         $scheduling_charge = SchedulingCharge::where('scheduling_id', '=', $scheduling_address->scheduling_id)->first();
         $scheduling_charge->wheelchair = $this->wheelchair;
         $scheduling_charge->ambulatory = $this->ambulatory;
+        $scheduling_charge->cane = $this->cane;
+        $scheduling_charge->walker = $this->walker;
+        $scheduling_charge->bchair = $this->bchair;
         $scheduling_charge->saturdays = $this->saturdays;
         $scheduling_charge->sundays_holidays = $this->sundays_holidays;
         $scheduling_charge->companion = $this->companion;
@@ -296,6 +302,9 @@ class Dash extends Component
             case 'A0130-Walker':
                 $prfix = '(W)';
                 break;
+            case 'A0140-BrodaChair':
+                $prfix = '(BC)';
+                break;
             default:
                 $prfix = '(W)';
                 break;
@@ -357,6 +366,9 @@ class Dash extends Component
                     'observations' => $patient->observations,
                     'wheelchair' => $event->wheelchair ? true : false,
                     'ambulatory' => $event->ambulatory ? true : false,
+                    'cane' => $event->cane ? true : false,
+                    'walker' => $event->walker ? true : false,
+                    'bchair' => $event->bchair ? true : false,
                     'saturdays' => $event->saturdays ? true : false,
                     'companion' => $event->companion ? true : false,
                     'fast_track' => $event->fast_track ? true : false,
@@ -412,6 +424,12 @@ class Dash extends Component
                         WHEN sc.wheelchair = 1 THEN svc.wheelchair ELSE 0 END
                     + CASE 
                         WHEN sc.ambulatory = 1 THEN svc.ambulatory ELSE 0 END
+                    + CASE
+                        WHEN sc.cane = 1 THEN svc.cane ELSE 0 END
+                    + CASE
+                        WHEN sc.walker = 1 THEN svc.walker ELSE 0 END
+                    + CASE
+                        WHEN sc.bchair = 1 THEN svc.bchair ELSE 0 END
                     + CASE 
                         WHEN sc.out_of_hours = 1 THEN svc.out_of_hours ELSE 0 END
                     + CASE 

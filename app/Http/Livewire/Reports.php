@@ -121,6 +121,9 @@ class Reports extends Component
             'saturdays' => $scheduling_charge->saturdays,
             'sundays_holidays' => $scheduling_charge->sundays_holidays,
             'flat_rate' => $scheduling_charge->flat_rate,
+            'cane' => $scheduling_charge->cane,
+            'walker' => $scheduling_charge->walker,
+            'bchair' => $scheduling_charge->bchair,
         ];
     }
 
@@ -152,6 +155,18 @@ class Reports extends Component
 
         if ($scheduling['charge']['ambulatory']) {
             $base_amount = $service_contract->ambulatory;
+        }
+
+        if ($scheduling['charge']['cane']) {
+            $base_amount = $service_contract->cane;
+        }
+
+        if ($scheduling['charge']['walker']) {
+            $base_amount = $service_contract->walker;
+        }
+
+        if ($scheduling['charge']['bchair']) {
+            $base_amount = $service_contract->bchair;
         }
 
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {
@@ -200,6 +215,18 @@ class Reports extends Component
 
         if ($scheduling['charge']['ambulatory']) {
             $description .= 'AMBULATORY. ';
+        }
+
+        if ($scheduling['charge']['cane']) {
+            $description .= 'CANE. ';
+        }
+
+        if ($scheduling['charge']['walker']) {
+            $description .= 'WALKER. ';
+        }
+
+        if ($scheduling['charge']['bchair']) {
+            $description .= 'BRODA CHAIR. ';
         }
 
         if ($scheduling['charge']['type_of_trip'] == 'round_trip') {

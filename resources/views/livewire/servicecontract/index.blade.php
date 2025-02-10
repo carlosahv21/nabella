@@ -182,6 +182,42 @@
                                     <div class="my-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <span class="input-group-text">$</span>
+                                            <label class="form-label">Cane</label>
+                                            <input wire:model="cane" type="text" class="form-control" min="0" placeholder="0">
+                                        </div>
+                                        @if ($errors->has('cane'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('cane') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="my-3 col-md-3 col-3">
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
+                                            <label class="form-label">Walker</label>
+                                            <input wire:model="walker" type="text" class="form-control" min="0" placeholder="0">
+                                        </div>
+                                        @if ($errors->has('walker'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('walker') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3 col-3">
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
+                                            <label class="form-label">Broda Chair</label>
+                                            <input wire:model="bchair" type="text" min="0" placeholder="0" class="form-control">
+                                        </div>
+                                        @if ($errors->has('bchair'))
+                                        <div class="text-danger inputerror">
+                                            {{ $errors->first('bchair') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="mb-3 col-md-3 col-3">
+                                        <div class="input-group input-group-dynamic mb-4 is-filled">
+                                            <span class="input-group-text">$</span>
                                             <label class="form-label">After Hours</label>
                                             <input wire:model="out_of_hours" type="text" min="0" placeholder="0" class="form-control">
                                         </div>
@@ -191,7 +227,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="my-3 col-md-3 col-3">
+                                    <div class="mb-3 col-md-3 col-3">
                                         <div class="input-group input-group-dynamic mb-4 is-filled">
                                             <span class="input-group-text">$</span>
                                             <label class="form-label">Saturdays</label>

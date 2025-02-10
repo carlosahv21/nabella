@@ -371,6 +371,18 @@
                                         <input wire.ignore.self="" wire:model="ambulatory" class="form-check-input" type="checkbox" id="customAmbulatory">
                                         <label class="custom-control-label text-10" for="customAmbulatory">Ambulatory</label>
                                     </div>
+                                    <div class="form-check mb-3 col-md-3 p-1">
+                                        <input wire.ignore.self="" wire:model="cane" class="form-check-input" type="checkbox" id="customCane">
+                                        <label class="custom-control-label text-10" for="customCane">Cane</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-3 p-1">
+                                        <input wire.ignore.self="" wire:model="walker" class="form-check-input" type="checkbox" id="customWalker">
+                                        <label class="custom-control-label text-10" for="customWalker">Walker</label>
+                                    </div>
+                                    <div class="form-check mb-3 col-md-3 p-1">
+                                        <input wire.ignore.self="" wire:model="bchair" class="form-check-input" type="checkbox" id="customBchair">
+                                        <label class="custom-control-label text-10" for="customBchair">Broda Chair</label>
+                                    </div>
                                     <div class="form-check mb-4 col-md-3 p-1">
                                         <input wire.ignore.self="" wire:model="saturdays" class="form-check-input" type="checkbox" id="customSaturdays">
                                         <label class="custom-control-label text-10" for="customSaturdays">Saturdays</label>

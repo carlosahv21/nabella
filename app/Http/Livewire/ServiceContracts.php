@@ -16,7 +16,7 @@ class ServiceContracts extends Component
     
     protected $paginationTheme = 'bootstrap';
 
-    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $flat_rate, $address, $phone, $state, $email, $date_start, $date_end, $modelId = '';
+    public $company, $contact_name, $wheelchair, $ambulatory, $out_of_hours, $saturdays, $sundays_holidays, $companion, $additional_waiting, $after, $fast_track, $if_not_cancel, $rate_per_mile, $overcharge, $flat_rate, $cane, $walker, $bchair, $address, $phone, $state, $email, $date_start, $date_end, $modelId = '';
     public $selectedAll = false;
     public $selected = [];
     public $item, $action, $search, $title_modal, $countServiceContracts = '';
@@ -83,6 +83,9 @@ class ServiceContracts extends Component
         $this->rate_per_mile = $model->rate_per_mile;
         $this->overcharge = $model->overcharge;
         $this->flat_rate = $model->flat_rate;
+        $this->cane = $model->cane;
+        $this->walker = $model->walker;
+        $this->bchair = $model->bchair;
         $this->address = $model->address;
         $this->phone = $model->phone;
         $this->state = $model->state;
@@ -122,6 +125,9 @@ class ServiceContracts extends Component
         $this->rate_per_mile = null;
         $this->overcharge = null;
         $this->flat_rate = null;
+        $this->cane = null;
+        $this->walker = null;
+        $this->bchair = null;
         $this->address = null;
         $this->phone = null;
         $this->state = null;
@@ -179,6 +185,9 @@ class ServiceContracts extends Component
         $servicecontract->rate_per_mile = ($this->rate_per_mile) ? $this->rate_per_mile : 0;
         $servicecontract->overcharge = ($this->overcharge) ? $this->overcharge : 0;
         $servicecontract->flat_rate = ($this->flat_rate) ? $this->flat_rate : 0;
+        $servicecontract->cane = ($this->cane) ? $this->cane : 0;
+        $servicecontract->walker = ($this->walker) ? $this->walker : 0;
+        $servicecontract->bchair = ($this->bchair) ? $this->bchair : 0;
         $servicecontract->address = $this->address;
         $servicecontract->phone = $this->phone;
         $servicecontract->date_start = $convertedDateStart;
