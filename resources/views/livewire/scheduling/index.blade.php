@@ -113,10 +113,10 @@
                                     @endif
                                 </div>
                                 <div class="form-check mb-3 col-md-4 ">
-                                    <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip">
+                                    <input class="form-check-input" type="radio" value="one_way" wire.ignore_self="" wire:model="type_of_trip" wire:click="toggleReturnFields">
                                     <label class="custom-control-label text-10" for="one_way">OW</label>
                                     <br>
-                                    <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip">
+                                    <input class="form-check-input" type="radio" value="round_trip" wire.ignore_self="" wire:model="type_of_trip" wire:click="toggleReturnFields">
                                     <label class="custom-control-label text-10" for="round_trip">RT</label>
                                 </div>
                                 <hr class="dark horizontal">

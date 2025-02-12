@@ -46,6 +46,8 @@ class Schedulings extends Component
     public $prediction_location_driver = [];
     public $prediction_return_pick_up_address = [];
 
+    public $showReturnFields = false;
+
     public $stops = [
         [
             'address' => '',
@@ -61,17 +63,6 @@ class Schedulings extends Component
 
     public $distances = [];
     public $addresses = [];
-
-    protected $rules = [
-        'patient_id' => 'required',
-        'date' => 'required',
-        'check_in' => 'required',
-        'pick_up_driver_id' => 'required',
-        'pick_up_address' => 'required',
-        'stops.*.address' => 'required',
-        'return_pick_up_address' => 'required',
-        'r_stops.*.address' => 'required',
-    ];
 
     protected $messages = [
         'stops.*.address.required' => 'This address is required.',
@@ -94,6 +85,25 @@ class Schedulings extends Component
         'closePredictions',
         'showConfirmCollet'
     ];
+
+    public function rules()
+    {
+        $rules = [
+            'patient_id' => 'required',
+            'date' => 'required',
+            'check_in' => 'required',
+            'pick_up_driver_id' => 'required',
+            'pick_up_address' => 'required',
+            'stops.*.address' => 'required',
+        ];
+
+        if($this->showReturnFields) {
+            $rules['return_pick_up_address'] = 'required';
+            $rules['r_stops.*.address'] = 'required';
+        }
+
+        return $rules;
+    }
 
     public function __construct()
     {
@@ -293,11 +303,12 @@ class Schedulings extends Component
         } else {
             $scheduling = new Scheduling;
         }
+
         $scheduling->patient_id = $this->patient_id;
         $scheduling->auto_agend = $this->auto_agend;
         $scheduling->select_date = implode(',', $this->weekdays);
         $scheduling->ends_schedule = $this->ends_schedule;
-        $scheduling->end_date = $this->ends_date;
+        $scheduling->end_date = ($this->ends_date) ? $this->ends_date : null;
         $scheduling->save();
 
         if ($this->modelIdCharge) {
@@ -644,6 +655,11 @@ class Schedulings extends Component
     public function toggleAutoAgend()
     {
         $this->auto_agend = !$this->auto_agend;
+    }
+
+    public function toggleReturnFields()
+    {
+        $this->showReturnFields = !$this->showReturnFields;
     }
 
     public function updated()
