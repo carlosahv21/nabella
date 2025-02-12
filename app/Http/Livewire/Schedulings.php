@@ -991,8 +991,9 @@ class Schedulings extends Component
                 ]);
                 return;
             }
-
-            $data = $this->google->getDistance($origin, $destination, strtotime($arrivalTime));
+            
+            $convertedDate = Carbon::createFromFormat('m-d-Y H:i', $arrivalTime)->format('Y-m-d H:i');
+            $data = $this->google->getDistance($origin, $destination, strtotime($convertedDate));
 
             if (isset($data['error'])) {
                 $this->dispatchBrowserEvent('showAlert', [
