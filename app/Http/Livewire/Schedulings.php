@@ -100,6 +100,8 @@ class Schedulings extends Component
         if($this->showReturnFields) {
             $rules['return_pick_up_address'] = 'required';
             $rules['r_stops.*.address'] = 'required';
+            $rules['drop_off_driver_id'];
+            $rules['r_check_in'] = 'required';
         }
 
         return $rules;
