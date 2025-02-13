@@ -67,6 +67,7 @@ class Schedulings extends Component
     protected $messages = [
         'stops.*.address.required' => 'This address is required.',
         'r_stops.*.address.required' => 'This return address is required.',
+        'r_check_in.required' => 'This check out is required.',
     ];
 
     protected $listeners = [
