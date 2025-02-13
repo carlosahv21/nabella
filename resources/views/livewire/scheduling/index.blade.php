@@ -333,9 +333,9 @@
                                         <label>Check Out</label>
                                         <input type="time" wire.ignore.self wire:model="r_check_in" class="form-control" aria-label="Time (to the nearest minute)" onfocus="focused(this)" onfocusout="defocused(this)" id="r_check_in" @if($drop_off_cancel) disabled @endif>
                                     </div>
-                                    @if ($errors_r_check_in)
+                                    @if ($errors->has('r_check_in'))
                                     <div class="text-danger inputerror">
-                                        {{ $errors_r_check_in }}
+                                        {{ $errors->first('r_check_in') }}
                                     </div>
                                     @endif
                                 </div>
