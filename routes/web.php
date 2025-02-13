@@ -55,6 +55,17 @@ Route::get('download', function () {
     }
 });
 
+Route::get('download_logs', function () {
+    // Ruta dentro de storage
+    $filePath = storage_path('logs/laravel.log');
+
+    if (file_exists($filePath)) {
+        return response()->download($filePath);
+    } else {
+        echo 'error', 'El archivo de dump no se encuentra.';
+    }
+});
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('user-profile', UserProfile::class)->middleware('can:user.view')->name('user-profile');
     Route::get('role', Roles::class)->middleware('can:role.view')->name('role');

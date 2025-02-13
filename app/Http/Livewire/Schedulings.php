@@ -304,11 +304,17 @@ class Schedulings extends Component
             $scheduling = new Scheduling;
         }
 
+        if($this->ends_date == ''){
+            $this->ends_date = date('Y-m-d');
+        }else{
+            $this->ends_date = $this->formatDate($this->ends_date);
+        }
+        
         $scheduling->patient_id = $this->patient_id;
         $scheduling->auto_agend = $this->auto_agend;
         $scheduling->select_date = implode(',', $this->weekdays);
         $scheduling->ends_schedule = $this->ends_schedule;
-        $scheduling->end_date = ($this->ends_date) ? $this->ends_date : null;
+        $scheduling->end_date = $this->formatDate($this->ends_date);
         $scheduling->save();
 
         if ($this->modelIdCharge) {
@@ -1007,7 +1013,7 @@ class Schedulings extends Component
                 ]);
                 return;
             }
-            
+
             $convertedDate = Carbon::createFromFormat('m-d-Y H:i', $arrivalTime)->format('Y-m-d H:i');
             $data = $this->google->getDistance($origin, $destination, strtotime($convertedDate));
 
