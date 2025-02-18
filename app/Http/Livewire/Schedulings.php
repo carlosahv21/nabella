@@ -209,6 +209,11 @@ class Schedulings extends Component
         $model_scheduling_charge = SchedulingCharge::where('scheduling_id', $model_scheduling->id)->first();
         $this->modelIdCharge = $model_scheduling_charge->id;
         $this->type_of_trip = $model_scheduling_charge->type_of_trip;
+
+        if($model_scheduling_charge->type_of_trip == 'round_trip'){
+            $this->showReturnFields = true;
+        }
+        
         $this->wheelchair = $model_scheduling_charge->wheelchair;
         $this->ambulatory = $model_scheduling_charge->ambulatory;
         $this->out_of_hours = $model_scheduling_charge->out_of_hours;
@@ -225,6 +230,7 @@ class Schedulings extends Component
         $this->reset(['modelId', 'modelIdCharge', 'patient_id', 'weekdays', 'ends_schedule', 'ends_date', 'pick_up_driver_id', 'pick_up_time',  'return_pick_up_address', 'drop_off_address', 'date', 'check_in', 'drop_off_hour', 'type_of_trip', 'wheelchair', 'ambulatory', 'out_of_hours', 'saturdays', 'sundays_holidays', 'companion', 'aditional_waiting', 'fast_track', 'if_not_cancel', 'auto_agend', 'pick_up_address', 'r_check_in', 'r_pick_up_time', 'drop_off_driver_id', 'patient_name', 'errors_driver']);
 
         $this->isEdit = false;
+        $this->showReturnFields = false;    
 
         $this->prediction_pick_up_address = [];
         $this->prediction_drop_off = [];
@@ -263,6 +269,8 @@ class Schedulings extends Component
 
     public function save()
     {
+        $this->resetValidation();
+
         $this->validate();
 
         if ($this->modelId) {
