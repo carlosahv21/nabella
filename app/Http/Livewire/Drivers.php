@@ -3,13 +3,16 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
+
 use App\Models\User;
 use App\Models\SchedulingAddress;
 
-use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
-
 use App\Mail\WelcomeEmail;
+
+use App\Services\AuditLogService;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 
@@ -96,7 +99,6 @@ class Drivers extends Component
 
     public function getModelId($modelId)
     {
-
         $this->modelId = $modelId;
 
         $model = User::find($this->modelId);
@@ -160,6 +162,7 @@ class Drivers extends Component
         $user->dl_state = $this->dl_state;
         $user->dl_number = $this->dl_number;
         $user->date_of_hire = $this->date_of_hire;
+
         $user->syncRoles($this->role);
 
         $user->save();
@@ -167,20 +170,22 @@ class Drivers extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createDriver']);
 
         if ($this->isEdit) {
+            AuditLogService::log('update', 'user', $user->id);
             $data = [
                 'message' => 'User updated successfully!',
                 'type' => 'success',
                 'icon' => 'edit',
             ];
         } else {
+            Mail::to($user->email)->send(new WelcomeEmail($user));
+            
+            AuditLogService::log('create', 'user', $user->id);
             $data = [
                 'message' => 'User created successfully!',
                 'type' => 'info',
                 'icon' => 'check',
             ];
         }
-
-        Mail::to($user->email)->send(new WelcomeEmail($user));
 
         if ($data) {
             $this->sessionAlert($data);
@@ -235,7 +240,10 @@ class Drivers extends Component
     }
 
     public function deleteDriver($user){
-        $user->delete();
+        $user->deleted = true;
+        $user->save();
+
+        AuditLogService::log('delete', 'user', $user->id);
         
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteDriver']);
 
@@ -271,19 +279,18 @@ class Drivers extends Component
 
     public function render()
     {
-        $roleName = 'Driver';
-
-        $data = DB::table('users')
+        $drivers = DB::table('users')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->select('users.*')
-            ->where('roles.name', '=', $roleName)
+            ->where('roles.name', '=', 'Driver')
             ->where('users.id', '!=', auth()->id())
             ->where('users.name', '!=', 'Root')
             ->where(function ($query) {
                 $query->where('users.name', 'like', '%' . $this->search . '%')
                     ->orWhere('users.email', 'like', '%' . $this->search . '%');
             })
+            ->where('deleted',0)
             ->orderBy('users.name', 'asc')
             ->paginate(10);
 
@@ -293,7 +300,7 @@ class Drivers extends Component
         return view(
             'livewire.drivers.index',
             [
-                'drivers' => $data,
+                'drivers' => $drivers,
                 'prefixs' => $this->prefixs
             ]
         );

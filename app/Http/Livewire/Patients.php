@@ -6,9 +6,9 @@ use Livewire\Component;
 use App\Models\Patient;
 use App\Models\Address;
 use App\Models\Scheduling;
-use App\Models\SchedulingAddress;
-use App\Models\SchedulingCharge;
 use App\Models\ApisGoogle;
+
+use App\Services\AuditLogService;
 
 use Illuminate\Support\Facades\DB;
 
@@ -245,12 +245,14 @@ class Patients extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createPatient']);
 
         if ($this->isEdit) {
+            AuditLogService::log('update', 'patient', $patient->id);
             $data = [
                 'message' => 'Patient updated successfully!',
                 'type' => 'success',
                 'icon' => 'edit',
             ];
         } else {
+            AuditLogService::log('create', 'patient', $patient->id);
             $data = [
                 'message' => 'Patient created successfully!',
                 'type' => 'info',
@@ -338,28 +340,27 @@ class Patients extends Component
 
     public function actionDelete($patient)
     {
-
         $schedulings = Scheduling::where('patient_id', $patient->id)->get();
         if (count($schedulings) > 0) {
             foreach ($schedulings as $scheduling) {
-                $scheduling_charge = SchedulingCharge::where('scheduling_id', $scheduling->id)->get();
-                foreach ($scheduling_charge as $charge) {
-                    $charge->delete();
-                }
+                $scheduling->deleted = true;
+                $scheduling->save();
 
-                $scheduling_address = SchedulingAddress::where('scheduling_id', $scheduling->id)->get();
-                foreach ($scheduling_address as $address) {
-                    $address->delete();
-                }
-                $scheduling->delete();
+                AuditLogService::log('delete', 'scheduling', $scheduling->id);
             }
         }
         $address = Address::where('patient_id', $patient->id)->get();
         foreach ($address as $addr) {
-            $addr->delete();
+            $addr->deleted = true;
+            $addr->save();
+
+            AuditLogService::log('delete', 'address', $addr->id);
         }
 
-        if ($patient->delete()) {
+        $patient->deleted = true;
+
+        if ($patient->save()) {
+            AuditLogService::log('delete', 'patient', $patient->id);
             return true;
         }
 
@@ -386,14 +387,21 @@ class Patients extends Component
 
     public function render()
     {
+        $patients = Patient::where('deleted', 0)
+            ->where(function ($query) {
+                $query->where('first_name', 'like', "%$this->search%")
+                    ->orWhere('last_name', 'like', "%$this->search%");
+            })
+            ->orderBy('first_name', 'asc')
+            ->paginate(10);
+
+        $service_contracts = DB::table('service_contracts')->where('deleted', 0)->orderBy('company', 'asc')->get();
+
         return view(
             'livewire.patient.index',
             [
-                'patients' => Patient::where('first_name', 'like', "%$this->search%")
-                    ->orWhere('last_name', 'like', "%$this->search%")
-                    ->orderBy('first_name', 'asc')
-                    ->paginate(10),
-                'service_contracts' => DB::table('service_contracts')->orderBy('company', 'asc')->get()
+                'patients' => $patients,
+                'service_contracts' => $service_contracts,
             ],
         );
     }

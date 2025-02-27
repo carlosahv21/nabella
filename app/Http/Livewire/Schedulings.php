@@ -3,16 +3,20 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+
 use App\Models\Scheduling;
 use App\Models\Patient;
-
 use App\Models\SchedulingAddress;
 use App\Models\SchedulingCharge;
 use App\Models\SchedulingAutoagend;
 use App\Models\ApisGoogle;
 use App\Models\ApiHoliday;
+
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+
+use App\Services\AuditLogService;
+
 use Exception;
 
 use Illuminate\Support\Facades\DB;
@@ -328,6 +332,12 @@ class Schedulings extends Component
         $scheduling->end_date = $this->formatDate($this->ends_date);
         $scheduling->save();
 
+        if($this->isEdit){
+            AuditLogService::log('update', 'scheduling', $scheduling->id);
+        }else{
+            AuditLogService::log('create', 'scheduling', $scheduling->id);
+        }
+
         if ($this->modelIdCharge) {
             $scheduling_charge = SchedulingCharge::find($this->modelIdCharge);
         } else {
@@ -427,6 +437,12 @@ class Schedulings extends Component
                 $scheduling->ends_schedule = $this->ends_schedule;
                 $scheduling->end_date = $end;
                 $scheduling->save();
+
+                if($this->isEdit){
+                    AuditLogService::log('update', 'scheduling', $scheduling->id);
+                }else{
+                    AuditLogService::log('create', 'scheduling', $scheduling->id);
+                }
 
                 if ($this->modelIdCharge) {
                     $scheduling_charge = SchedulingCharge::find($this->modelIdCharge);
@@ -594,16 +610,10 @@ class Schedulings extends Component
             return;
         }
 
-        $scheduling_address = SchedulingAddress::where('scheduling_id', $model_scheduling->id)->get();
-        foreach ($scheduling_address as $address) {
-            $address->delete();
-        }
-        $scheduling_charge = SchedulingCharge::where('scheduling_id', $model_scheduling->id)->get();
-        foreach ($scheduling_charge as $charge) {
-            $charge->delete();
-        }
+        $model_scheduling->deleted = true;
+        $model_scheduling->save();
 
-        $model_scheduling->delete();
+        AuditLogService::log('delete', 'scheduling', $model_scheduling->id);
 
         if ($show_message) {
             $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
@@ -1168,6 +1178,12 @@ class Schedulings extends Component
         $scheduling_charge->collect_cancel = ($cancel) ? true : false;
         $scheduling_charge->save();
 
+        if ($cancel) {
+            AuditLogService::log('cancel', 'scheduling', $scheduling_charge->id);
+        }else{
+            AuditLogService::log('revert cancel', 'scheduling', $scheduling_charge->id);
+        }
+
         $this->dispatchBrowserEvent('updateEvents');
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createScheduling']);
 
@@ -1222,6 +1238,7 @@ class Schedulings extends Component
                     $query->where('service_contract_id', $contractId);
                 });
             })
+            ->where('deleted', 0)
             ->get()
             ->map(function ($scheduling) {
                 $scheduling->schedulingAddresses->each(function ($address) use ($scheduling) {
@@ -1320,11 +1337,13 @@ class Schedulings extends Component
             ->select('users.*')
             ->where('roles.name', '=', 'Driver')
             ->where('users.id', '!=', auth()->id())
+            ->where('users.deleted', 0)
             ->orderBy('users.name', 'asc')
             ->get();
 
         $service_contracts = DB::table('service_contracts')
             ->select('service_contracts.id', 'service_contracts.company')
+            ->where('service_contracts.deleted', 0)
             ->orderBy('service_contracts.company', 'asc')
             ->get();
 

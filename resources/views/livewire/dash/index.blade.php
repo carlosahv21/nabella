@@ -85,12 +85,12 @@
                                     <td class="align-middle text-center">
                                         <p class="text-sm font-weight-normal mb-0">
                                             <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                            <span class="font-weight-bold ms-1">{{ $driver->total_dates }} route</span> this day
+                                            <span class="font-weight-bold ms-1">{{ $driver->total_routes }} @if($driver->total_routes > 1)routes @else route @endif</span> this day
                                         </p>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="badge @if($driver->status == 'Busy') bg-gradient-danger @else bg-gradient-success @endif">
-                                            {{ $driver->status }}
+                                        <span class="badge @if($driver->driver_status == 'Busy') bg-gradient-danger @else bg-gradient-success @endif">
+                                            {{ $driver->driver_status }}
                                         </span>
                                     </td>
                                     <td class="align-middle text-center text-sm">
@@ -115,22 +115,34 @@
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
-                            @foreach($scheduling_by_service_contract as $company => $schedulings)
-                            <thead>
-                                <tr class="text-uppercase text-secondary text-md font-weight-bolder">
-                                    <th>{{ $company }}</th>
-                                </tr>
-                            </thead>
-                            @foreach ($schedulings as $scheduling)
-                            <tbody>
-                                <tr>
-                                    <td class="align-middle px-5 text-sm">{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }} - <span class="badge {{ $scheduling['status_color'] }}">{{ $scheduling['status'] }}</span></td>
-                                </tr>
-                            </tbody>
-                            @endforeach
-                            @endforeach
-                        </table>
+                        @foreach($scheduling_by_service_contract as $company => $schedulings)
+                        <div class="mx-4">
+                            <div class="accordion" id="accordionRental">
+                                <div class="accordion-item mb-3">
+                                    <h6 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button border-bottom font-weight-bold collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapse_{{ str_replace(' ', '_', strtolower($company)) }}" aria-expanded="false" aria-controls="collapse_{{ str_replace(' ', '_', strtolower($company)) }}">
+                                            {{ $company}}
+                                        </button>
+                                    </h6>
+                                    <div id="collapse_{{ str_replace(' ', '_', strtolower($company)) }}" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                                        data-bs-parent="#accordionRental" wire:ignore.self>
+                                        <div class="accordion-body text-sm opacity-8 text-center">
+                                            <table class="table mb-0">
+                                                <tbody>
+                                                    @foreach($schedulings as $scheduling)
+                                                    <tr class="text-secondary text-md text-start">
+                                                        <td class="px-5">{{ $scheduling['pick_up_hour'] }} - {{ $scheduling['drop_off_hour'] }} {{ $scheduling['patient_name'] }} {{ $scheduling['prefix'] }} - <span class="badge {{ $scheduling['status_color'] }}">{{ $scheduling['status'] }}</span></td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -224,7 +236,7 @@
                         <h6>Schedule of the day</h6>
                         <p class="text-sm mb-0">
                             <i class="fa fa-check text-info" aria-hidden="true"></i>
-                            <span class="font-weight-bold ms-1">{{ count($events) }} route</span> this day
+                            <span class="font-weight-bold ms-1">{{ count($events) }} @if(count($events) == 1) route @else routes @endif</span>
                         </p>
                     </div>
                     <div class="col-lg-2 col-6">
@@ -241,10 +253,10 @@
                             <h6 class="accordion-header" id="headingOne">
                                 <button class="accordion-button border-bottom font-weight-bold collapsed" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#collapse{{$event['id']}}" aria-expanded="false" aria-controls="collapse{{$event['id']}}">
-                                        {{ $event['patient_name'] }}
-                                        <span class="offset-1 badge {{ $event['status_color'] }}">
-                                            {{ $event['status'] }}
-                                        </span>
+                                    {{ $event['patient_name'] }}
+                                    <span class="offset-1 badge {{ $event['status_color'] }}">
+                                        {{ $event['status'] }}
+                                    </span>
                                 </button>
                             </h6>
                             <div id="collapse{{$event['id']}}" class="accordion-collapse collapse" aria-labelledby="headingOne"
@@ -538,7 +550,7 @@
                                 <div class="row">
                                     <div class="mb-3 col-md-6 col-6">
                                         <label class="form-label">Comments</label>
-                                        <textarea wire:model="observations" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="Any additional comments"></textarea>
+                                        <textarea wire:model="observations" class="form-control border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="Any additional comments"></textarea>
                                         @if ($errors->has('observations'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('observations') }}
@@ -547,7 +559,7 @@
                                     </div>
                                     <div class="mb-3 col-md-6 col-6">
                                         <label class="form-label">Additional Milles </label>
-                                        <input wire:model="additional_milles" class="form-control border border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
+                                        <input wire:model="additional_milles" class="form-control border-2 p-2" onfocus="focused(this)" onfocusout="defocused(this)">
                                         @if ($errors->has('additional_milles'))
                                         <div class="text-danger inputerror">
                                             {{ $errors->first('additional_milles') }}

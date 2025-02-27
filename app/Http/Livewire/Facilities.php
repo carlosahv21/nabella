@@ -312,10 +312,12 @@ class Facilities extends Component
         $facility = Facility::findOrFail($facility->id);
         $address = Address::where('facility_id', $facility->id)->get();
         foreach ($address as $addr) {
-            $addr->delete();
+            $addr->deleted = true;
+            $addr->save();
         }
 
-        if($facility->delete()){
+        $facility->deleted = true;
+        if($facility->save()){
             return true;
         }
 
@@ -343,8 +345,8 @@ class Facilities extends Component
     {
         return view('livewire.facility.index', 
         [
-            'facilities' => Facility::search('name', $this->search)->orderBy('name', 'asc')->paginate(10),
-            'service_contracts' => DB::table('service_contracts')->orderBy('company', 'asc')->get()
+            'facilities' => Facility::search('name', $this->search)->where('deleted', 0)->orderBy('name', 'asc')->paginate(10),
+            'service_contracts' => DB::table('service_contracts')->where('deleted', 0)->orderBy('company', 'asc')->get()
         ],
     );
     }

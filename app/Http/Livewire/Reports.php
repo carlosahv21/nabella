@@ -43,7 +43,7 @@ class Reports extends Component
         $initialDate = Carbon::createFromFormat('m-d-Y', $range[0])->format('Y-m-d');
         $endDate = Carbon::createFromFormat('m-d-Y', str_replace(' ', '', $range[1]))->format('Y-m-d');
 
-        $sql = "SELECT scheduling_address.* FROM scheduling_address inner join schedulings on schedulings.id = scheduling_address.scheduling_id inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND scheduling_address.date BETWEEN '". $initialDate. "' AND '".$endDate. "' ORDER BY scheduling_address.date";
+        $sql = "SELECT scheduling_address.* FROM scheduling_address inner join schedulings on schedulings.id = scheduling_address.scheduling_id inner join patients on patients.id = schedulings.patient_id WHERE service_contract_id = " . $this->service_contract_id . " AND scheduling_address.date BETWEEN '". $initialDate. "' AND '".$endDate. "' AND scheduling_address.status = 'Completed' AND schedulings.deleted = 0 ORDER BY scheduling_address.date";
 
         $schedulings = DB::select($sql);
 

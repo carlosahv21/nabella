@@ -27,6 +27,18 @@
                 </a>
             </li>
             <li class="mb-2">
+                <a class="dropdown-item border-radius-md" href="{{ route('deleted-records') }}">
+                    <div class="d-flex align-items-center py-1">
+                        <i class="material-icons notranslate">delete</i>
+                        <div class="ms-2">
+                            <h6 class="text-sm font-weight-normal my-auto">
+                                Deleted records
+                            </h6>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li class="mb-2">
                 <a class="dropdown-item border-radius-md" href="{{ route('role') }}">
                     <div class="d-flex align-items-center py-1">
                         <i class="material-icons notranslate">manage_accounts</i>

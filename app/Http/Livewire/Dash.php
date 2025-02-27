@@ -43,7 +43,8 @@ class Dash extends Component
     public $map_api_key = 'AIzaSyBOx8agvT4F1RjSW4IS_zgkINQzdFZevik';
     public $url_map = 'https://maps.googleapis.com/maps/api/';
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->ends_date = Carbon::today()->format('m-d-Y');
     }
 
@@ -288,7 +289,8 @@ class Dash extends Component
         }
     }
 
-    private function getPrefix($billing_code){
+    private function getPrefix($billing_code)
+    {
         switch ($billing_code) {
             case 'A0120-Ambulatory':
                 $prfix = '(A)';
@@ -321,7 +323,7 @@ class Dash extends Component
 
         if (auth()->user()->roles->first()->name == 'Driver') {
             $date = Carbon::createFromFormat('m-d-Y', $this->ends_date)->format('Y-m-d');
-            
+
             $sql = "SELECT scheduling_address.*,
             schedulings.patient_id, 
             scheduling_charge.wheelchair,
@@ -340,7 +342,7 @@ class Dash extends Component
             scheduling_charge.overcharge FROM scheduling_address 
             inner join schedulings on schedulings.id = scheduling_address.scheduling_id 
             inner join scheduling_charge  on schedulings.id = scheduling_charge.scheduling_id 
-            WHERE scheduling_address.driver_id = " . auth()->user()->id . " AND scheduling_address.date = '" . $date . "' ORDER BY scheduling_address.pick_up_hour";
+            WHERE scheduling_address.driver_id = " . auth()->user()->id . " AND schedulings.deleted = 0 AND scheduling_address.date = '" . $date . "' ORDER BY scheduling_address.pick_up_hour";
 
             $events = DB::select($sql);
 
@@ -379,7 +381,7 @@ class Dash extends Component
                     'out_of_hours' => $event->out_of_hours ? true : false,
                 ];
             }
-            
+
             return view(
                 'livewire.dash.index',
                 [
@@ -390,37 +392,60 @@ class Dash extends Component
             );
         } else {
 
-            $events = DB::table('schedulings')
-                ->join('scheduling_address', 'schedulings.id', '=', 'scheduling_address.scheduling_id')
-                ->join('scheduling_charge', 'schedulings.id', '=', 'scheduling_charge.scheduling_id')
-                ->select('schedulings.id', 'scheduling_address.*', 'scheduling_charge.*')
-                ->where('scheduling_address.status', '=', 'Completed')
-                ->get();
+            // sql para obtener todos los agendamientos
+            $sql_e = "SELECT
+                        schedulings.id,
+                        scheduling_address.*,
+                        scheduling_charge.*
+                    FROM
+                        schedulings
+                    INNER JOIN scheduling_address ON
+                        schedulings.id = scheduling_address.scheduling_id
+                    INNER JOIN scheduling_charge ON
+                        schedulings.id = scheduling_charge.scheduling_id
+                    WHERE
+                        DATE(scheduling_address.date) = CURDATE()
+                        AND schedulings.deleted = 0";
+            $events = DB::select($sql_e);
 
-            $sql = "SELECT 
+            // sql para obtener el estado de los usuarios
+            $sql = "SELECT
                     u.id,
                     u.name,
                     CASE 
-                        WHEN MAX(NOW() BETWEEN CONCAT(sa.date, ' ', sa.pick_up_hour) AND CONCAT(sa.date, ' ', sa.drop_off_hour)) THEN 'Busy'
+                        WHEN EXISTS (
+                            SELECT 1
+                            FROM scheduling_address sa
+                            JOIN schedulings s ON sa.scheduling_id = s.id
+                            WHERE sa.driver_id = u.id
+                            AND DATE(sa.date) = CURDATE()
+                            AND sa.status = 'In Progress'
+                            AND s.deleted = 0
+                        ) THEN 'Busy'
                         ELSE 'Free'
-                    END AS status,
-                    COUNT(CASE 
-                        WHEN DATE(sa.date) = CURDATE() THEN 1 
-                        ELSE NULL 
-                    END) AS total_dates
-                FROM users u
-                LEFT JOIN scheduling_address sa ON sa.driver_id = u.id
-                INNER JOIN model_has_roles mhr ON mhr.model_id = u.id
-                INNER JOIN roles r ON r.id = mhr.role_id
-                WHERE 
+                    END AS driver_status,
+                    COUNT(CASE WHEN DATE(sa.date) = CURDATE() THEN sa.id ELSE NULL END) AS total_routes
+                FROM
+                    users u
+                LEFT JOIN
+                    scheduling_address sa ON sa.driver_id = u.id
+                LEFT JOIN
+                    schedulings s ON sa.scheduling_id = s.id 
+                INNER JOIN
+                    model_has_roles mhr ON mhr.model_id = u.id
+                INNER JOIN
+                    roles r ON r.id = mhr.role_id
+                WHERE
                     r.name = 'Driver'
-                    
-                GROUP BY u.id, u.name;";
+                    AND s.deleted = 0
+                GROUP BY
+                    u.id, u.name;";
             $drivers = DB::select($sql);
 
             $first_day_of_month = date('Y-m') . '-01';
             $last_day_of_month = date('Y-m-t');
 
+            // sql para sumar el total del agendamiento
             $sql_total = "SELECT 
                 SUM(
                     CASE 
@@ -462,49 +487,50 @@ class Dash extends Component
                 WHERE 
                     sa.date BETWEEN '" . $first_day_of_month . "' AND '" . $last_day_of_month . "'
                     AND sa.status = 'Completed';";
-
             $total_facturado = DB::select($sql_total);
+
             $total_facturado = ($total_facturado[0]->total_facturado != null) ? $total_facturado[0]->total_facturado : 0;
 
-            $sql_scheduling_by_service_contract = "SELECT
-                    s.id AS scheduling_id,
-                    sa.date,
-                    sa.pick_up_hour,
-                    sa.drop_off_hour,
-                    sa.status,
-                    CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
-                    CASE 
-                        WHEN p.billing_code = 'A0120-Ambulatory' THEN '(A)'
-                        WHEN p.billing_code = 'A0120-Cane' THEN '(C)'
-                        WHEN p.billing_code = 'A0130-Wheelchair' THEN '(WC)'
-                        WHEN p.billing_code = 'A0130-Walker' THEN '(W)'
-                        WHEN p.billing_code = 'A0140-BrodaChair' THEN '(BC)'
-                        ELSE '(W)'
-                    END AS prefix,
-                    sc.company AS service_contract_company
-                FROM
-                    schedulings s
-                JOIN 
-                    scheduling_address sa ON s.id = sa.scheduling_id
-                JOIN 
-                    patients p ON s.patient_id = p.id
-                JOIN 
-                    service_contracts sc ON p.service_contract_id = sc.id
-                WHERE
-                    sa.date = '" . date('Y-m-d') . "'
-                ORDER BY
-                    sc.company;";
-            $scheduling_by_service_contract = DB::select($sql_scheduling_by_service_contract);
+            // sql para obtener los agendamientos por contrato servicio
+            $sql_s_c = "SELECT
+                        s.id AS scheduling_id,
+                        sa.date,
+                        sa.pick_up_hour,
+                        sa.drop_off_hour,
+                        sa.status,
+                        CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+                        CASE 
+                            WHEN p.billing_code = 'A0120-Ambulatory' THEN '(A)'
+                            WHEN p.billing_code = 'A0120-Cane' THEN '(C)'
+                            WHEN p.billing_code = 'A0130-Wheelchair' THEN '(WC)'
+                            WHEN p.billing_code = 'A0130-Walker' THEN '(W)'
+                            WHEN p.billing_code = 'A0140-BrodaChair' THEN '(BC)'
+                            ELSE '(W)'
+                        END AS prefix,
+                        sc.company AS service_contract_company
+                    FROM
+                        schedulings s
+                    JOIN 
+                        scheduling_address sa ON s.id = sa.scheduling_id
+                    JOIN 
+                        patients p ON s.patient_id = p.id
+                    JOIN 
+                        service_contracts sc ON p.service_contract_id = sc.id
+                    WHERE
+                        DATE(sa.date) = CURDATE()
+                        AND s.deleted = 0
+                    ORDER BY
+                        sc.company;";
+            $sql_s_c = DB::select($sql_s_c);
+
             $result = [];
-            foreach ($scheduling_by_service_contract as $key) {
+            foreach ($sql_s_c as $key) {
                 $company = $key->service_contract_company;
 
-                // Si no existe la compañía en el array resultado, se inicializa con un array vacío
                 if (!isset($result[$company])) {
                     $result[$company] = [];
                 }
 
-                // Agregar el scheduling al array de la compañía correspondiente
                 $result[$company][] = [
                     'scheduling_id' => $key->scheduling_id,
                     'date' => $key->date,

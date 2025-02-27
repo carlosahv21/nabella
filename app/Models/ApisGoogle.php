@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Http;
 
 use Exception;
 
@@ -90,13 +91,12 @@ class ApisGoogle extends Model
 
         try {
             // Evitar warnings en caso de fallo con @file_get_contents()
-            $response = @file_get_contents($url);
-
-            if ($response === false) {
-                throw new Exception("Error al conectar con la API de Google Distance Matrix.");
+            $response = Http::get($url);
+            if ($response->failed()) {
+                throw new Exception("Error en la solicitud: " . $response->status());
             }
 
-            $data = json_decode($response, true);
+            $data = $response->json();
 
             // Validar estructura de la respuesta
             if (!isset($data['status'])) {
@@ -114,12 +114,9 @@ class ApisGoogle extends Model
                         $distance = $data['rows'][0]['elements'][0]['distance']['text'];
                         $duration = $data['rows'][0]['elements'][0]['duration']['text'];
 
-                        $this->distance = explode(' ', $distance)[0];
-                        $this->duration = $this->convertToMinutes($duration);
-
                         return [
-                            'distance' => $this->distance,
-                            'duration' => $this->duration
+                            'distance' => explode(' ', $distance)[0],
+                            'duration' => $this->convertToMinutes($duration)
                         ];
                     } else {
                         throw new Exception("No se pudo calcular la distancia entre los puntos.");
@@ -152,19 +149,19 @@ class ApisGoogle extends Model
 
     function convertToMinutes($timeString)
     {
-        $totalMinutes = 0;
-
-        // Expresiones regulares para extraer horas y minutos
-        preg_match('/(\d+)\s*hour/', $timeString, $hoursMatch);
-        preg_match('/(\d+)\s*min/', $timeString, $minutesMatch);
-
-        if (!empty($hoursMatch)) {
-            $totalMinutes += intval($hoursMatch[1]) * 60;
+        $total = 0;
+        // Maneja días, horas, minutos, segundos
+        preg_match_all('/(\d+)\s*(d|days|h|hour|hr|m|min|minute|s|sec)/', $timeString, $matches);
+        foreach ($matches[1] as $key => $value) {
+            $unit = $matches[2][$key];
+            switch ($unit) {
+                case 'd': case 'day': $total += $value * 1440; break;
+                case 'h': case 'hour': case 'hr': $total += $value * 60; break;
+                case 'm': case 'min': case 'minute': $total += $value; break;
+                // Opcional: manejar segundos si es necesario
+                case 's': case 'sec': $total += ceil($value / 60); break; 
+            }
         }
-
-        if (!empty($minutesMatch)) {
-            $totalMinutes += intval($minutesMatch[1]);
-        }
-        return $totalMinutes;
+        return $total ?: 0; // Asegura retornar al menos 0
     }
 }

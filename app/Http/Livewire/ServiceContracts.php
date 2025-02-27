@@ -3,7 +3,10 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+
 use App\Models\ServiceContract;
+use App\Services\AuditLogService;
+
 use Carbon\Carbon;
 use Exception;
 
@@ -23,8 +26,8 @@ class ServiceContracts extends Component
     public $isEdit = false;
 
     protected $rules=[
-        'state' => 'required',
-        'email' => 'email'
+        'company' => 'required',
+        'email' => 'email',
     ];
 
     protected $listeners = [
@@ -148,6 +151,9 @@ class ServiceContracts extends Component
         }
 
         $formats = ['Y-m-d', 'm-d-Y', 'd-m-Y', 'Y/m/d', 'm/d/Y', 'd/m/Y']; // Lista de formatos comunes
+        
+        $convertedDateStart = null;
+        $convertedDateEnd = null;
 
         foreach ($formats as $format) {
             try {
@@ -200,12 +206,14 @@ class ServiceContracts extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createServiceContract']);
 
         if ($this->isEdit) {
+            AuditLogService::log('update', 'servicecontract', $servicecontract->id);
             $data = [
                 'message' => 'Service Contract updated successfully!',
                 'type' => 'success',
                 'icon' => 'edit',
             ];
         } else {
+            AuditLogService::log('create', 'servicecontract', $servicecontract->id);
             $data = [
                 'message' => 'Service Contract created successfully!',
                 'type' => 'info',
@@ -233,8 +241,10 @@ class ServiceContracts extends Component
 
     public function delete()
     {
-        $ServiceContract = ServiceContract::findOrFail($this->item);
-        $ServiceContract->delete();
+        $serviceContract = ServiceContract::findOrFail($this->item);
+        $serviceContract->deleted = true;
+        $serviceContract->save();
+        AuditLogService::log('delete', 'servicecontract', $serviceContract->id);
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteServiceContract']);
 
@@ -250,7 +260,10 @@ class ServiceContracts extends Component
     public function massiveDelete()
     {
         $servicecontracts = ServiceContract::whereKey($this->selected);
-        $servicecontracts->delete();
+        $servicecontracts->deleted = true;
+        $servicecontracts->save();
+
+        AuditLogService::log('delete', 'servicecontract', $servicecontracts->id);
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteServiceContractMasive']);
 
@@ -270,9 +283,11 @@ class ServiceContracts extends Component
     
     public function render()
     {
+        $serviceContracts = ServiceContract::search('company', $this->search)->where('deleted', 0)->orderBy('company', 'asc')->paginate(10);
+
         return view('livewire.servicecontract.index', 
             [
-                'servicecontracts' => ServiceContract::search('company', $this->search)->orderBy('company', 'asc')->paginate(10)
+                'servicecontracts' => $serviceContracts
             ],
         );
     }

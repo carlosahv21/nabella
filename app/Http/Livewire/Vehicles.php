@@ -3,13 +3,16 @@
 namespace App\Http\Livewire;
 
 use App\Models\Vehicle;
-use Livewire\Component;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+
+use App\Services\AuditLogService;
+
+use Livewire\Component;
 
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class Vehicles extends Component
@@ -141,7 +144,8 @@ class Vehicles extends Component
     public function delete()
     {
         $vehicle = Vehicle::findOrFail($this->item);
-        $vehicle->delete();
+        $vehicle->deleted = true;
+        $vehicle->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteVehicle']);
 
@@ -156,7 +160,8 @@ class Vehicles extends Component
     public function massiveDelete()
     {
         $vehicles = Vehicle::whereKey($this->selected);
-        $vehicles->delete();
+        $vehicles->deleted = true;
+        $vehicles->save();
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteVehicleMasive']);
 
@@ -262,14 +267,24 @@ class Vehicles extends Component
         $vehicle->user_id = $this->user_id;
 
         $vehicle->save();
+        
+        if ($this->isEdit) {
+            AuditLogService::log('update', 'vehicle', $vehicle->id);
+            $data = [
+                'message' => 'Vehicle updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        }else{
+            AuditLogService::log('create', 'vehicle', $vehicle->id);
+            $data = [
+                'message' => 'Vehicle updated successfully!',
+                'type' => 'success',
+                'icon' => 'edit',
+            ];
+        }
 
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createVehicle']);
-
-        $data = [
-            'message' => $this->isEdit ? 'Vehicle updated successfully!' : 'Vehicle created successfully!',
-            'type' => $this->isEdit ? 'success' : 'info',
-            'icon' => $this->isEdit ? 'edit' : 'check',
-        ];
 
         $this->sessionAlert($data);
 
@@ -297,17 +312,23 @@ class Vehicles extends Component
             ->leftjoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->select('users.*')
             ->where('roles.name', '=', $roleName)
+            ->where('users.deleted', 0)
             ->orderBy('users.name', 'asc')
             ->get();
+
+        $vehicles = Vehicle::where('deleted', 0)
+            ->where(function ($query) {
+                $query->where('make', 'like', '%' . $this->search . '%')
+                    ->orWhere('model', 'like', '%' . $this->search . '%')
+                    ->orWhere('year', 'like', '%' . $this->search . '%')
+                    ->orWhere('vin', 'like', '%' . $this->search . '%');
+            })
+            ->paginate(10);
 
         return view(
             'livewire.vehicle.index',
             [
-                'vehicles' => Vehicle::where('make', 'like', '%' . $this->search . '%')
-                    ->orWhere('model', 'like', '%' . $this->search . '%')
-                    ->orWhere('year', 'like', '%' . $this->search . '%')
-                    ->orWhere('vin', 'like', '%' . $this->search . '%')
-                    ->paginate(10),
+                'vehicles' => $vehicles,
                 'drivers' => $data
             ]
         );

@@ -3,9 +3,15 @@
 namespace App\Http\Livewire\ExampleLaravel;
 
 use App\Models\User;
-use Livewire\Component;
+use App\Models\SchedulingAddress;
 
+use App\Services\AuditLogService;
+
+use Livewire\Component;
 use Livewire\WithPagination;
+
+use Illuminate\Support\Facades\DB;
+
 use Spatie\Permission\Models\Role;
 
 class UserProfile extends Component
@@ -111,12 +117,14 @@ class UserProfile extends Component
         $this->dispatchBrowserEvent('closeModal', ['name' => 'createUser']);
 
         if ($this->isEdit) {
+            AuditLogService::log('update', 'user', $user->id);
             $data = [
                 'message' => 'User updated successfully!',
                 'type' => 'success',
                 'icon' => 'edit',
             ];
         } else {
+            AuditLogService::log('create', 'user', $user->id);
             $data = [
                 'message' => 'User created successfully!',
                 'type' => 'info',
@@ -146,8 +154,29 @@ class UserProfile extends Component
     public function delete()
     {
         $user = User::findOrFail($this->item);
-        $user->delete();
 
+        $validation = SchedulingAddress::where('driver_id', $user->id)->get();
+        if (count($validation) > 0) {
+            $drivers = DB::table('users')
+            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->select('users.*')
+            ->where('roles.name', '=', 'Driver')
+            ->where('users.id', '!=', $user->id)
+            ->get();
+
+            $this->dispatchBrowserEvent('showReasignedDriver', ['options' => $drivers, 'id' => $user->id]);
+            return;
+        }else{
+            $this->deleteDriver($user);
+        }
+    }
+
+    public function deleteDriver($user){
+        $user->deleted = true;
+        $user->save();
+        AuditLogService::log('delete', 'user', $user->id);
+        
         $this->dispatchBrowserEvent('closeModal', ['name' => 'deleteUser']);
 
         $data = [
@@ -182,6 +211,7 @@ class UserProfile extends Component
                 $query->where('name', 'like', "%$this->search%")
                     ->orWhere('email', 'like', "%$this->search%");
             })
+            ->where('deleted', 0)
             ->paginate(10);
 
 

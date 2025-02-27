@@ -17,6 +17,7 @@ use App\Http\Livewire\Patients;
 use App\Http\Livewire\Facilities;
 use App\Http\Livewire\Schedulings;
 use App\Http\Livewire\ServiceContracts;
+use App\Http\Livewire\DeletedRecords;
 
 use App\Http\Livewire\Dash;
 use App\Http\Livewire\Reports;
@@ -78,6 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports', Reports::class)->middleware('can:report.view')->name('reports');
     Route::get('dashboard', Dash::class)->name('dashboard');
     Route::get('profile/{id}', Profile::class)->name('profile');
+    Route::get('deleted-records', DeletedRecords::class)->name('deleted-records');
     Route::get('destroy', Logout::class)->name('destroy');
     Route::get('whatsapp-users', [WhatsAppController::class, 'showUsers'])->name('whatsapp-users');
 
