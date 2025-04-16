@@ -403,13 +403,6 @@
                                         </span>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label class="form-label">Facility</label><br>
-                                        <span class="text-dark text-sm font-weight-bolder ms-sm-2">
-                                            <i class="material-icons notranslate text-sm me-1">local_hospital</i>
-                                            {{ $hospital_name }}
-                                        </span>
-                                    </div>
-                                    <div class="mb-3 col-md-6">
                                         <label class="form-label">Driver assigned</label><br>
                                         <span class="text-dark text-sm font-weight-bolder ms-sm-2">
                                             <i class="material-icons notranslate text-sm me-1">person</i>

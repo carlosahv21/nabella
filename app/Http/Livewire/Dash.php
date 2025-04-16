@@ -360,7 +360,6 @@ class Dash extends Component
                     'distance' => $event->distance,
                     'pick_up_address' => $event->pick_up_address,
                     'drop_off_address' => $event->drop_off_address,
-                    'hospital_name' => ($facility->name) ? $facility->name : 'No assigned',
                     'driver_name' => $driver->name,
                     'status' => $event->status,
                     'status_color' => $this->statusColor($event->status),
